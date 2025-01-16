@@ -1,0 +1,104 @@
+name: Mizu
+main: net.approachcircle.plugin.Mizu
+version: 1.0
+api-version: 1.19
+author: approachcircle
+prefix: Mizu
+
+commands: 
+   die:
+   tpa:
+   mock:
+   spawnon:
+   maintenance:
+   firework:
+   test-sentry: 
+   gwen-walk: 
+   gamble: 
+   test-notifications:
+   spawn-chunk-now:
+   remove-chunk-now:
+   lc:
+   mizu-reload-config:
+   tpy:
+   tpn:
+   fuck-you:
+   warp:
+   stats:
+   
+permissions:
+   mizu.command.*:
+      description: access to every Mizu feature
+      children:
+         mizu.command.die: true
+         mizu.command.firework: true
+         mizu.command.maintenance: true
+         mizu.command.tpa: true
+         mizu.command.spawnon: true
+         mizu.command.mock: true
+         mizu.magicwand: true
+         mizu.command.test-sentry: true
+         mizu.command.test-notifications: true
+         mizu.command.gwen-walk: true
+         mizu.command.gamble: true
+         mizu.spawn-chunk: true
+         mizu.remove-chunk: true
+         mizu.command.lc: true
+         mizu.reload-config: true
+         mizu.command.fuck-you: true
+         mizu.warp: true
+         mizu.command.stats: true
+   mizu.command.die:
+      description: allows a user to kill themselves
+      default: true
+   mizu.command.firework:
+      description: allows a user to receive a set amount of fireworks after a set cooldown
+      default: true
+   mizu.command.maintenance:
+      description: allows a user to toggle maintenance mode for the server
+      default: op
+   mizu.command.tpa:
+      description: allows a user to request to teleport to another user
+      default: true
+   mizu.command.spawnon:
+      description: allows a user to spawn a mob of their choosing inside of another player
+      default: op
+   mizu.command.mock:
+      description: allows a user to disguise a message to appear to come from another user
+      default: true
+   mizu.magicwand:
+      description: allows a user to use the magic wand
+      default: op
+   mizu.command.test-sentry:
+      description: allows a user to throw a test exception for sentry
+      default: op
+   mizu.command.test-notifications:
+      description: allows a user to test the notification server
+      default: op
+   mizu.command.gwen-walk:
+      description: allows a user to walk spawning elder guardians beneath their feet
+      default: op
+   mizu.command.gamble:
+      description: allows a user to gamble a given amount of items for double or nothing
+      default: true
+   mizu.spawn-chunk:
+      description: allows a user to immediately spawn a lucky chunk
+      default: op
+   mizu.remove-chunk:
+      description: allows a user to immediately remove a lucky chunk
+      default: op
+   mizu.command.lc:
+      description: allows a user to query the time until the next lucky chunk spawn
+      default: true
+   mizu.reload-config:
+      description: allows a user to reload the config from disk
+      default: op
+   mizu.command.fuck-you:
+      description: allows a user to apply loads of negative effects to another player
+      default: op
+   mizu.warp:
+      description: allows a user to warp to a specified player-made warp
+      default: true
+   mizu.command.stats:
+      description: allows a user to view their most used commands
+      default: true

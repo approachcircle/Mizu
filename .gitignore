@@ -1,0 +1,5 @@
+# Project exclude paths
+/classes/
+
+# development minecraft server
+/dev_server/

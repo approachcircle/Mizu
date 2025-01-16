@@ -1,0 +1,37 @@
+lucky-chunk: true
+notify-chunk: true
+blacklist:
+  - banner
+  - sign
+  - coral
+  - cake
+  - pot
+  - water
+  - lava
+  - copper
+  - tnt
+  - poppy
+  - dandelion
+  - flower
+  - orchid
+  - allium
+  - bluet
+  - tulip
+  - daisy
+  - lily
+  - peony
+  - lilac
+  - azalea
+  - rose
+  - mushroom
+  - sapling
+  - seed
+  - azalea
+  - button
+  - ladder
+  - log
+  - wood
+  - door
+  - plate
+  - spawner
+  - lever
