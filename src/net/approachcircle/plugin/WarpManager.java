@@ -5,14 +5,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class WarpManager {
@@ -20,8 +18,8 @@ public class WarpManager {
     private final File warpFile;
     private final Logger logger = PluginLogger.getPluginLogger();
     private static WarpManager instance = null;
-    // warp_name x y z world
-    // ^^^^ this format CANNOT change im so serious (shit will break heavily)
+    // warp_name x y z world owner
+    // ^^^^ ensure that logic is updated fully if this format changes
     
     private WarpManager() {
         warpFile = new File(Mizu.getInstance().getDataFolder().getAbsolutePath() + "\\" + warpFileName);
@@ -42,9 +40,9 @@ public class WarpManager {
         return instance;
     }
     
-    public boolean addNewWarp(String name, Location location) {
+    public boolean addNewWarp(String name, Player player) {
         try (FileWriter writer = new FileWriter(warpFile, true)) {
-            writer.append(String.format("%s %f %f %f %s%n", name, location.getX(), location.getY(), location.getZ(), location.getWorld().getName()));
+            writer.append(String.format("%s %f %f %f %s %s%n", name, player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), player.getLocation().getWorld().getName(), player.getName()));
         } catch (IOException e) {
             logger.severe("failed to add warp to warp file");
             e.printStackTrace(System.err);
@@ -53,7 +51,7 @@ public class WarpManager {
         return true;
     }
     
-    public boolean removeWarp(String name) {
+    public boolean removeWarp(String name, CommandSender sender) {
         List<String> lines = getWarpFileLines();
         if (lines == null) {
             return false;
@@ -63,7 +61,21 @@ public class WarpManager {
             String line = it.next();
             String[] tokens = line.split(" ");
             if (tokens[0].equals(name)) {
-                it.remove();
+                if (sender instanceof Player player) {
+                    if (tokens.length < 6) {
+                        player.sendMessage(String.format("%s%sthis warp doesn't belong to anyone (its probably an old one) so to be safe, you can't delete it", Utils.prefix, ChatColor.RED));
+                        return false;
+                    }
+                    if (tokens[5].equals(player.getName())) {
+                        it.remove();
+                    } else {
+                        player.sendMessage(String.format("%s%sthis warp doesn't belong to you (the owner is %s)", Utils.prefix, ChatColor.RED, tokens[5]));
+                        return false;
+                    }
+                } else {
+                    sender.sendMessage("even though you may not own this warp, it will be removed anyway as you're the console'");
+                    it.remove();
+                }
             }
         }
         for (String line : lines) {

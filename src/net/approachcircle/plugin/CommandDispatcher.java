@@ -342,7 +342,7 @@ public class CommandDispatcher {
                                     player.sendMessage(Utils.prefix + ChatColor.RED + "these are reserved command words, call the warp something else");
                                     return true;
                                 }
-                                if (WarpManager.getInstance().addNewWarp(args[1], player.getLocation())) {
+                                if (WarpManager.getInstance().addNewWarp(args[1], player)) {
                                     player.sendMessage(Utils.prefix + ChatColor.GREEN + "added warp " + args[1]);
                                 } else {
                                     player.sendMessage(Utils.prefix + ChatColor.RED + "failed to add warp " + args[1]);
@@ -351,7 +351,7 @@ public class CommandDispatcher {
                         } else if (Objects.equals(args[0], "list")) {
                             WarpManager.getInstance().listWarps(sender);
                         } else if (Objects.equals(args[0], "remove")) {
-                            if (WarpManager.getInstance().removeWarp(args[1])) {
+                            if (WarpManager.getInstance().removeWarp(args[1], sender)) {
                                 sender.sendMessage(Utils.prefix + ChatColor.GREEN + "removed warp " + args[1]);
                             } else {
                                 sender.sendMessage(Utils.prefix + ChatColor.RED + "failed to remove warp " + args[1]);
