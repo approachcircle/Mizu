@@ -26,6 +26,8 @@ import java.util.logging.Logger;
 public class MainListener implements Listener {
     private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
 
+    private final Logger logger = PluginLogger.getPluginLogger();
+
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
         VillagerDetector.checkEntityType(event);
@@ -33,7 +35,6 @@ public class MainListener implements Listener {
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
-        Logger logger = PluginLogger.getPluginLogger();
         Location deathLocation = event.getPlayer().getLocation();
         Player player = event.getPlayer();
         if (Die.suicided.contains(player.getUniqueId())) { // suicide
@@ -60,6 +61,20 @@ public class MainListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+        String brandName = player.getClientBrandName();
+        if (!Objects.equals(brandName, "vanilla") && !Objects.equals(brandName, "optifine")) {
+            if (brandName != null) {
+                if (brandName.contains("lunarclient")) {
+                    brandName = "lunar client";
+                }
+                player.sendMessage(String.format("%s%soh, you're using %s... that's nice", Utils.prefix, ChatColor.YELLOW, brandName));
+                logger.warning(String.format("%s is using %s", player.getName(), brandName));
+            } else {
+                player.sendMessage(String.format("%s%si have no idea what client you're using", Utils.prefix, ChatColor.YELLOW));
+                logger.warning(String.format("%s did not send their client brand name", player.getName()));
+            }
+
+        }
         if (Maintenance.getState()) {
             if (player.isOp()) {
                 player.sendMessage(Utils.prefix + ChatColor.YELLOW + "warning: the server is currently in maintenance mode");
@@ -96,7 +111,6 @@ public class MainListener implements Listener {
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent event) {
-        Logger logger = PluginLogger.getPluginLogger();
         Player player = event.getPlayer();
         Sentry.addBreadcrumb(String.format("%s left the game", player.getName()));
         Location location = player.getLocation();

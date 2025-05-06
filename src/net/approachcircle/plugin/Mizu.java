@@ -15,7 +15,6 @@ import java.util.logging.Logger;
 //TODO: random coordinate that must be reached
 //TODO: add jail system (every tick will teleport someone inside a bedrock jail somewhere)
 public class Mizu extends JavaPlugin {
-    private MainListener listener = new MainListener();
     private Logger logger = getLogger();
     private PluginManager pluginManager = getServer().getPluginManager();
     private String sentryDsn = "https://80903f313fc7478284aadb5982eb248e@o4504855501602816.ingest.sentry.io/4504855620747264";
@@ -38,7 +37,7 @@ public class Mizu extends JavaPlugin {
         });
         logger.info("plugin enabled");
         Sentry.addBreadcrumb("plugin enabled");
-        pluginManager.registerEvents(listener, this);
+        pluginManager.registerEvents(new MainListener(), this);
         logger.info("all events have been registered");
         Sentry.addBreadcrumb("events registered");
         // LagNotifier.startObserving();
