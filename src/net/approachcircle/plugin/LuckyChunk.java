@@ -136,7 +136,7 @@ public class LuckyChunk {
         if (rng.nextBoolean()) {
             z = rng.nextDouble(spawnZ, spawnZ + spawnRadius);
         } else {
-            if (spawnZ - 1000 < 0) {
+            if (spawnZ - spawnRadius < 0) {
                 z = rng.nextDouble(spawnZ, spawnZ + spawnRadius);
                 z = -z;
             } else {
