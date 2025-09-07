@@ -148,6 +148,9 @@ public class MainListener implements Listener {
         Player player = event.getPlayer();
         Sentry.addBreadcrumb(String.format(ChatColor.GRAY + "%s travelled from %s to %s", player.getName(), event.getFrom().getName(), player.getWorld().getName()));
         Bukkit.broadcast(Component.text(String.format(ChatColor.GRAY + "%s: %s -> %s", player.getName(), event.getFrom().getName(), player.getWorld().getName())));
+        if (!player.getWorld().getGameRuleValue(GameRule.KEEP_INVENTORY)) {
+            player.sendMessage(Component.text(Utils.prefix + ChatColor.RED + "keep inventory is not enabled in this dimension!!!"));
+        }
     }
 
     @EventHandler
