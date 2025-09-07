@@ -124,14 +124,24 @@ public class LuckyChunk {
         double spawnX = chunkSpawnWorld.getSpawnLocation().getX();
         double spawnZ = chunkSpawnWorld.getSpawnLocation().getZ();
         Random rng = new Random();
-        x = rng.nextDouble(spawnX, spawnX + spawnRadius);
-        // 50/50 to choose if we should flip either axes
+        // 50/50 to choose if we should flip either axis
         if (rng.nextBoolean()) {
-            x = -x;
+            x = rng.nextDouble(spawnX, spawnX + spawnRadius);
+        } else {
+            if (spawnX - spawnRadius < spawnX) {
+                x = rng.nextDouble(spawnX - spawnRadius, spawnX);
+            } else {
+                x = rng.nextDouble(spawnX, spawnX - spawnRadius);
+            }
         }
-        z = rng.nextDouble(spawnZ, spawnZ + spawnRadius);
         if (rng.nextBoolean()) {
-            z = -z;
+            z = rng.nextDouble(spawnZ, spawnZ + spawnRadius);
+        } else {
+            if (spawnZ - spawnRadius < spawnZ) {
+                z = rng.nextDouble(spawnZ - spawnRadius, spawnZ);
+            } else {
+                z = rng.nextDouble(spawnZ, spawnZ - spawnRadius);
+            }
         }
         // chunk = 16x16
         Utils.commandAsConsole(String.format("/world %s", chunkSpawnWorld.getName()));
