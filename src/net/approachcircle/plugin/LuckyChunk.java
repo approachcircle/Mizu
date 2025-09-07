@@ -15,6 +15,7 @@ import org.bukkit.plugin.Plugin;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class LuckyChunk {
@@ -123,26 +124,16 @@ public class LuckyChunk {
         double spawnX = chunkSpawnWorld.getSpawnLocation().getX();
         double spawnZ = chunkSpawnWorld.getSpawnLocation().getZ();
         Random rng = new Random();
+        x = rng.nextDouble(spawnX, spawnX + spawnRadius);
+        // 50/50 to choose if we should flip either axes
         if (rng.nextBoolean()) {
-            x = rng.nextDouble(spawnX, spawnX + spawnRadius);
-        } else {
-            if (spawnX - spawnRadius < 0) {
-                x = rng.nextDouble(spawnX, spawnX + spawnRadius);
-                x = -x;
-            } else {
-                x = rng.nextDouble(spawnX, spawnX - spawnRadius);
-            }
+            x = -x;
         }
+        z = rng.nextDouble(spawnZ, spawnZ + spawnRadius);
         if (rng.nextBoolean()) {
-            z = rng.nextDouble(spawnZ, spawnZ + spawnRadius);
-        } else {
-            if (spawnZ - spawnRadius < 0) {
-                z = rng.nextDouble(spawnZ, spawnZ + spawnRadius);
-                z = -z;
-            } else {
-                z = rng.nextDouble(spawnZ, spawnZ - spawnRadius);
-            }
+            z = -z;
         }
+        Bukkit.broadcast(Component.text(String.format("%f, %f, %f", x, y, z)));
         // chunk = 16x16
         Utils.commandAsConsole(String.format("/world %s", chunkSpawnWorld.getName()));
         Utils.commandAsConsole(String.format("/pos1 %d,%d,%d", Math.round(x), Math.round(y), Math.round(z)));
