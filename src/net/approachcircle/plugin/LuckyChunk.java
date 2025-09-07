@@ -133,7 +133,6 @@ public class LuckyChunk {
         if (rng.nextBoolean()) {
             z = -z;
         }
-        Bukkit.broadcast(Component.text(String.format("%f, %f, %f", x, y, z)));
         // chunk = 16x16
         Utils.commandAsConsole(String.format("/world %s", chunkSpawnWorld.getName()));
         Utils.commandAsConsole(String.format("/pos1 %d,%d,%d", Math.round(x), Math.round(y), Math.round(z)));
