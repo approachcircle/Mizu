@@ -349,7 +349,13 @@ public class CommandDispatcher {
                                 }
                             }
                         } else if (Objects.equals(args[0], "list")) {
-                            WarpManager.getInstance().listWarps(sender);
+                            List<String> warpLines = WarpManager.getInstance().listWarps(sender);
+                            if (warpLines != null) {
+                                sender.sendMessage(Utils.prefix + ChatColor.GREEN + "found " + warpLines.size() + " warps:");
+                                for (String warp : warpLines) {
+                                    sender.sendMessage(Utils.prefix + ChatColor.GOLD + warp.split(" ")[0] + " owned by " + warp.split(" ")[5]);
+                                }
+                            }
                         } else if (Objects.equals(args[0], "remove")) {
                             if (WarpManager.getInstance().removeWarp(args[1], sender)) {
                                 sender.sendMessage(Utils.prefix + ChatColor.GREEN + "removed warp " + args[1]);

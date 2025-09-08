@@ -41,6 +41,12 @@ public class WarpManager {
     }
     
     public boolean addNewWarp(String name, Player player) {
+        for (String warpLine : getWarpFileLines()) {
+            if (name.equals(warpLine.split(" ")[0])) {
+                player.sendMessage(Utils.prefix + ChatColor.RED + "there is a warp with the name '" + name + "' already");
+                return false;
+            }
+        }
         try (FileWriter writer = new FileWriter(warpFile, true)) {
             writer.append(String.format("%s %f %f %f %s %s%n", name, player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), player.getLocation().getWorld().getName(), player.getName()));
         } catch (IOException e) {
@@ -63,29 +69,40 @@ public class WarpManager {
             if (tokens[0].equals(name)) {
                 if (sender instanceof Player player) {
                     if (tokens.length < 6) {
-                        player.sendMessage(String.format("%s%sthis warp doesn't belong to anyone (its probably an old one) so to be safe, you can't delete it", Utils.prefix, ChatColor.RED));
+                        player.sendMessage(String.format("%s%sthis warp doesn't belong to anyone (pre-ownership format) so to be safe, you can't delete it", Utils.prefix, ChatColor.RED));
                         return false;
                     }
-                    if (tokens[5].equals(player.getName())) {
+                    if (tokens[5].equals(player.getName()) || sender.isOp()) {
                         it.remove();
                     } else {
                         player.sendMessage(String.format("%s%sthis warp doesn't belong to you (the owner is %s)", Utils.prefix, ChatColor.RED, tokens[5]));
                         return false;
                     }
                 } else {
-                    sender.sendMessage("even though you may not own this warp, it will be removed anyway as you're the console'");
+                    // must be console if we're here
                     it.remove();
                 }
             }
         }
-        for (String line : lines) {
+        if (lines.isEmpty()) {
             try (FileWriter writer = new FileWriter(warpFile)) {
-                writer.append(line).append("\n");
+                writer.append("");
+                sender.sendMessage("cleared warps");
+                return true;
             } catch (IOException e) {
-                logger.severe("failed to restore warp file");
+                logger.severe("failed to clear warp file");
                 e.printStackTrace(System.err);
                 return false;
             }
+        }
+        try (FileWriter writer = new FileWriter(warpFile)) {
+            for (String line : lines) {
+                writer.append(line).append("\n");
+            }
+        } catch (IOException e) {
+            logger.severe("failed to restore warp file");
+            e.printStackTrace(System.err);
+            return false;
         }
         return true;
     }
@@ -128,19 +145,16 @@ public class WarpManager {
         return lines;
     }
 
-    public void listWarps(CommandSender sender) {
-        sender.sendMessage(Utils.prefix + "warps:");
+    public List<String> listWarps(CommandSender sender) {
         List<String> warpLines = getWarpFileLines();
         if (warpLines == null) {
             sender.sendMessage(Utils.prefix + ChatColor.RED + "something went wrong grabbing warps");
-            return;
+            return null;
         }
         if (warpLines.isEmpty()) {
             sender.sendMessage(Utils.prefix + ChatColor.RED + "no warps right now");
-            return;
+            return null;
         }
-        for (String line : warpLines) {
-            sender.sendMessage(Utils.prefix + line.split(" ")[0]);
-        }
+        return warpLines;
     }
 }
