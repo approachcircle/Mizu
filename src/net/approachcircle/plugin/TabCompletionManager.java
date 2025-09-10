@@ -95,7 +95,7 @@ public class TabCompletionManager {
                 for (String line : WarpManager.getInstance().getWarpFileLines()) {
                     options.add(line.split(" ")[0]);
                 }
-            } else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
+            } else if (args.length == 2 && args[1].equalsIgnoreCase("remove")) {
                 for (String line : WarpManager.getInstance().getWarpFileLines()) {
                     options.add(line.split(" ")[0]);
                 }
