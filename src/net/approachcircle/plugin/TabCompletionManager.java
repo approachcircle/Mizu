@@ -96,12 +96,17 @@ public class TabCompletionManager {
                 for (String line : WarpManager.getInstance().getWarpFileLines()) {
                     options.add(line.split(" ")[0]);
                 }
-            } else if (args.length == 2 && (args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("update"))) {
+                StringUtil.copyPartialMatches(args[0], options, completions);
+            } else if (args.length == 2 && (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("update"))) {
                 for (String line : WarpManager.getInstance().getWarpFileLines()) {
-                    options.add(line.split(" ")[0]);
+                    // only suggest warps to remove or update which are owned by the sender
+                    if (line.split(" ")[5].equals(sender.getName())) {
+                        options.add(line.split(" ")[0]);
+                    }
                 }
+                sender.sendMessage("length and equality");
+                StringUtil.copyPartialMatches(args[1], options, completions);
             }
-            StringUtil.copyPartialMatches(args[0], options, completions);
             return completions;
         });
         mzInstance.getCommand("stats").setTabCompleter(this::getNoCompletions);
@@ -132,3 +137,4 @@ public class TabCompletionManager {
         return completions;
     }
 }
+
