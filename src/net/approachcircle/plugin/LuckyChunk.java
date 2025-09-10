@@ -217,6 +217,7 @@ public class LuckyChunk {
                     if (chunkFoundTask != -1) {
                         Bukkit.getScheduler().cancelTask(chunkFoundTask);
                     }
+                    sendTeleportMessage(); // no player specified so will broadcast
                     chunkFound = true;
                 }
             }
@@ -375,5 +376,11 @@ public class LuckyChunk {
         text = text.hoverEvent(HoverEvent.showText(Component.text(String.format("%d %d %d", Math.round(x), Math.round(y) + height, Math.round(z)))));
         text = text.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/tp %s %d %d %d", player.getName(), Math.round(x), Math.round(y) + height + 1, Math.round(z))));
         player.sendMessage(text);
+    }
+
+    public static void sendTeleportMessage() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            sendTeleportMessage(player);
+        }
     }
 }
