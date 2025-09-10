@@ -87,7 +87,6 @@ public class WarpManager {
         if (lines.isEmpty()) {
             try (FileWriter writer = new FileWriter(warpFile)) {
                 writer.append("");
-                sender.sendMessage("cleared warps");
                 return true;
             } catch (IOException e) {
                 logger.severe("failed to clear warp file");
