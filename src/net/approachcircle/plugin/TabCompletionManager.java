@@ -99,8 +99,8 @@ public class TabCompletionManager {
                 StringUtil.copyPartialMatches(args[0], options, completions);
             } else if (args.length == 2 && (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("update"))) {
                 for (String line : WarpManager.getInstance().getWarpFileLines()) {
-                    // only suggest warps to remove or update which are owned by the sender
-                    if (line.split(" ")[5].equals(sender.getName())) {
+                    // only suggest warps to remove or update which are owned by the sender (unless operator)
+                    if (line.split(" ")[5].equals(sender.getName()) || sender.isOp()) {
                         options.add(line.split(" ")[0]);
                     }
                 }
