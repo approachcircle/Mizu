@@ -75,7 +75,7 @@ public class WarpManager {
                     if (tokens[5].equals(player.getName()) || sender.isOp()) {
                         it.remove();
                     } else {
-                        player.sendMessage(String.format("%s%sthis warp doesn't belong to you (the owner is %s)", Utils.prefix, ChatColor.RED, tokens[5]));
+                        player.sendMessage(String.format("%s%sthis warp doesn't belong to you (owned by %s)", Utils.prefix, ChatColor.RED, tokens[5]));
                         return false;
                     }
                 } else {
