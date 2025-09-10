@@ -104,7 +104,6 @@ public class TabCompletionManager {
                         options.add(line.split(" ")[0]);
                     }
                 }
-                sender.sendMessage("length and equality");
                 StringUtil.copyPartialMatches(args[1], options, completions);
             }
             return completions;
