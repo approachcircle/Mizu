@@ -362,6 +362,17 @@ public class CommandDispatcher {
                             } else {
                                 sender.sendMessage(Utils.prefix + ChatColor.RED + "failed to remove warp " + args[1]);
                             }
+                        } else if (Objects.equals(args[0], "update")) {
+                            // update just does the equivalent of remove then add with the same name
+                            if (sender instanceof Player player) {
+                                // use boolean AND so that the condition short circuits if either remove or add fails
+                                if (WarpManager.getInstance().removeWarp(args[1], sender) &&
+                                        WarpManager.getInstance().addNewWarp(args[1], player)) {
+                                    player.sendMessage(Utils.prefix + ChatColor.GREEN + "updated warp " + args[1] + " to current position");
+                                } else {
+                                    player.sendMessage(Utils.prefix + ChatColor.RED + "failed to update warp " + args[1]);
+                                }
+                            }
                         } else {
                             if (sender instanceof Player player) {
                                 Location warpTarget = WarpManager.getInstance().getWarpLocation(args[0]);

@@ -92,10 +92,11 @@ public class TabCompletionManager {
                 options.add("add");
                 options.add("remove");
                 options.add("list");
+                options.add("update");
                 for (String line : WarpManager.getInstance().getWarpFileLines()) {
                     options.add(line.split(" ")[0]);
                 }
-            } else if (args.length == 2 && args[1].equalsIgnoreCase("remove")) {
+            } else if (args.length == 2 && (args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("update"))) {
                 for (String line : WarpManager.getInstance().getWarpFileLines()) {
                     options.add(line.split(" ")[0]);
                 }
