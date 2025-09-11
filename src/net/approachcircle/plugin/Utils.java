@@ -17,7 +17,7 @@ public class Utils {
     /**
      * new prefix using components
      */
-    public static TextComponent cPrefix = Component.text("Mizu", NamedTextColor.LIGHT_PURPLE).append(Component.text("> ", NamedTextColor.WHITE));
+    public static TextComponent cPrefix = Component.text("Mizu", NamedTextColor.DARK_AQUA).append(Component.text("> ", NamedTextColor.WHITE));
     private static int repeatImmediatelyTask = -1;
     private static int repeatDeferredTask = -1;
     
