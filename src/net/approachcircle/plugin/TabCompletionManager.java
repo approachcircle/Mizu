@@ -109,6 +109,7 @@ public class TabCompletionManager {
             return completions;
         });
         mzInstance.getCommand("stats").setTabCompleter(this::getNoCompletions);
+        mzInstance.getCommand("lctp").setTabCompleter(this::getNoCompletions);
     }
     
     private List<String> getPlayerCompletions(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {

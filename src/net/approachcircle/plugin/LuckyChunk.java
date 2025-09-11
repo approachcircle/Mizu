@@ -371,16 +371,31 @@ public class LuckyChunk {
         return lastMaterial;
     }
 
-    public static void sendTeleportMessage(Player player) {
-        TextComponent text = Component.text(Utils.prefix + ChatColor.GOLD + "click to teleport");
-        text = text.hoverEvent(HoverEvent.showText(Component.text(String.format("%d %d %d", Math.round(x), Math.round(y) + height, Math.round(z)))));
-        text = text.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/tp %s %d %d %d", player.getName(), Math.round(x), Math.round(y) + height + 1, Math.round(z))));
-        player.sendMessage(text);
-    }
 
     public static void sendTeleportMessage() {
         for (Player player : Bukkit.getOnlinePlayers()) {
             sendTeleportMessage(player);
+        }
+    }
+
+    // works for anybody now
+    public static void sendTeleportMessage(Player player) {
+        TextComponent text = Component.text(Utils.prefix + ChatColor.GOLD + "click to teleport");
+        text = text.hoverEvent(HoverEvent.showText(Component.text(String.format("%d %d %d", Math.round(x), Math.round(y) + height, Math.round(z)))));
+        text = text.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/lctp"));
+        player.sendMessage(text);
+    }
+
+    public static void teleportToChunk(Player player) {
+        if (isChunkSpawned()) {
+            if (chunkFound || player.isOp()) {
+                // TODO: FIX!!!!!!!!!!!!
+                player.teleport(new Location(chunkSpawnWorld, (double) Math.round(x) + 7.5, Math.round(y) + height,  Math.round(z) + 7.5));
+            } else {
+                player.sendMessage(Utils.prefix + ChatColor.RED + "chunk has not been found yet!");
+            }
+        } else {
+            player.sendMessage(Utils.prefix + ChatColor.RED + "chunk not currently spawned!");
         }
     }
 }

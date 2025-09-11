@@ -25,6 +25,7 @@ commands:
    fuck-you:
    warp:
    stats:
+   lctp:
    
 permissions:
    mizu.command.*:
@@ -48,6 +49,7 @@ permissions:
          mizu.command.fuck-you: true
          mizu.warp: true
          mizu.command.stats: true
+         mizu.command.teleport-chunk: true
    mizu.command.die:
       description: allows a user to kill themselves
       default: true
@@ -101,4 +103,7 @@ permissions:
       default: true
    mizu.command.stats:
       description: allows a user to view their most used commands
+      default: true
+   mizu.command.teleport-chunk:
+      description: allows a user to teleport to the lucky chunk when it has been found by at least one person
       default: true

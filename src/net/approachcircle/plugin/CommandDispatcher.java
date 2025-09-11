@@ -407,6 +407,14 @@ public class CommandDispatcher {
                 }
                 StatisticManager.getInstance().sendMostUsedCommandGlobally(sender);
                 break;
+            case "lctp":
+                if (!sender.hasPermission("mizu.command.teleport-chunk")) {
+                    insufficientPermissions(sender);
+                    return true;
+                }
+                if (sender instanceof Player player) {
+                    LuckyChunk.teleportToChunk(player);
+                }
         }
         return true;
     }
