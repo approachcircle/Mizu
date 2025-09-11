@@ -389,8 +389,7 @@ public class LuckyChunk {
     public static void teleportToChunk(Player player) {
         if (isChunkSpawned()) {
             if (chunkFound || player.isOp()) {
-                // TODO: FIX!!!!!!!!!!!!
-                player.teleport(new Location(chunkSpawnWorld, (double) Math.round(x) + 7.5, Math.round(y) + height,  Math.round(z) + 7.5));
+                player.teleport(new Location(chunkSpawnWorld, (double) Math.round(x) + 7.5, Math.round(y) + height + 1,  Math.round(z) + 7.5));
             } else {
                 player.sendMessage(Utils.prefix + ChatColor.RED + "chunk has not been found yet!");
             }
