@@ -60,6 +60,8 @@ public class Casino {
                     player.setLevel(Math.max(player.getLevel() - amount, 0));
                 }
             }
+            // add ability to gamble durability-having items
+            // AND to gamble actual durability numbers
             case Items -> {
                 if (!(args[0] instanceof Material material)) {
                     logger.severe("material parsed correctly, but cannot be casted here (args in wrong place?)");

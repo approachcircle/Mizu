@@ -160,4 +160,12 @@ public class MainListener implements Listener {
             GwenWalking.Walk(player);
         }
     }
+
+    @EventHandler
+    public void onPlayerSendCommand(PlayerCommandPreprocessEvent event) {
+        if (event.getPlayer().hasPermission("minecraft.command.gamerule") && event.getMessage().startsWith("/gamerule")) {
+            String[] commandParts = event.getMessage().split(" ");
+            Bukkit.broadcast(Component.text(Utils.prefix + ChatColor.GRAY + "gamerule " + commandParts[1] + " changed to: " + commandParts[2]));
+        }
+    }
 }

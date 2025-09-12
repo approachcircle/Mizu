@@ -375,7 +375,7 @@ public class CommandDispatcher {
                             }
                         } else {
                             if (sender instanceof Player player) {
-                                Location warpTarget = WarpManager.getInstance().getWarpLocation(args[0]);
+                                Location warpTarget = WarpManager.getInstance().getWarpLocation(args[0], player);
                                 if (warpTarget == null) {
                                     player.sendMessage(Utils.prefix + ChatColor.RED + "warp failed (did you spell the name right?)");
                                     return true;

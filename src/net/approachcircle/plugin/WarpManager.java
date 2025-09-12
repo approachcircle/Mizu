@@ -18,7 +18,7 @@ public class WarpManager {
     private final File warpFile;
     private final Logger logger = PluginLogger.getPluginLogger();
     private static WarpManager instance = null;
-    // warp_name x y z world owner
+    // warp_name x y z world owner yaw
     // ^^^^ ensure that logic is updated fully if this format changes
     
     private WarpManager() {
@@ -48,7 +48,15 @@ public class WarpManager {
             }
         }
         try (FileWriter writer = new FileWriter(warpFile, true)) {
-            writer.append(String.format("%s %f %f %f %s %s%n", name, player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), player.getLocation().getWorld().getName(), player.getName()));
+            writer.append(String.format("%s %f %f %f %s %s %f%n",
+                    name,
+                    player.getLocation().getX(),
+                    player.getLocation().getY(),
+                    player.getLocation().getZ(),
+                    player.getLocation().getWorld().getName(),
+                    player.getName(),
+                    player.getYaw()
+            ));
         } catch (IOException e) {
             logger.severe("failed to add warp to warp file");
             e.printStackTrace(System.err);
@@ -106,7 +114,7 @@ public class WarpManager {
         return true;
     }
     
-    public Location getWarpLocation(String name) {
+    public Location getWarpLocation(String name, Player player) {
         List<String> lines = getWarpFileLines();
         if (lines == null) {
             return null;
@@ -119,10 +127,19 @@ public class WarpManager {
                     logger.severe("got null while parsing world for warp: " + name);
                     return null;
                 }
+                float yaw = 0;
                 try {
-                    return new Location(world, Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3]));
+                    yaw = Float.parseFloat(tokens[6]);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    PluginLogger.getPluginLogger().warning(String.format("warp %s is missing yaw, defaulting to 0", name));
+                    player.sendMessage(Utils.prefix + ChatColor.GRAY + "this warp is a bit older, so it doesn't know where you were looking when it was taken");
+                    player.sendMessage(Utils.prefix + ChatColor.GRAY + "if you update it now, it'll point you looking in the correct location when you use next use it");
+                }
+                try {
+                    // pitch is 0 since we don't care
+                    return new Location(world, Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3]), yaw, 0);
                 } catch (NumberFormatException e) {
-                    logger.severe("failed to parse a coordinate for warp: " + name);
+                    logger.severe("failed to parse a coordinate for warp: " + name + "(it may be corrupted?)");
                     return null;
                 }
             }
