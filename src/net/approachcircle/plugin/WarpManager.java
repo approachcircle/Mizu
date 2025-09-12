@@ -132,8 +132,10 @@ public class WarpManager {
                     yaw = Float.parseFloat(tokens[6]);
                 } catch (ArrayIndexOutOfBoundsException e) {
                     PluginLogger.getPluginLogger().warning(String.format("warp %s is missing yaw, defaulting to 0", name));
-                    player.sendMessage(Utils.prefix + ChatColor.GRAY + "this warp is a bit older, so it doesn't know where you were looking when it was taken");
-                    player.sendMessage(Utils.prefix + ChatColor.GRAY + "if you update it now, it'll point you looking in the correct location when you use next use it");
+                    if (tokens[5].equals(player.getName())) {
+                        player.sendMessage(Utils.prefix + ChatColor.GRAY + "this warp is old, so it doesn't know where you were looking when it was taken");
+                        player.sendMessage(Utils.prefix + ChatColor.GRAY + "if you update it now, it'll point you looking in the correct location when you next use it");
+                    }
                 }
                 try {
                     // pitch is 0 since we don't care
