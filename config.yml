@@ -36,3 +36,4 @@ blacklist:
   - spawner
   - lever
   - fern
+  - stem
