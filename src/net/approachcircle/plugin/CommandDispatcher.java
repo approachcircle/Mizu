@@ -365,6 +365,10 @@ public class CommandDispatcher {
                         } else if (Objects.equals(args[0], "update")) {
                             // update just does the equivalent of remove then add with the same name
                             if (sender instanceof Player player) {
+                                if (args.length < 2) {
+                                    insufficientArguments(new String[]{"warp name to update"}, player);
+                                    return true;
+                                }
                                 // use boolean AND so that the condition short circuits if either remove or add fails
                                 if (WarpManager.getInstance().removeWarp(args[1], sender) &&
                                         WarpManager.getInstance().addNewWarp(args[1], player)) {
@@ -385,7 +389,7 @@ public class CommandDispatcher {
                             }
                         }
                     } else {
-                        insufficientArguments(new String[]{"action (list/add/warp name)", "warp name (for add)"}, sender);
+                        insufficientArguments(new String[]{"action (list/add/remove/update/warp name)", "warp name (for add)"}, sender);
                     }
                 } else {
                     insufficientPermissions(sender);
