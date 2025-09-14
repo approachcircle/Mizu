@@ -397,4 +397,8 @@ public class LuckyChunk {
             player.sendMessage(Utils.prefix + ChatColor.RED + "chunk not currently spawned!");
         }
     }
+
+    public static boolean isChunkFound() {
+        return chunkFound;
+    }
 }

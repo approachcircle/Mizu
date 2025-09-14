@@ -99,10 +99,11 @@ public class MainListener implements Listener {
         player.sendMessage(Utils.prefix + lcMsg);
         if (LuckyChunk.isChunkSpawned()) {
             for (Player p : Bukkit.getOnlinePlayers()) {
-                if (p.isOp()) {
+                if (p.isOp() || LuckyChunk.isChunkFound()) {
                     LuckyChunk.sendTeleportMessage(p);
                 }
             }
+
         }
         if (LuckyChunk.isChunkDue()) {
             LuckyChunk.scheduleNewChunk();
