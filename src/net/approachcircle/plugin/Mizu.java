@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 //TODO: also lifelink as a random event (would be better with no keep inven, temporarily disable during?)
 //TODO: random coordinate that must be reached
 //TODO: add jail system (every tick will teleport someone inside a bedrock jail somewhere)
+//TODO: add echest command for personal echest
 public class Mizu extends JavaPlugin {
     private Logger logger = getLogger();
     private PluginManager pluginManager = getServer().getPluginManager();

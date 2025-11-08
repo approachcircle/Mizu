@@ -338,7 +338,7 @@ public class CommandDispatcher {
                                 return true;
                             }
                             if (sender instanceof Player player) {
-                                if (Objects.equals(args[1], "add") || Objects.equals(args[1], "list") || Objects.equals(args[1], "remove")) {
+                                if (Arrays.stream(WarpManager.reservedCommands).anyMatch((reserved) -> reserved.equalsIgnoreCase(args[1]))) {
                                     player.sendMessage(Utils.prefix + ChatColor.RED + "these are reserved command words, call the warp something else");
                                     return true;
                                 }
@@ -367,15 +367,65 @@ public class CommandDispatcher {
                             if (sender instanceof Player player) {
                                 if (args.length < 2) {
                                     insufficientArguments(new String[]{"warp name to update"}, player);
+                                    //TODO: for QoL, can make this update the closest warp to the player within 1/2 blocks?
+                                    // might be lowkey kinda useless but y'know
+                                    return true;
+                                }
+                                String owner = WarpManager.getInstance().getOwner(args[1]);
+                                if (owner == null) {
+                                    sender.sendMessage(Utils.prefix + ChatColor.RED + "failed to get owner of warp. it will not be updated");
                                     return true;
                                 }
                                 // use boolean AND so that the condition short circuits if either remove or add fails
                                 if (WarpManager.getInstance().removeWarp(args[1], sender) &&
-                                        WarpManager.getInstance().addNewWarp(args[1], player)) {
+                                        WarpManager.getInstance().addNewWarp(args[1], player, owner)) {
                                     player.sendMessage(Utils.prefix + ChatColor.GREEN + "updated warp " + args[1] + " to current position");
                                 } else {
                                     player.sendMessage(Utils.prefix + ChatColor.RED + "failed to update warp " + args[1]);
                                 }
+                            }
+                        } else if (Objects.equals(args[0], "rename")) {
+                            if (args.length < 3) {
+                                insufficientArguments(new String[]{"old warp name and new warp name"}, sender);
+                                return true;
+                            }
+                            String owner = WarpManager.getInstance().getOwner(args[1]);
+                            if (owner == null) {
+                                sender.sendMessage(Utils.prefix + ChatColor.RED + "failed to get owner of warp. it will not be renamed");
+                                return true;
+                            }
+                            String[] oldWarpTokens = WarpManager.getInstance().getWarpTokens(args[1]);
+                            if (oldWarpTokens == null) {
+                                sender.sendMessage(Utils.prefix + ChatColor.RED + "failed to get tokens of warp. it will not be renamed");
+                                return true;
+                            }
+                            Location reusedLocation = null;
+                            try {
+                                reusedLocation = new Location(
+                                        Bukkit.getWorld(oldWarpTokens[4]),
+                                        Double.parseDouble(oldWarpTokens[1]),
+                                        Double.parseDouble(oldWarpTokens[2]),
+                                        Double.parseDouble(oldWarpTokens[3]),
+                                        Float.parseFloat(oldWarpTokens[6]),
+                                        0
+                                );
+                            } catch (NumberFormatException e) {
+                                logger.severe("failed to parse a coordinate for warp: " + args[1] + "(it may be corrupted?)");
+                                sender.sendMessage(Utils.prefix + ChatColor.RED + "failed to parse a coordinate for warp: " + args[1] + "(it may be corrupted?)");
+                                return true;
+                            } catch (ArrayIndexOutOfBoundsException e) {
+                                logger.severe("failed to find coordinates for warp: " + args[1]);
+                                sender.sendMessage(Utils.prefix + ChatColor.RED + "failed to find coordinates for warp: " + args[1]);
+                            }
+                            if (WarpManager.getInstance().getWarpTokens(args[2]) != null) {
+                                sender.sendMessage(Utils.prefix + ChatColor.RED + "a warp called " + args[2] + " already exists!");
+                                return true;
+                            }
+                            if (WarpManager.getInstance().removeWarp(args[1], sender) &&
+                                    WarpManager.getInstance().addNewWarpRaw(args[2], reusedLocation, owner)) {
+                                sender.sendMessage(Utils.prefix + ChatColor.GREEN + "renamed warp " + args[1] + " to " + args[2] + "!");
+                            } else {
+                                sender.sendMessage(Utils.prefix + ChatColor.RED + "failed to rename warp " + args[1]);
                             }
                         } else {
                             if (sender instanceof Player player) {
@@ -389,7 +439,7 @@ public class CommandDispatcher {
                             }
                         }
                     } else {
-                        insufficientArguments(new String[]{"action (list/add/remove/update/warp name)", "warp name (for add)"}, sender);
+                        insufficientArguments(new String[]{"action (list/add/remove/update/rename/warp name)", "warp name (for add)"}, sender);
                     }
                 } else {
                     insufficientPermissions(sender);

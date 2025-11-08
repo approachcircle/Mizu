@@ -18,6 +18,13 @@ public class WarpManager {
     private final File warpFile;
     private final Logger logger = PluginLogger.getPluginLogger();
     private static WarpManager instance = null;
+    public static String[] reservedCommands = {
+        "add",
+        "list",
+        "remove",
+        "update",
+        "rename"
+    };
     // warp_name x y z world owner yaw
     // ^^^^ ensure that logic is updated fully if this format changes
     
@@ -39,13 +46,15 @@ public class WarpManager {
         }
         return instance;
     }
-    
+
     public boolean addNewWarp(String name, Player player) {
-        for (String warpLine : getWarpFileLines()) {
-            if (name.equals(warpLine.split(" ")[0])) {
-                player.sendMessage(Utils.prefix + ChatColor.RED + "there is a warp with the name '" + name + "' already");
-                return false;
-            }
+        return addNewWarp(name, player, player.getName());
+    }
+
+    public boolean addNewWarp(String name, Player player, String owner) {
+        if (getWarpTokens(name) != null) {
+            player.sendMessage(Utils.prefix + ChatColor.RED + "there is a warp with the name '" + name + "' already");
+            return false;
         }
         try (FileWriter writer = new FileWriter(warpFile, true)) {
             writer.append(String.format("%s %f %f %f %s %s %f%n",
@@ -54,8 +63,30 @@ public class WarpManager {
                     player.getLocation().getY(),
                     player.getLocation().getZ(),
                     player.getLocation().getWorld().getName(),
-                    player.getName(),
+                    owner,
                     player.getYaw()
+            ));
+        } catch (IOException e) {
+            logger.severe("failed to add warp to warp file");
+            e.printStackTrace(System.err);
+            return false;
+        }
+        return true;
+    }
+
+    public boolean addNewWarpRaw(String name, Location location, String owner) {
+        if (getWarpTokens(name) != null) {
+            return false;
+        }
+        try (FileWriter writer = new FileWriter(warpFile, true)) {
+            writer.append(String.format("%s %f %f %f %s %s %f%n",
+                    name,
+                    location.getX(),
+                    location.getY(),
+                    location.getZ(),
+                    location.getWorld().getName(),
+                    owner,
+                    location.getYaw()
             ));
         } catch (IOException e) {
             logger.severe("failed to add warp to warp file");
@@ -113,40 +144,34 @@ public class WarpManager {
         }
         return true;
     }
-    
+
     public Location getWarpLocation(String name, Player player) {
-        List<String> lines = getWarpFileLines();
-        if (lines == null) {
+        String[] warpTokens = getWarpTokens(name);
+        if (warpTokens == null) {
             return null;
         }
-        for (String line : lines) {
-            String[] tokens = line.split(" ");
-            if (tokens[0].equals(name)) {
-                World world = Bukkit.getWorld(tokens[4]);
-                if (world == null) {
-                    logger.severe("got null while parsing world for warp: " + name);
-                    return null;
-                }
-                float yaw = 0;
-                try {
-                    yaw = Float.parseFloat(tokens[6]);
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    PluginLogger.getPluginLogger().warning(String.format("warp %s is missing yaw, defaulting to 0", name));
-                    if (tokens[5].equals(player.getName())) {
-                        player.sendMessage(Utils.prefix + ChatColor.GRAY + "this warp is old, so it doesn't know where you were looking when it was taken");
-                        player.sendMessage(Utils.prefix + ChatColor.GRAY + "if you update it now, it'll point you looking in the correct location when you next use it");
-                    }
-                }
-                try {
-                    // pitch is 0 since we don't care
-                    return new Location(world, Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3]), yaw, 0);
-                } catch (NumberFormatException e) {
-                    logger.severe("failed to parse a coordinate for warp: " + name + "(it may be corrupted?)");
-                    return null;
-                }
+        World world = Bukkit.getWorld(warpTokens[4]);
+        if (world == null) {
+            logger.severe("got null while parsing world for warp: " + name);
+            return null;
+        }
+        float yaw = 0;
+        try {
+            yaw = Float.parseFloat(warpTokens[6]);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            PluginLogger.getPluginLogger().warning(String.format("warp %s is missing yaw, defaulting to 0", name));
+            if (warpTokens[5].equals(player.getName())) {
+                player.sendMessage(Utils.prefix + ChatColor.GRAY + "this warp is old, so it doesn't know where you were looking when it was taken");
+                player.sendMessage(Utils.prefix + ChatColor.GRAY + "if you update it now, it'll point you looking in the correct location when you next use it");
             }
         }
-        return null;
+        try {
+            // pitch is 0 since we don't care
+            return new Location(world, Double.parseDouble(warpTokens[1]), Double.parseDouble(warpTokens[2]), Double.parseDouble(warpTokens[3]), yaw, 0);
+        } catch (NumberFormatException e) {
+            logger.severe("failed to parse a coordinate for warp: " + name + "(it may be corrupted?)");
+            return null;
+        }
     }
     
     public List<String> getWarpFileLines() {
@@ -161,6 +186,28 @@ public class WarpManager {
             return null;
         }
         return lines;
+    }
+
+    public String[] getWarpTokens(String name) {
+        List<String> lines = getWarpFileLines();
+        if (lines == null) {
+            return null;
+        }
+        for (String line : lines) {
+            String[] tokens = line.split(" ");
+            if (tokens[0].equals(name)) {
+                return tokens;
+            }
+        }
+        return null;
+    }
+
+    public String getOwner(String name) {
+        String[] tokens = getWarpTokens(name);
+        if (tokens == null) {
+            return null;
+        }
+        return tokens[5];
     }
 
     public List<String> listWarps(CommandSender sender) {

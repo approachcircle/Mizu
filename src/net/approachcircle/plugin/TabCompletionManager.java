@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class TabCompletionManager {
@@ -27,14 +28,14 @@ public class TabCompletionManager {
     }
     
     public void initTabCompletions() {
-        Mizu mzInstance = Mizu.getInstance();
-        mzInstance.getCommand("die").setTabCompleter(this::getNoCompletions);
-        mzInstance.getCommand("tpa").setTabCompleter(this::getPlayerCompletions);
-        mzInstance.getCommand("tpy").setTabCompleter(this::getNoCompletions);
-        mzInstance.getCommand("tpn").setTabCompleter(this::getNoCompletions);
-        mzInstance.getCommand("mock").setTabCompleter(this::getPlayerCompletions);
-        mzInstance.getCommand("maintenance").setTabCompleter(this::getNoCompletions);
-        mzInstance.getCommand("spawnon").setTabCompleter((sender, command, label, args) -> {
+        Mizu mizu = Mizu.getInstance();
+        mizu.getCommand("die").setTabCompleter(this::getNoCompletions);
+        mizu.getCommand("tpa").setTabCompleter(this::getPlayerCompletions);
+        mizu.getCommand("tpy").setTabCompleter(this::getNoCompletions);
+        mizu.getCommand("tpn").setTabCompleter(this::getNoCompletions);
+        mizu.getCommand("mock").setTabCompleter(this::getPlayerCompletions);
+        mizu.getCommand("maintenance").setTabCompleter(this::getNoCompletions);
+        mizu.getCommand("spawnon").setTabCompleter((sender, command, label, args) -> {
             List<String> completions = new ArrayList<>();
             List<String> options = new ArrayList<>();
             if (args.length == 1) {
@@ -47,8 +48,8 @@ public class TabCompletionManager {
             StringUtil.copyPartialMatches(args[1], options, completions);
             return completions;
         });
-        mzInstance.getCommand("firework").setTabCompleter(this::getNoCompletions);
-        mzInstance.getCommand("gamble").setTabCompleter((sender, command, label, args) -> {
+        mizu.getCommand("firework").setTabCompleter(this::getNoCompletions);
+        mizu.getCommand("gamble").setTabCompleter((sender, command, label, args) -> {
             List<String> completions = new ArrayList<>();
             List<String> options = new ArrayList<>();
             if (args.length == 1) {
@@ -74,7 +75,7 @@ public class TabCompletionManager {
             StringUtil.copyPartialMatches(args[1], options, completions);
             return completions;
         });
-        mzInstance.getCommand("spawn-chunk-now").setTabCompleter((sender, command, label, args) -> {
+        mizu.getCommand("spawn-chunk-now").setTabCompleter((sender, command, label, args) -> {
             List<String> completions = new ArrayList<>();
             List<String> options = new ArrayList<>();
             for (Material type : Material.values()) {
@@ -83,21 +84,18 @@ public class TabCompletionManager {
             StringUtil.copyPartialMatches(args[0], options, completions);
             return completions;
         });
-        mzInstance.getCommand("lc").setTabCompleter(this::getNoCompletions);
-        mzInstance.getCommand("fuck-you").setTabCompleter(this::getPlayerCompletions);
-        mzInstance.getCommand("warp").setTabCompleter((sender, command, label, args) -> {
+        mizu.getCommand("lc").setTabCompleter(this::getNoCompletions);
+        mizu.getCommand("fuck-you").setTabCompleter(this::getPlayerCompletions);
+        mizu.getCommand("warp").setTabCompleter((sender, command, label, args) -> {
             List<String> completions = new ArrayList<>();
             List<String> options = new ArrayList<>();
             if (args.length == 1) {
-                options.add("add");
-                options.add("remove");
-                options.add("list");
-                options.add("update");
+                options.addAll(Arrays.asList(WarpManager.reservedCommands));
                 for (String line : WarpManager.getInstance().getWarpFileLines()) {
                     options.add(line.split(" ")[0]);
                 }
                 StringUtil.copyPartialMatches(args[0], options, completions);
-            } else if (args.length == 2 && (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("update"))) {
+            } else if (args.length == 2 && (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("update") || args[0].equalsIgnoreCase("rename"))) {
                 for (String line : WarpManager.getInstance().getWarpFileLines()) {
                     // only suggest warps to remove or update which are owned by the sender (unless operator)
                     if (line.split(" ")[5].equals(sender.getName()) || sender.isOp()) {
@@ -108,8 +106,8 @@ public class TabCompletionManager {
             }
             return completions;
         });
-        mzInstance.getCommand("stats").setTabCompleter(this::getNoCompletions);
-        mzInstance.getCommand("lctp").setTabCompleter(this::getNoCompletions);
+        mizu.getCommand("stats").setTabCompleter(this::getNoCompletions);
+        mizu.getCommand("lctp").setTabCompleter(this::getNoCompletions);
     }
     
     private List<String> getPlayerCompletions(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
