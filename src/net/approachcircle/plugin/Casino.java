@@ -19,7 +19,7 @@ public class Casino {
     private static final List<UUID> ineligible = new ArrayList<UUID>();
     private static final Integer cooldownSeconds = 2;
     private static final Integer cooldown = cooldownSeconds * 20;
-    private static final int entitySearchRadius = 8;
+    private static final int entitySearchRadius = 15;
     public static final List<UUID> gambledLife = new ArrayList<>();
     private static final Logger logger = PluginLogger.getPluginLogger();
     public static void gamble(Player player, GambleType type, int amount, Object[] args) {
