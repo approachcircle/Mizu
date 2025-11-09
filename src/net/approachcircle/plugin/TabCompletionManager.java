@@ -79,7 +79,9 @@ public class TabCompletionManager {
             List<String> completions = new ArrayList<>();
             List<String> options = new ArrayList<>();
             for (Material type : Material.values()) {
-                options.add(type.name().toLowerCase());
+                if (type.isBlock()) {
+                    options.add(type.name().toLowerCase());
+                }
             }
             StringUtil.copyPartialMatches(args[0], options, completions);
             return completions;
