@@ -457,6 +457,7 @@ public class CommandDispatcher {
                 if (sender instanceof Player player) {
                     LuckyChunk.teleportToChunk(player);
                 }
+                break;
             case "vault":
                 if (!sender.hasPermission("mizu.command.vault")) {
                     insufficientPermissions(sender);
@@ -466,10 +467,12 @@ public class CommandDispatcher {
                     Inventory vault = VaultManager.getInstance().getVault(player);
                     if (vault != null) {
                         player.openInventory(vault);
+                        VaultManager.currentlyViewingVault.add(player.getUniqueId());
                     } else {
                         player.sendMessage(Utils.prefix + ChatColor.RED + "failed to open your vault");
                     }
                 }
+                break;
         }
         return true;
     }

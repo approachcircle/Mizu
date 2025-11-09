@@ -162,10 +162,12 @@ public class MainListener implements Listener {
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
-        if (!((TextComponent)event.getView().title()).content().equalsIgnoreCase(VaultManager.viewName)) {
+        if (!VaultManager.currentlyViewingVault.contains(event.getPlayer().getUniqueId())) {
             return;
         }
+        VaultManager.currentlyViewingVault.remove(event.getPlayer().getUniqueId());
         VaultManager.getInstance().saveVault((Player) event.getPlayer(), event.getInventory());
         event.getPlayer().sendMessage(Utils.prefix + ChatColor.GREEN + "vault saved!");
+        logger.info(String.format("%s closed their vault", event.getPlayer().getName()));
     }
 }

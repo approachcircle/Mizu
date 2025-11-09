@@ -18,6 +18,7 @@ public class VaultManager {
     private final File vaultFolder;
     private final Logger logger = PluginLogger.getPluginLogger();
     public static final String viewName = "Mizu Vault";
+    public static final List<UUID> currentlyViewingVault = new ArrayList<>();
 
     private VaultManager() {
         vaultFolder = new File(Mizu.getInstance().getDataFolder().getAbsolutePath() + "\\vaults");
