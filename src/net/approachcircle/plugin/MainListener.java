@@ -4,9 +4,6 @@ import io.papermc.paper.event.player.PlayerDeepSleepEvent;
 import io.sentry.Sentry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.TranslatableComponent;
-import net.kyori.examination.string.StringExaminer;
-import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -16,6 +13,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.*;
 
 import java.time.LocalTime;
@@ -155,18 +153,19 @@ public class MainListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerMove(PlayerMoveEvent event) {
-        Player player = event.getPlayer();
-        if (GwenWalking.activated.contains(player.getUniqueId())) {
-            GwenWalking.Walk(player);
-        }
-    }
-
-    @EventHandler
     public void onPlayerSendCommand(PlayerCommandPreprocessEvent event) {
         if (event.getPlayer().hasPermission("minecraft.command.gamerule") && event.getMessage().startsWith("/gamerule")) {
             String[] commandParts = event.getMessage().split(" ");
             Bukkit.broadcast(Component.text(Utils.prefix + ChatColor.GRAY + "gamerule " + commandParts[1] + " changed to: " + commandParts[2]));
         }
+    }
+
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent event) {
+        if (!((TextComponent)event.getView().title()).content().equalsIgnoreCase(VaultManager.viewName)) {
+            return;
+        }
+        VaultManager.getInstance().saveVault((Player) event.getPlayer(), event.getInventory());
+        event.getPlayer().sendMessage(Utils.prefix + ChatColor.GREEN + "vault saved!");
     }
 }

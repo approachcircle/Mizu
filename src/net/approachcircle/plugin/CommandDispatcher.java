@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -176,19 +177,6 @@ public class CommandDispatcher {
                     break;
                 }
                 NotificationClient.send(String.format("test notification from minecraft server '%s'", System.getenv("COMPUTERNAME")));
-                break;
-            case "gwen-walk":
-                if (sender instanceof Player player) {
-                    if (player.hasPermission("mizu.command.gwen-walk")) {
-                        if (!GwenWalking.activated.contains(player.getUniqueId())) {
-                            GwenWalking.Activate(player);
-                        } else {
-                            GwenWalking.Deactivate(player);
-                        }
-                    } else {
-                        insufficientPermissions(sender);
-                    }
-                }
                 break;
             case "gamble":
                 if (sender instanceof Player player) {
@@ -468,6 +456,19 @@ public class CommandDispatcher {
                 }
                 if (sender instanceof Player player) {
                     LuckyChunk.teleportToChunk(player);
+                }
+            case "vault":
+                if (!sender.hasPermission("mizu.command.vault")) {
+                    insufficientPermissions(sender);
+                    return true;
+                }
+                if (sender instanceof Player player) {
+                    Inventory vault = VaultManager.getInstance().getVault(player);
+                    if (vault != null) {
+                        player.openInventory(vault);
+                    } else {
+                        player.sendMessage(Utils.prefix + ChatColor.RED + "failed to open your vault");
+                    }
                 }
         }
         return true;
