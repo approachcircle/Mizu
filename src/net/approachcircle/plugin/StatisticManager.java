@@ -129,9 +129,7 @@ public class StatisticManager {
                 }
             }
         }
-        sender.sendMessage(String.format("%s%smost used command out of everyone: /%s %d times by %s!",
-                Utils.prefix,
-                ChatColor.GOLD,
+        Localisation.sendMessage(sender, new KeyArgPair("stats_for_everyone",
                 mostUsedCommand.getKey(),
                 mostUsedCommand.getValue(),
                 player

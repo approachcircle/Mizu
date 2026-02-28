@@ -11,6 +11,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.checkerframework.checker.units.qual.K;
 
 import java.util.List;
 import java.util.Objects;
@@ -93,7 +94,7 @@ public class LuckyChunk {
         if (material == null) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (player.isOp()) {
-                    player.sendMessage("material to spawn chunk is null");
+                    Localisation.sendMessage(player, new KeyArgPair("missing_chunk_material"));
                     logger.warning("material to spawn chunk is null");
                 }
             }
@@ -103,7 +104,7 @@ public class LuckyChunk {
         if (isChunkSpawned()) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (player.isOp()) {
-                    player.sendMessage(Utils.prefix + ChatColor.RED + "cannot spawn a new chunk while one already exists. remove it first");
+                    Localisation.sendMessage(player, new KeyArgPair("remove_chunk_already_spawned"));
                 }
             }
             return;
@@ -157,7 +158,7 @@ public class LuckyChunk {
         double finalZ = z;
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.showBossBar(bar);
-            player.sendMessage(Utils.prefix + ChatColor.GREEN + "lucky chunk has spawned!");
+            Localisation.sendMessage(player, new KeyArgPair("lucky_chunk_has_spawned"));
             if (player.isOp()) {
                 sendTeleportMessage(player);
             }
@@ -204,8 +205,8 @@ public class LuckyChunk {
                 Location from = new Location(chunkSpawnWorld, finalX - chunkFoundRadius, y, finalZ - chunkFoundRadius);
                 Location to = new Location(chunkSpawnWorld, finalX + chunkFoundRadius, y + (height * 2), finalZ + chunkFoundRadius);
                 if ((from.x() < loc.x() && to.x() > loc.x()) && (from.y() < loc.y() && to.y() > loc.y()) && (from.z() < loc.z() && to.z() > loc.z())) {
-                    Bukkit.broadcast(Component.text(Utils.prefix + ChatColor.GOLD + String.format("%s found the chunk!", player.getName())));
-                    Bukkit.broadcast(Component.text(Utils.prefix + ChatColor.GOLD + String.format("it's %s", material.name().toLowerCase().replace("_", " "))));
+                    Localisation.broadcast(new KeyArgPair("player_found_chunk", player.getName()));
+                    Localisation.broadcast(new KeyArgPair("lucky_chunk_block_identification", material.name().toLowerCase().replace("_", " ")));
                     String messageBuffer = String.format("%s found the chunk, it's %s", player.getName(), material.name().toLowerCase().replace("_", " "));
                     for (String valuable : valuables) {
                         if (material.name().toLowerCase().contains(valuable)) {
@@ -233,10 +234,10 @@ public class LuckyChunk {
         reporter.returnReporting();
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.hideBossBar(bar);
-            player.sendMessage(Utils.prefix + ChatColor.RED + "lucky chunk has disappeared!");
+            Localisation.sendMessage(player, new KeyArgPair("lucky_chunk_has_unspawned"));
             if (!chunkFound) {
-                player.sendMessage(Utils.prefix + ChatColor.GOLD + "nobody found the chunk!");
-                player.sendMessage(Utils.prefix + ChatColor.GOLD + String.format("it was %s", material.name().toLowerCase().replace("_", " ")));
+                Localisation.sendMessage(player, new KeyArgPair("nobody_found_chunk"));
+                Localisation.sendMessage(player, new KeyArgPair("lucky_chunk_was_block", material.name().toLowerCase().replace("_", " ")));
             }
         }
         resetState();
@@ -282,7 +283,7 @@ public class LuckyChunk {
             nextSpawnProgress -= progressStep;
             if (nextSpawnProgress <= 20 * 60) {
                 if (!notifiedMinute) {
-                    Bukkit.broadcast(Utils.cPrefix.append(Component.text("lucky chunk in one minute!", NamedTextColor.GOLD)));
+                    Localisation.broadcast(new KeyArgPair("lucky_chunk_minute"));
                     notifiedMinute = true;
                 }
             }
@@ -292,7 +293,7 @@ public class LuckyChunk {
                         if (player.getWorld().getName().equalsIgnoreCase(chunkSpawnWorld.getName())) {
                             // players must be in the same world as the chunk otherwise they aren't going to be
                             // listening for much
-                            player.sendMessage(Utils.cPrefix.append(Component.text("listen closely...", NamedTextColor.GOLD)));
+                            Localisation.sendMessage(player, new KeyArgPair("listen_closely"));
                         }
                     }
                     notifiedListen = true;
@@ -380,7 +381,7 @@ public class LuckyChunk {
 
     // works for anybody now
     public static void sendTeleportMessage(Player player) {
-        TextComponent text = Component.text(Utils.prefix + ChatColor.GOLD + "click to teleport");
+        TextComponent text = Localisation.prefixComponent(new KeyArgPair("click_to_teleport"), Localisation.getClientLocaleOrExplicit(player));
         text = text.hoverEvent(HoverEvent.showText(Component.text(String.format("%d %d %d", Math.round(x), Math.round(y) + height, Math.round(z)))));
         text = text.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/lctp"));
         player.sendMessage(text);
@@ -391,10 +392,10 @@ public class LuckyChunk {
             if (chunkFound || player.isOp()) {
                 player.teleport(new Location(chunkSpawnWorld, (double) Math.round(x) + 7.5, Math.round(y) + height + 1,  Math.round(z) + 7.5));
             } else {
-                player.sendMessage(Utils.prefix + ChatColor.RED + "chunk has not been found yet!");
+                Localisation.sendMessage(player, new KeyArgPair("chunk_not_found_yet"));
             }
         } else {
-            player.sendMessage(Utils.prefix + ChatColor.RED + "chunk not currently spawned!");
+            Localisation.sendMessage(player, new KeyArgPair("chunk_not_currently_spawned"));
         }
     }
 

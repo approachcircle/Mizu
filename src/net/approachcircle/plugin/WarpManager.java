@@ -53,7 +53,7 @@ public class WarpManager {
 
     public boolean addNewWarp(String name, Player player, String owner) {
         if (getWarpTokens(name) != null) {
-            player.sendMessage(Utils.prefix + ChatColor.RED + "there is a warp with the name '" + name + "' already");
+            Localisation.sendMessage(player, new KeyArgPair("warp_name_taken", name));
             return false;
         }
         try (FileWriter writer = new FileWriter(warpFile, true)) {
@@ -108,13 +108,13 @@ public class WarpManager {
             if (tokens[0].equals(name)) {
                 if (sender instanceof Player player) {
                     if (tokens.length < 6) {
-                        player.sendMessage(String.format("%s%sthis warp doesn't belong to anyone (pre-ownership format) so to be safe, you can't delete it", Utils.prefix, ChatColor.RED));
+                        Localisation.sendMessage(player, new KeyArgPair("warp_no_owner_no_delete"));
                         return false;
                     }
                     if (tokens[5].equals(player.getName()) || sender.isOp()) {
                         it.remove();
                     } else {
-                        player.sendMessage(String.format("%s%sthis warp doesn't belong to you (owned by %s)", Utils.prefix, ChatColor.RED, tokens[5]));
+                        Localisation.sendMessage(player, new KeyArgPair("warp_not_yours", tokens[5]));
                         return false;
                     }
                 } else {
@@ -161,8 +161,8 @@ public class WarpManager {
         } catch (ArrayIndexOutOfBoundsException e) {
             PluginLogger.getPluginLogger().warning(String.format("warp %s is missing yaw, defaulting to 0", name));
             if (warpTokens[5].equals(player.getName())) {
-                player.sendMessage(Utils.prefix + ChatColor.GRAY + "this warp is old, so it doesn't know where you were looking when it was taken");
-                player.sendMessage(Utils.prefix + ChatColor.GRAY + "if you update it now, it'll point you looking in the correct location when you next use it");
+                Localisation.sendMessage(player, new KeyArgPair("warp_no_yaw_1"));
+                Localisation.sendMessage(player, new KeyArgPair("warp_no_yaw_2"));
             }
         }
         try {
@@ -213,11 +213,11 @@ public class WarpManager {
     public List<String> listWarps(CommandSender sender) {
         List<String> warpLines = getWarpFileLines();
         if (warpLines == null) {
-            sender.sendMessage(Utils.prefix + ChatColor.RED + "something went wrong grabbing warps");
+            Localisation.sendMessage(sender, new KeyArgPair("error_grabbing_warps"));
             return null;
         }
         if (warpLines.isEmpty()) {
-            sender.sendMessage(Utils.prefix + ChatColor.RED + "no warps right now");
+            Localisation.sendMessage(sender, new KeyArgPair("no_warps"));
             return null;
         }
         return warpLines;

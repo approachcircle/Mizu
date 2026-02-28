@@ -191,7 +191,7 @@ public class CommandDispatcher {
                             amount = Integer.parseInt(args[0]);
                         } catch (NumberFormatException e) {
                             Sentry.addBreadcrumb(player.getName() + " supplied an invalid amount of items to gamble");
-                            player.sendMessage(String.format("%s%ssupply a valid amount of items to gamble", Utils.prefix, ChatColor.RED));
+                            Localisation.sendMessage(player, new KeyArgPair("invalid_gamble_number"));
                             return true;
                         }
                         if (experienceAliases.contains(args[1].toLowerCase())) {
@@ -200,9 +200,11 @@ public class CommandDispatcher {
                             return true;
                         }
                         List<String> entListNames = Arrays.stream(EntityType.values()).map(Enum::name).toList();
-                        if (entListNames.contains(args[1].toUpperCase())) {
+                        // add check to account for entities that are also materials
+                        // favour materials
+                        if (entListNames.contains(args[1].toUpperCase()) && Material.matchMaterial(args[1].toUpperCase()) == null) {
                             if (EntityBlacklist.contains(args[1].toLowerCase())) {
-                                player.sendMessage(String.format("%s%sgambling the entity '%s' is disallowed", Utils.prefix, ChatColor.RED, args[1]));
+                                Localisation.sendMessage(player, new KeyArgPair("cannot_gamble_entity", args[1]));
                                 logger.warning(String.format("%s tried gambling a disallowed entity: %s", player.getName(), args[1]));
                                 return true;
                             }
@@ -210,8 +212,7 @@ public class CommandDispatcher {
                             try {
                                 entity = Enum.valueOf(EntityType.class, args[1].toUpperCase());
                             } catch (IllegalArgumentException e) {
-                                player.sendMessage(String.format("%s%san entity with the name '%s' doesn't exist", Utils.prefix, ChatColor.RED, args[1]));
-                                Sentry.addBreadcrumb(String.format("%s tried to gamble entity '%s' which doesn't exist", player.getName(), args[1]));
+                                Localisation.sendMessage(player, new KeyArgPair("entity_does_not_exist", args[1]));
                                 return true;
                             }
                             // Casino.doubleOrNothingEntity(player, amount, entity);
@@ -226,8 +227,8 @@ public class CommandDispatcher {
                         try {
                             material = Enum.valueOf(Material.class, args[1].toUpperCase());
                         } catch (IllegalArgumentException e) {
-                            player.sendMessage(String.format("%s%sa material with the name '%s' doesn't exist", Utils.prefix, ChatColor.RED, args[1]));
-                            Sentry.addBreadcrumb(String.format("%s tried to gamble material '%s' which doesn't exist", player.getName(), args[1]));
+                            player.sendMessage(String.format("%s%sa material with the name '%s' doesn't exist", Utils.prefix, ChatColor.RED, args[1])); // 69
+                            Localisation.sendMessage(player, new KeyArgPair("material_does_not_exist", args[1]));
                             return true;
                         }
                         // Casino.doubleOrNothing(player, amount, material);
@@ -242,13 +243,13 @@ public class CommandDispatcher {
                     if (args.length > 0) {
                         Material material = Material.getMaterial(args[0].toUpperCase());
                         if (material == null) {
-                            sender.sendMessage(Utils.prefix + ChatColor.RED + String.format("a material with the name '%s' does not exist", args[0]));
+                            Localisation.sendMessage(sender, new KeyArgPair("material_does_not_exist", args[1]));
                             return false;
                         }
                         LuckyChunk.spawnChunk(material);
-                        sender.sendMessage(String.format("%s%spassing in a custom material will bypass all constraints", Utils.prefix, ChatColor.YELLOW));
-                        sender.sendMessage(String.format("%s%sthis includes any blacklists, block type constraints, and log constraints if the timber plugin is present", Utils.prefix, ChatColor.YELLOW));
-                        sender.sendMessage(String.format("%s%sso use with caution. or don't, it's not that deep", Utils.prefix, ChatColor.YELLOW));
+                        Localisation.sendMessage(sender, new KeyArgPair("custom_lucky_chunk_material_warning_1"));
+                        Localisation.sendMessage(sender, new KeyArgPair("custom_lucky_chunk_material_warning_2"));
+                        Localisation.sendMessage(sender, new KeyArgPair("custom_lucky_chunk_material_warning_3"));
                     } else {
                         LuckyChunk.spawnChunk();
                     }
@@ -265,26 +266,26 @@ public class CommandDispatcher {
                 break;
             case "lc":
                 if (!Mizu.getInstance().getConfig().getBoolean("lucky-chunk")) {
-                    sender.sendMessage(Component.text(Utils.prefix + ChatColor.RED + "lucky chunk is not enabled! (either its broken or someone whined about it being on)"));
+                    Localisation.sendMessage(sender, new KeyArgPair("lucky_chunk_not_enabled"));
                     return true;
                 }
                 if (LuckyChunk.getLastMaterial() == null) {
-                    sender.sendMessage(Utils.prefix + ChatColor.GOLD + "no previous chunk");
+                    Localisation.sendMessage(sender, new KeyArgPair("no_previous_chunk"));
                 } else {
                     String lastMat = LuckyChunk.getLastMaterial().name().toLowerCase().replace("_", " ");
-                    sender.sendMessage(Utils.prefix + ChatColor.GOLD + String.format("last chunk was %s", lastMat));
+                    Localisation.sendMessage(sender, new KeyArgPair("last_chunk_was", lastMat));
                 }
                 if (sender.hasPermission("mizu.command.lc")) {
                     if (LuckyChunk.isChunkSpawned()) {
-                        sender.sendMessage(Utils.prefix + ChatColor.GOLD + "chunk is currently spawned!");
+                        Localisation.sendMessage(sender, new KeyArgPair("chunk_currently_spawned"));
                         int minutes = (LuckyChunk.getTicksUntilRemoval() / 20) / 60;
                         int seconds = (LuckyChunk.getTicksUntilRemoval() / 20) % 60;
-                        sender.sendMessage(Utils.prefix + ChatColor.RED + String.format("%dm %ds until removal", minutes, seconds));
+                        Localisation.sendMessage(sender, new KeyArgPair("time_until_lucky_chunk_removal", minutes, seconds));
                         return true;
                     }
                     int minutes = (LuckyChunk.getTicksUntilSpawn() / 20) / 60;
                     int seconds = (LuckyChunk.getTicksUntilSpawn() / 20) % 60;
-                    sender.sendMessage(Utils.prefix + String.format("%dm %ds until next lucky chunk", minutes, seconds));
+                    Localisation.sendMessage(sender, new KeyArgPair("time_until_lucky_chunk_spawn", minutes, seconds));
                 } else {
                     insufficientPermissions(sender);
                 }
@@ -310,7 +311,7 @@ public class CommandDispatcher {
                             }
                             target.sendTitlePart(TitlePart.TITLE, Component.text(ChatColor.RED + "fuck you"));
                         } else {
-                            sender.sendMessage(String.format("%s%splayer not found '%s'", Utils.prefix, ChatColor.RED, args[0]));
+                            Localisation.sendMessage(sender, new KeyArgPair("player_not_found", args[0]));
                         }
                     } else {
                         insufficientArguments(new String[]{"playerName"}, sender);
@@ -327,28 +328,28 @@ public class CommandDispatcher {
                             }
                             if (sender instanceof Player player) {
                                 if (Arrays.stream(WarpManager.reservedCommands).anyMatch((reserved) -> reserved.equalsIgnoreCase(args[1]))) {
-                                    player.sendMessage(Utils.prefix + ChatColor.RED + "these are reserved command words, call the warp something else");
+                                    Localisation.sendMessage(sender, new KeyArgPair("must_call_warp_something_else"));
                                     return true;
                                 }
                                 if (WarpManager.getInstance().addNewWarp(args[1], player)) {
-                                    player.sendMessage(Utils.prefix + ChatColor.GREEN + "added warp " + args[1]);
+                                    Localisation.sendMessage(sender, new KeyArgPair("added_warp", args[1]));
                                 } else {
-                                    player.sendMessage(Utils.prefix + ChatColor.RED + "failed to add warp " + args[1]);
+                                    Localisation.sendMessage(sender, new KeyArgPair("failed_to_add_warp", args[1]));
                                 }
                             }
                         } else if (Objects.equals(args[0], "list")) {
                             List<String> warpLines = WarpManager.getInstance().listWarps(sender);
                             if (warpLines != null) {
-                                sender.sendMessage(Utils.prefix + ChatColor.GREEN + "found " + warpLines.size() + " warps:");
+                                Localisation.sendMessage(sender, new KeyArgPair("found_number_warps", warpLines.size()));
                                 for (String warp : warpLines) {
-                                    sender.sendMessage(Utils.prefix + ChatColor.GOLD + warp.split(" ")[0] + " owned by " + warp.split(" ")[5]);
+                                    Localisation.sendMessage(sender, new KeyArgPair("warp_owned_by_player", warp.split(" ")[0], warp.split(" ")[5]));
                                 }
                             }
                         } else if (Objects.equals(args[0], "remove")) {
                             if (WarpManager.getInstance().removeWarp(args[1], sender)) {
-                                sender.sendMessage(Utils.prefix + ChatColor.GREEN + "removed warp " + args[1]);
+                                Localisation.sendMessage(sender, new KeyArgPair("removed_warp", args[1]));
                             } else {
-                                sender.sendMessage(Utils.prefix + ChatColor.RED + "failed to remove warp " + args[1]);
+                                Localisation.sendMessage(sender, new KeyArgPair("failed_to_remove_warp", args[1]));
                             }
                         } else if (Objects.equals(args[0], "update")) {
                             // update just does the equivalent of remove then add with the same name
@@ -361,15 +362,15 @@ public class CommandDispatcher {
                                 }
                                 String owner = WarpManager.getInstance().getOwner(args[1]);
                                 if (owner == null) {
-                                    sender.sendMessage(Utils.prefix + ChatColor.RED + "failed to get owner of warp. it will not be updated");
+                                    Localisation.sendMessage(sender, new KeyArgPair("failed_to_get_warp_owner"));
                                     return true;
                                 }
                                 // use boolean AND so that the condition short circuits if either remove or add fails
                                 if (WarpManager.getInstance().removeWarp(args[1], sender) &&
                                         WarpManager.getInstance().addNewWarp(args[1], player, owner)) {
-                                    player.sendMessage(Utils.prefix + ChatColor.GREEN + "updated warp " + args[1] + " to current position");
+                                    Localisation.sendMessage(sender, new KeyArgPair("updated_warp_position", args[1]));
                                 } else {
-                                    player.sendMessage(Utils.prefix + ChatColor.RED + "failed to update warp " + args[1]);
+                                    Localisation.sendMessage(sender, new KeyArgPair("failed_to_update_warp", args[1]));
                                 }
                             }
                         } else if (Objects.equals(args[0], "rename")) {
@@ -379,12 +380,12 @@ public class CommandDispatcher {
                             }
                             String owner = WarpManager.getInstance().getOwner(args[1]);
                             if (owner == null) {
-                                sender.sendMessage(Utils.prefix + ChatColor.RED + "failed to get owner of warp. it will not be renamed");
+                                Localisation.sendMessage(sender, new KeyArgPair("failed_to_rename_owner_not_found"));
                                 return true;
                             }
                             String[] oldWarpTokens = WarpManager.getInstance().getWarpTokens(args[1]);
                             if (oldWarpTokens == null) {
-                                sender.sendMessage(Utils.prefix + ChatColor.RED + "failed to get tokens of warp. it will not be renamed");
+                                Localisation.sendMessage(sender, new KeyArgPair("failed_to_rename_parsing_failed"));
                                 return true;
                             }
                             Location reusedLocation = null;
@@ -399,31 +400,31 @@ public class CommandDispatcher {
                                 );
                             } catch (NumberFormatException e) {
                                 logger.severe("failed to parse a coordinate for warp: " + args[1] + "(it may be corrupted?)");
-                                sender.sendMessage(Utils.prefix + ChatColor.RED + "failed to parse a coordinate for warp: " + args[1] + "(it may be corrupted?)");
+                                Localisation.sendMessage(sender, new KeyArgPair("failed_to_parse_warp_coords", args[1]));
                                 return true;
                             } catch (ArrayIndexOutOfBoundsException e) {
                                 logger.severe("failed to find coordinates for warp: " + args[1]);
-                                sender.sendMessage(Utils.prefix + ChatColor.RED + "failed to find coordinates for warp: " + args[1]);
+                                Localisation.sendMessage(sender, new KeyArgPair("failed_to_find_warp_coords", args[1]));
                             }
                             if (WarpManager.getInstance().getWarpTokens(args[2]) != null) {
-                                sender.sendMessage(Utils.prefix + ChatColor.RED + "a warp called " + args[2] + " already exists!");
+                                Localisation.sendMessage(sender, new KeyArgPair("warp_name_taken", args[2]));
                                 return true;
                             }
                             if (WarpManager.getInstance().removeWarp(args[1], sender) &&
                                     WarpManager.getInstance().addNewWarpRaw(args[2], reusedLocation, owner)) {
-                                sender.sendMessage(Utils.prefix + ChatColor.GREEN + "renamed warp " + args[1] + " to " + args[2] + "!");
+                                Localisation.sendMessage(sender, new KeyArgPair("renamed_warp", args[1], args[2]));
                             } else {
-                                sender.sendMessage(Utils.prefix + ChatColor.RED + "failed to rename warp " + args[1]);
+                                Localisation.sendMessage(sender, new KeyArgPair("failed_to_rename", args[1]));
                             }
                         } else {
                             if (sender instanceof Player player) {
                                 Location warpTarget = WarpManager.getInstance().getWarpLocation(args[0], player);
                                 if (warpTarget == null) {
-                                    player.sendMessage(Utils.prefix + ChatColor.RED + "warp failed (did you spell the name right?)");
+                                    Localisation.sendMessage(sender, new KeyArgPair("warp_failed"));
                                     return true;
                                 }
                                 player.teleport(warpTarget);
-                                player.sendMessage(Utils.prefix + ChatColor.GREEN + "warped to " + args[0] + "!");
+                                Localisation.sendMessage(sender, new KeyArgPair("warped_success", args[0]));
                             }
                         }
                     } else {
@@ -440,12 +441,10 @@ public class CommandDispatcher {
                 }
                 if (sender instanceof Player player) {
                     Map.Entry<String, Integer> mostUsedCommand = StatisticManager.getInstance().getMostUsedCommandForPlayer(player);
-                    player.sendMessage(String.format("%s%smost used command by you: /%s %d times!",
-                            Utils.prefix,
-                            ChatColor.LIGHT_PURPLE,
-                            mostUsedCommand.getKey(),
-                            mostUsedCommand.getValue()
-                    ));
+                    Localisation.sendMessage(sender, new KeyArgPair("most_used_command_personally",
+                             mostUsedCommand.getKey(),
+                             mostUsedCommand.getValue())
+                    );
                 }
                 StatisticManager.getInstance().sendMostUsedCommandGlobally(sender);
                 break;
@@ -469,7 +468,7 @@ public class CommandDispatcher {
                         player.openInventory(vault);
                         VaultManager.currentlyViewingVault.add(player.getUniqueId());
                     } else {
-                        player.sendMessage(Utils.prefix + ChatColor.RED + "failed to open your vault");
+                        Localisation.sendMessage(sender, new KeyArgPair("failed_to_open_vault"));
                     }
                 }
                 break;
@@ -506,12 +505,10 @@ public class CommandDispatcher {
             missing += "} ";
         }
         message += missing;
-        Sentry.addBreadcrumb(String.format("command sent with missing args: %s", missing));
         sender.sendMessage(Utils.prefix + ChatColor.RED + message);
     }
 
     private static void insufficientPermissions(CommandSender sender) {
-        Sentry.addBreadcrumb("command sent with missing permission");
         sender.sendMessage(noPerms);
     }
 }

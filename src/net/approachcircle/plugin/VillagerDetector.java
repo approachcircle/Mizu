@@ -8,52 +8,29 @@ import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 import org.bukkit.event.entity.EntityDeathEvent;
 
 public class VillagerDetector {
-    public static boolean checkEntityType(EntityDeathEvent event) {
-        if (event.getEntityType() == EntityType.VILLAGER) {
-            villagerHasDied(event);
-            return true;
-        }
-        return false;
-    }
-
-    private static void villagerHasDied(EntityDeathEvent event) {
-        LivingEntity villagerEntity = event.getEntity();
-        Location villagerLocation = villagerEntity.getLocation();
-        Player villagerKiller = villagerEntity.getKiller();
+    public static void villagerDied(EntityDeathEvent event) {
+        Villager villager = (Villager) event.getEntity();
+        Villager.Type villagerType = villager.getVillagerType();
+        Player villagerKiller = villager.getKiller();
         if (villagerKiller != null) {
-            EntityType villagerKillerEntity = villagerKiller.getType();
-            if (villagerKillerEntity == EntityType.PLAYER) {
-                announceDeath(villagerKiller, villagerLocation);
-            }
+            Localisation.broadcast(new KeyArgPair("villager_killed_player",
+                    villagerType,
+                    villager.getLocation().getX(),
+                    villager.getLocation().getY(),
+                    villager.getLocation().getZ(),
+                    villager.getLocation().getWorld().getName(),
+                    villagerKiller.getName()));
         } else {
-            announceDeath(villagerLocation);
+            Localisation.broadcast(new KeyArgPair("villager_died",
+                    villagerType,
+                    villager.getLocation().getX(),
+                    villager.getLocation().getY(),
+                    villager.getLocation().getZ(),
+                    villager.getLocation().getWorld().getName()));
         }
-    }
-
-    private static void announceDeath(Player villagerKiller, Location villagerLocation) {
-        String villagerx = Integer.valueOf((int) villagerLocation.getX()).toString();
-        String villagery = Integer.valueOf((int) villagerLocation.getY()).toString();
-        String villagerz = Integer.valueOf((int) villagerLocation.getZ()).toString();
-        String worldName = villagerLocation.getWorld().getName();
-        String message = Utils.prefix + String.format("%sa villager at %s %s %s in world '%s' "
-                        + "was killed by %s", ChatColor.RED, villagerx, villagery, villagerz,
-                worldName, villagerKiller.getName());
-        Bukkit.broadcast(Component.text(message));
-        Sentry.addBreadcrumb(message);
-    }
-
-    private static void announceDeath(Location villagerLocation) {
-        String villagerx = Integer.valueOf((int) villagerLocation.getX()).toString();
-        String villagery = Integer.valueOf((int) villagerLocation.getY()).toString();
-        String villagerz = Integer.valueOf((int) villagerLocation.getZ()).toString();
-        String worldName = villagerLocation.getWorld().getName();
-        String message = Utils.prefix + String.format("%sa villager at %s %s %s in world '%s' "
-                        + "has died", ChatColor.YELLOW, villagerx, villagery, villagerz,
-                worldName);
-        Bukkit.broadcast(Component.text(message));
-        Sentry.addBreadcrumb(message);
     }
 }

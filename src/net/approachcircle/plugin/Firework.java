@@ -29,9 +29,7 @@ public class Firework {
             }
         }
         if (contains > 0) {
-            target.sendMessage(Utils.prefix + String.format("%syour firework cooldown hasn't expired yet", ChatColor.RED));
-            logger.info(String.format("%s tried to get fireworks before the cooldown expired", target.getName()));
-            Sentry.addBreadcrumb(String.format("%s tried to get fireworks before the cooldown expired", target.getName()));
+            Localisation.sendMessage(target, new KeyArgPair("firework_cooldown_still_present"));
         } else {
             giveFireworks(target);
         }
@@ -39,11 +37,10 @@ public class Firework {
 
     private static void giveFireworks(Player target) {
         ItemStack fireworks = new ItemStack(Material.FIREWORK_ROCKET, 64);
-        logger.info(String.format("%s just got %s fireworks, giving %s minute cooldown", target.getName(), fireworks.getAmount(), cooldownMinutes));
-        Sentry.addBreadcrumb(String.format("%s just got %s fireworks, giving %s minute cooldown", target.getName(), fireworks.getAmount(), cooldownMinutes));
+        logger.info(String.format("%s just got fireworks", target.getName()));
         target.getInventory().addItem(fireworks);
         ineligible.add(target.getUniqueId());
-        target.sendMessage(String.format(Utils.prefix + "%syou have been given %s fireworks, you now have a %s minute cooldown", ChatColor.GREEN, fireworks.getAmount(), cooldownMinutes));
+        Localisation.sendMessage(target, new KeyArgPair("been_given_fireworks", fireworks.getAmount(), cooldownMinutes));
         startTimer(target);
     }
 
@@ -52,9 +49,8 @@ public class Firework {
             @Override
             public void run() {
                 ineligible.remove(target.getUniqueId());
-                target.sendMessage(Utils.prefix + String.format("%syour firework cooldown has expired", ChatColor.GREEN));
+                Localisation.sendMessage(target, new KeyArgPair("firework_cooldown_expired"));
                 logger.info(String.format("%s's firework cooldown has expired", target.getName()));
-                Sentry.addBreadcrumb(String.format("%s's firework cooldown has expired", target.getName()));
             }
         }, cooldown);
     }

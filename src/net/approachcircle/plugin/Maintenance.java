@@ -1,6 +1,8 @@
 package net.approachcircle.plugin;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -15,7 +17,7 @@ public class Maintenance {
     private static Boolean maintenanceMode = false;
 
     public static void toggleMaintenance(CommandSender sender) {
-        sender.sendMessage("Mizu> " + ChatColor.GREEN + "maintenance mode: " + maintenanceMode + " -> " + !maintenanceMode);
+        Localisation.sendMessage(sender, new KeyArgPair("maintenance_status_update", maintenanceMode, !maintenanceMode));
         maintenanceMode = !maintenanceMode;
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (!player.isOp()) {
@@ -25,24 +27,23 @@ public class Maintenance {
     }
 
     public static void turnAwayPlayer(Player player, Boolean triedToJoin) {
-        player.kick(Component.text(
-                ChatColor.DARK_GREEN + "==--Mizu--==\n" + ChatColor.RESET +
-                        ChatColor.MAGIC + "a" + ChatColor.RESET +
-                        ChatColor.RED + "the server is currently in maintenance mode." +
-                        ChatColor.RESET + ChatColor.MAGIC + "a" +
-                        ChatColor.RESET + "\n" + ChatColor.DARK_AQUA +
-                        "this means that i am currently performing maintenance on " +
-                        "the server, so it is unstable." + ChatColor.BLUE +
-                        "\neither join back later, or message me on discord."
-        ));
+        player.kick(
+                Component.text("==--Mizu--==", NamedTextColor.DARK_GREEN)
+                .appendNewline()
+                .append(Localisation.component(new KeyArgPair("server_currently_in_maintenance"), Localisation.getClientLocaleOrExplicit(player)))
+                .appendNewline()
+                .append(Localisation.component(new KeyArgPair("server_unavailable_for_players"), Localisation.getClientLocaleOrExplicit(player)))
+                .appendNewline()
+                .append(Localisation.component(new KeyArgPair("join_back_later"), Localisation.getClientLocaleOrExplicit(player)))
+        );
 
         if (triedToJoin) {
             for (Player curPlayer : Bukkit.getOnlinePlayers()) {
                 if (curPlayer.isOp()) {
-                    curPlayer.sendMessage("Mizu> " + ChatColor.RED + player.getName() + " just tried to join");
+                    Localisation.sendMessage(curPlayer, new KeyArgPair("player_tried_to_join_during_maintenance", player.getName()));
                 }
             }
-            logger.info(player.getName() + " just tried to join");
+            logger.info(player.getName() + " just tried to join"); 
         }
     }
 

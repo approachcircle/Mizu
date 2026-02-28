@@ -27,7 +27,7 @@ public class Casino {
             return;
         }
         if (amount <= 0) {
-            player.sendMessage(String.format("%s%scannot gamble less than or equal to zero items", Utils.prefix, ChatColor.RED));
+            Localisation.sendMessage(player, new KeyArgPair("cannot_gamble_zero_items"));
             return;
         }
         if ((type != GambleType.Experience && type != GambleType.Health) && args.length == 0) {
@@ -39,24 +39,14 @@ public class Casino {
         switch (type) {
             case Experience -> {
                 if (amount > player.getLevel()) {
-                    player.sendMessage(String.format("%s%syou don't have that many levels to gamble", Utils.prefix, ChatColor.RED));
+                    Localisation.sendMessage(player, new KeyArgPair("not_enough_levels_to_gamble"));
                     return;
                 }
                 if (winner) {
-                    Bukkit.broadcast(Component.text(String.format("%s%s%s won double or nothing! they won an extra %s levels!",
-                            Utils.prefix,
-                            ChatColor.GREEN,
-                            player.getName(),
-                            amount
-                    )));
+                    Localisation.broadcast(new KeyArgPair("won_levels_gamble", player.getName(), amount));
                     player.giveExpLevels(amount);
                 } else {
-                    Bukkit.broadcast(Component.text(String.format("%s%s%s lost double or nothing! they lost %s levels!",
-                            Utils.prefix,
-                            ChatColor.RED,
-                            player.getName(),
-                            amount
-                    )));
+                    Localisation.broadcast(new KeyArgPair("lost_levels_gamble", player.getName(), amount));
                     player.setLevel(Math.max(player.getLevel() - amount, 0));
                 }
             }
@@ -73,23 +63,11 @@ public class Casino {
                     return;
                 }
                 if (winner) {
+                    Localisation.broadcast(new KeyArgPair("won_items_gamble", player.getName(), amount, material.toString().toLowerCase()));
                     inv.addItem(new ItemStack(material, amount));
-                    Bukkit.broadcast(Component.text(String.format("%s%s%s won double or nothing! they won an extra %s '%s'!",
-                            Utils.prefix,
-                            ChatColor.GREEN,
-                            player.getName(),
-                            amount,
-                            material.toString().toLowerCase()
-                    )));
                 } else {
+                    Localisation.broadcast(new KeyArgPair("lost_items_gamble", player.getName(), amount, material.toString().toLowerCase()));
                     removeItems(player, material, amount);
-                    Bukkit.broadcast(Component.text(String.format("%s%s%s lost double or nothing! they lost %s '%s'!",
-                            Utils.prefix,
-                            ChatColor.RED,
-                            player.getName(),
-                            amount,
-                            material.toString().toLowerCase()
-                    )));
                 }
             }
             case Entities -> {
@@ -107,29 +85,16 @@ public class Casino {
                     }
                 }
                 if (amount > targets.size()) {
-                    player.sendMessage(String.format("%s%snot enough '%s' nearby. only found '%s'", Utils.prefix, ChatColor.RED, entity.toString(), targets.size()));
-                    Sentry.addBreadcrumb(String.format("couldn't find enough '%s' near '%s'. only found '%s'", entity.toString(), player.getName(), targets.size()));
+                    Localisation.sendMessage(player, new KeyArgPair("not_enough_mobs_to_gamble", entity.toString(), targets.size()));
                     return;
                 }
                 if (winner) {
-                    Bukkit.broadcast(Component.text(String.format("%s%s%s won double or nothing! they spawned an extra %s '%s'!",
-                            Utils.prefix,
-                            ChatColor.GREEN,
-                            player.getName(),
-                            amount,
-                            entity.toString().toLowerCase()
-                    )));
+                    Localisation.broadcast(new KeyArgPair("won_mobs_gamble", player.getName(), amount, entity.toString().toLowerCase()));
                     for (int i = 0; i < amount; i++) {
                         playerLoc.getWorld().spawnEntity(playerLoc, entity);
                     }
                 } else {
-                    Bukkit.broadcast(Component.text(String.format("%s%s%s lost double or nothing! they lost %s '%s'!",
-                            Utils.prefix,
-                            ChatColor.RED,
-                            player.getName(),
-                            amount,
-                            entity.toString().toLowerCase()
-                    )));
+                    Localisation.broadcast(new KeyArgPair("lost_mobs_gamble", player.getName(), amount, entity.toString().toLowerCase()));
                     for (int i = 0; i < amount; i++) {
                         targets.get(i).remove();
                     }
@@ -138,33 +103,18 @@ public class Casino {
             case Health -> {
                 int health = (int) Math.round(player.getHealth());
                 if (amount > health) {
-                    player.sendMessage(Component.text(String.format("%s%syou only have %d health, cannot gamble %d (1 heart = 2, half heart = 1)",
-                            Utils.prefix,
-                            ChatColor.RED,
-                            health,
-                            amount
-                    )));
+                    Localisation.sendMessage(player, new KeyArgPair("not_enough_health_to_gamble", health, amount));
                     return;
                 }
                 if (winner) {
-                    Bukkit.broadcast(Component.text(String.format("%s%s%s won double or nothing! they won an extra %s health!",
-                            Utils.prefix,
-                            ChatColor.GREEN,
-                            player.getName(),
-                            amount
-                    )));
+                    Localisation.broadcast(new KeyArgPair("won_health_gamble", player.getName(), amount));
                     player.setHealth(Math.min(health + amount, 20));
                 } else {
-                    Bukkit.broadcast(Component.text(String.format("%s%s%s lost double or nothing! they lost %s health!",
-                            Utils.prefix,
-                            ChatColor.RED,
-                            player.getName(),
-                            amount
-                    )));
                     double result = Math.max(health - amount, 0);
                     if (result == 0) {
                         gambledLife.add(player.getUniqueId());
                     }
+                    Localisation.broadcast(new KeyArgPair("lost_health_gamble", player.getName(), amount));
                     player.setHealth(result);
                 }
             }
@@ -183,8 +133,7 @@ public class Casino {
         PlayerInventory inv = player.getInventory();
         boolean hasEnough = inv.containsAtLeast(new ItemStack(material), amount);
         if (!hasEnough) {
-            player.sendMessage(String.format("%s%syou don't have that many '%s' to gamble (or that item is enchanted/not full durability)", Utils.prefix, ChatColor.RED, material.toString().toLowerCase()));
-            Sentry.addBreadcrumb(player.getName() + " didn't have enough '" + material.toString().toLowerCase() + "' for how many they wanted to gamble");
+            Localisation.sendMessage(player, new KeyArgPair("not_enough_items_to_gamble", material.toString().toLowerCase()));
             return false;
         }
         int amountLeft = 0;
@@ -201,7 +150,7 @@ public class Casino {
             }
         }
         if (!success) {
-            player.sendMessage(String.format("%s%smake sure you have a stack of '%s' at least %s big in your inventory", Utils.prefix, ChatColor.RED, material.toString().toLowerCase(), amount));
+            Localisation.sendMessage(player, new KeyArgPair("ensure_large_enough_stack_to_gamble", material.toString().toLowerCase(), amount));
             return false;
         }
         return true;
@@ -225,7 +174,7 @@ public class Casino {
 
     private static Boolean checkCooldown(Player player) {
         if (ineligible.contains(player.getUniqueId())) {
-            player.sendMessage(String.format("%s%shold your fucking horses", Utils.prefix, ChatColor.RED));
+            Localisation.sendMessage(player, new KeyArgPair("gamble_cooldown"));
             return true;
         }
         return false;
@@ -237,7 +186,7 @@ public class Casino {
             @Override
             public void run() {
                 ineligible.remove(player.getUniqueId());
-                player.sendMessage(String.format("%s%syou can gamble again", Utils.prefix, ChatColor.GREEN));
+                Localisation.sendMessage(player, new KeyArgPair("can_gamble_again"));
             }
         }, cooldown);
     }

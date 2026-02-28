@@ -47,6 +47,9 @@ public class Mizu extends JavaPlugin {
         Sentry.addBreadcrumb("started monitoring lag");
         logger.info("started monitoring lag");
         saveDefaultConfig();
+        // will throw runtime if something goes wrong
+        Localisation.loadStrings();
+        Localisation.loadExplicitLocaleSettings();
         if (getConfig().getBoolean("lucky-chunk")) {
             LuckyChunk.start();
         }

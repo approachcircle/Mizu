@@ -1,0 +1,496 @@
+[
+    {
+        "warp_name_taken": "there is a warp with the name %s already",
+        "color": "red"
+    },
+    {
+        "warp_no_owner_no_delete": "this warp doesn't belong to anyone so to be safe, you can't delete it",
+        "color": "red"
+    },
+    {
+        "warp_not_yours": "this warp doesn't belong to you (owned by %s)",
+        "color": "red"
+    },
+    {
+        "warp_no_yaw_1": "this warp is old, so it doesn't know where you were looking when it was taken",
+        "color": "gray"
+    },
+    {
+        "warp_no_yaw_2": "if you update it now, it'll point you looking in the correct location when you next use it",
+        "color": "gray"
+    },
+    {
+        "error_grabbing_warps": "something went wrong grabbing warps",
+        "color": "red"
+    },
+    {
+        "no_warps": "no warps right now",
+        "color": "red"
+    },
+    {
+        "translation_notes": "the three %s things are the x y z cords and the world will just be like overworld, nether or end",
+        "villager_killed_player": "a villager (%s) at %s %s %s in world '%s' was killed by %s",
+        "color": "red"
+    },
+    {
+        "villager_died": "a villager (%s) at %s %s %s in world '%s' has died",
+        "color": "yellow"
+    },
+    {
+        "self_teleport_error": "you tryna teleport to yourself fool????",
+        "color": "red"
+    },
+    {
+        "invalid_teleport_target": "'%s' is not a valid player to teleport to",
+        "color": "red"
+    },
+    {
+        "already_sent_tpa_request": "you've already sent a teleport request to %s",
+        "color": "red"
+    },
+    {
+        "teleport_request_accepted": "your teleport to %s has been accepted",
+        "color": "green"
+    },
+    {
+        "teleport_accepted": "teleport accepted",
+        "color": "green"
+    },
+    {
+        "no_teleport_to_accept": "you don't have a teleport request to accept",
+        "color": "red"
+    },
+    {
+        "teleport_request_denied": "your teleport request to %s was denied",
+        "color": "red"
+    },
+    {
+        "teleport_denied": "teleport denied",
+        "color": "red"
+    },
+    {
+        "no_teleport_to_deny": "you don't have a teleport request to deny",
+        "color": "red"
+    },
+    {
+        "sending_teleport_request": "sending teleport request to %s",
+        "color": "yellow"
+    },
+    {
+        "teleport_expiry": "(expires in %s seconds)",
+        "color": "yellow"
+    },
+    {
+        "translation_notes": "name of player would like to teleport to you",
+        "teleport_request": "%s would like to teleport to you",
+        "color": "yellow"
+    },
+    {
+        "tpy_to_accept": "'/tpy' to allow this teleport",
+        "color": "green"
+    },
+    {
+        "tpn_to_deny": "'/tpn' to deny this teleport",
+        "color": "red"
+    },
+    {
+        "request_sent": "request sent",
+        "color": "yellow"
+    },
+    {
+        "teleport_request_to_player_expired": "your teleport request to %s expired",
+        "color": "red"
+    },
+    {
+        "teleport_request_from_player_expired": "the teleport request from %s expired",
+        "color": "red"
+    },
+    {
+        "translation_notes": "the format here would be like: '/gamble 20 times by approachcircle' for reference",
+        "stats_for_everyone": "most used command out of everyone: /%s %d times by %s!",
+        "color": "gold"
+    },
+    {
+        "translation_notes": "%s is mob name",
+        "no_entity_with_name": "entity of name %s does not exist",
+        "color": "red"
+    },
+    {
+        "translation_notes": "used when spawning a mob on top of another player",
+        "entity_spawned_on_player": "spawned %s on %s",
+        "color": "green"
+    },
+    {
+        "translation_notes": "maintenance mode is just like something that can be toggled to kick every player that isn't an operator in case somethings very wrong",
+        "maintenance_status_update": "maintenance mode: %s -> %s",
+        "color": "green"
+    },
+    {
+        "server_currently_in_maintenance": "the server is currently in maintenance mode.",
+        "color": "red"
+    },
+    {
+        "server_unavailable_for_players": "the server is currently unavailable for players to join.",
+        "color": "yellow"
+    },
+    {
+        "join_back_later": "either join back later, or message me on discord.",
+        "color": "blue"
+    },
+    {
+        "translation_notes": "message shown if someone tries to join the game while maintenance mode is on",
+        "player_tried_to_join_during_maintenance": "%sjust tried to join",
+        "color": "red"
+    },
+    {
+        "player_suicided": "%s committed suicide",
+        "color": "light_purple"
+    },
+    {
+        "player_gambled_life": "%s gambled their life away",
+        "color": "light_purple"
+    },
+    {
+        "player_fell_into_void": "%s sacrificed themselves to the void",
+        "color": "light_purple"
+    },
+    {
+        "translation_notes": "again, the three %d symbols are the x y z cords",
+        "died_location": "you died at %d %d %d",
+        "color": "blue"
+    },
+    {
+        "translation_notes": "so this message is sent when somebody is using a client that isn't vanilla, just to freak them out a little bit if they were cheating. %s here would be like forge, fabric, lunar client etc.",
+        "using_client_creepy_message": "oh, you're using %s... that's nice",
+        "color": "yellow"
+    },
+    {
+        "translation_notes": "then this message is sent when somebody's game client doesn't send information to identify itself when they join",
+        "unidentified_client_message": "i have no idea what client you're using",
+        "color": "red"
+    },
+    {
+        "maintenance_mode_warning": "warning: the server is currently in maintenance mode",
+        "color": "red"
+    },
+    {
+        "welcome_message": "welcome %s",
+        "color": "light_purple"
+    },
+    {
+        "translation_notes": "says something like: 'the server time is 19:24:30', can just translate as 'the time is'",
+        "server_time_message": "the server time is %s",
+        "color": "light_purple"
+    },
+    {
+        "translation_notes": "like: '3 other players online', 4 other players online etc",
+        "other_players_online": "%d other players online",
+        "color": "light_purple"
+    },
+    {
+        "translation_notes": "lucky chunk can stay as it is, just the 'is enabled' part",
+        "lucky_chunk_enabled": "lucky chunk is enabled",
+        "color": "green"
+    },
+    {
+        "lucky_chunk_not_enabled": "lucky chunk is not enabled",
+        "color": "red"
+    },
+    {
+        "translation_notes": "will be something like: approachcircle was kicked: kicked by an operator. so just translate the 'was kicked' part",
+        "player_kicked_reason": "%s was kicked: %s",
+        "color": "red"
+    },
+    {
+        "translation_notes": "im sure you can figure this one out",
+        "keep_inventory_off_in_dimension": "keep inventory is not enabled in this dimension!!!",
+        "color": "red"
+    },
+    {
+        "translation_notes": "when a gamerule is changed, this is sent to all players. honestly if the word gamerule is the same in every Minecraft language, then just translate the 'changed to' part",
+        "gamerule_changed_message": "gamerule %s changed to: %s",
+        "color": "gray"
+    },
+    {
+        "translation_notes": "vault can stay as it is, just translate the 'saved' part",
+        "vault_saved": "vault saved!",
+        "color": "green"
+    },
+    {
+        "translation_notes": "i'd say just translate as 'missing material'",
+        "missing_chunk_material": "material to spawn chunk is null",
+        "color": "red"
+    },
+    {
+        "remove_chunk_already_spawned": "cannot spawn a new chunk while one already exists. remove it first",
+        "color": "red"
+    },
+    {
+        "lucky_chunk_has_spawned": "lucky chunk has spawned!",
+        "color": "green"
+    },
+    {
+        "lucky_chunk_has_unspawned": "lucky chunk has disappeared!",
+        "color": "red"
+    },
+    {
+        "nobody_found_chunk": "nobody found the chunk!",
+        "color": "yellow"
+    },
+    {
+        "player_found_chunk": "%s found the chunk!",
+        "color": "green"
+    },
+    {
+        "translation_notes": "referring to what block the lucky chunk is made out of, like 'it's stone' or 'it's dirt'",
+        "lucky_chunk_block_identification": "it's %s",
+        "color": "gold"
+    },
+    {
+        "translation_notes": "referring to what block the lucky chunk WAS, like 'it was stone' etc",
+        "lucky_chunk_was_block": "it was %s",
+        "color": "yellow"
+    },
+    {
+        "translation_notes": "when the lucky chunk is about to spawn, it plays a sound coming from the direction that it spawned from, hence the listen closely",
+        "listen_closely": "listen closely...",
+        "color": "gold"
+    },
+    {
+        "translation_notes": "sends a clickable button to the player in chat to teleport to the lucky chunk when someone finds it, so could translate as more specifically 'click here to teleport' or whatever works",
+        "click_to_teleport": "click to teleport",
+        "color": "gold"
+    },
+    {
+        "chunk_not_found_yet": "chunk has not been found yet!",
+        "color": "red"
+    },
+    {
+        "chunk_not_currently_spawned": "chunk not currently spawned!",
+        "color": "red"
+    },
+    {
+        "firework_cooldown_still_present": "your firework cooldown hasn't expired yet",
+        "color": "red"
+    },
+    {
+        "been_given_fireworks": "you have been given %s fireworks, you now have a %s minute cooldown",
+        "color": "green"
+    },
+    {
+        "firework_cooldown_expired": "your firework cooldown has expired",
+        "color": "green"
+    },
+    {
+        "invalid_gamble_number": "supply a valid amount of items to gamble",
+        "color": "red"
+    },
+    {
+        "translation_notes": "disallowed/not allowed it do not matter",
+        "cannot_gamble_entity": "gambling the entity '%s' is disallowed",
+        "color": "red"
+    },
+    {
+        "entity_does_not_exist": "an entity with the name '%s' doesn't exist",
+        "color": "red"
+    },
+    {
+        "material_does_not_exist": "a material with the name '%s' doesn't exist",
+        "color": "red"
+    },
+    {
+        "custom_lucky_chunk_material_warning_1": "passing in a custom material will bypass all constraints",
+        "color": "yellow"
+    },
+    {
+        "custom_lucky_chunk_material_warning_2": "this includes any blacklists and block type constraints (like water or lava)",
+        "color": "yellow"
+    },
+    {
+        "custom_lucky_chunk_material_warning_3": "so use with caution. or don't, it's not that deep",
+        "color": "yellow"
+    },
+    {
+        "no_previous_chunk": "there is no previous chunk",
+        "color": "yellow"
+    },
+    {
+        "translation_notes": "telling the player what block the previous chunk was made from",
+        "last_chunk_was": "last chunk was %s",
+        "color": "gold"
+    },
+    {
+        "chunk_currently_spawned": "chunk is currently spawned!",
+        "color": "green"
+    },
+    {
+        "translation_notes": "like: '5m 20s until removal' (of the lucky chunk)",
+        "time_until_lucky_chunk_removal": "%dm %ds until removal",
+        "color": "red"
+    },
+    {
+        "time_until_lucky_chunk_spawn": "%dm %ds until next lucky chunk",
+        "color": "yellow"
+    },
+    {
+        "player_not_found": "player not found '%s'",
+        "color": "red"
+    },
+    {
+        "must_call_warp_something_else": "you must call the warp something else",
+        "color": "red"
+    },
+    {
+        "added_warp": "added warp %s",
+        "color": "green"
+    },
+    {
+        "failed_to_add_warp": "failed to add warp %s",
+        "color": "red"
+    },
+    {
+        "found_number_warps": "found %d warps:",
+        "color": "green"
+    },
+    {
+        "translation_notes": "like: 'casa owned by approachcircle'",
+        "warp_owned_by_player": "%s owned by %s",
+        "color": "yellow"
+    },
+    {
+        "removed_warp": "removed warp %s",
+        "color": "red"
+    },
+    {
+        "failed_to_remove_warp": "failed to remove warp %s",
+        "color": "red"
+    },
+    {
+        "failed_to_get_warp_owner": "failed to get owner of warp. it will not be updated",
+        "color": "red"
+    },
+    {
+        "updated_warp_position": "updated warp %s to current position",
+        "color": "yellow"
+    },
+    {
+        "failed_to_update_warp": "failed to update warp %s",
+        "color": "red"
+    },
+    {
+        "translation_notes": "honestly these couple you could just do 'failed to rename'",
+        "failed_to_rename_owner_not_found": "failed to get owner of warp. it will not be renamed",
+        "color": "red"
+    },
+    {
+        "failed_to_rename_parsing_failed": "failed to parse warp. it will not be renamed",
+        "color": "red"
+    },
+    {
+        "failed_to_find_warp_coords": "failed to find coordinates for warp: %s",
+        "color": "red"
+    },
+    {
+        "renamed_warp": "renamed warp %s to %s!",
+        "color": "green"
+    },
+    {
+        "failed_to_rename": "failed to rename warp %s",
+        "color": "red"
+    },
+    {
+        "warp_failed": "warp failed (did you spell the name right?)",
+        "color": "red"
+    },
+    {
+        "translation_notes": "like: 'warped to casa!'",
+        "warped_success": "warped to %s!",
+        "color": "yellow"
+    },
+    {
+        "translation_notes": "again like: '/gamble 22 times!'",
+        "most_used_command_personally": "most used command by you: /%s %d times!",
+        "color": "light_purple"
+    },
+    {
+        "failed_to_open_vault": "failed to open your vault",
+        "color": "red"
+    },
+    {
+        "cannot_gamble_zero_items": "cannot gamble less than or equal to zero items",
+        "color": "red"
+    },
+    {
+        "not_enough_levels_to_gamble": "you don't have that many levels to gamble",
+        "color": "red"
+    },
+    {
+        "won_levels_gamble": "%s won double or nothing! they won an extra %s levels!",
+        "color": "green"
+    },
+    {
+        "lost_levels_gamble": "%s lost double or nothing! they lost %s levels!",
+        "color": "red"
+    },
+    {
+        "translation_notes": "this one refers to items, so it'll be like: 'approachcircle won double or nothing! they won an extra 5 diamonds'",
+        "won_items_gamble": "%s won double or nothing! they won an extra %s '%s'!",
+        "color": "green"
+    },
+    {
+        "translation_notes": "same here",
+        "lost_items_gamble": "%s lost double or nothing! they lost %s '%s'!",
+        "color": "red"
+    },
+    {
+        "translation_notes": "this refers to mobs nearby (yes you can gamble mobs around you), so it'll be like 'not enough sheep nearby. only found 2'",
+        "not_enough_mobs_to_gamble": "not enough '%s' nearby. only found '%s'",
+        "color": "red"
+    },
+    {
+        "won_mobs_gamble": "%s won double or nothing! they spawned an extra %s '%s'!",
+        "color": "green"
+    },
+    {
+        "lost_mobs_gamble": "%s lost double or nothing! they lost %s '%s'!",
+        "color": "red"
+    },
+    {
+        "not_enough_health_to_gamble": "you only have %d health, cannot gamble %d (1 heart = 2, half heart = 1)",
+        "color": "red"
+    },
+    {
+        "won_health_gamble": "%s won double or nothing! they won an extra %s health!",
+        "color": "green"
+    },
+    {
+        "lost_health_gamble": "%s lost double or nothing! they lost %s health!",
+        "color": "red"
+    },
+    {
+        "not_enough_items_to_gamble": "you don't have that many '%s' to gamble (or that item is enchanted/not full durability)",
+        "color": "red"
+    },
+    {
+        "translation_notes": "like: 'make sure you have a stack of 'diamond' at least 12 big in your inventory'",
+        "ensure_large_enough_stack_to_gamble": "make sure you have a stack of '%s' at least %s big in your inventory",
+        "color": "red"
+    },
+    {
+        "translation_notes": "the famous gamble cooldown message. may I request that this becomes 'tem calmaaaaa foda-se'",
+        "gamble_cooldown": "hold your fucking horses",
+        "color": "red"
+    },
+    {
+        "can_gamble_again": "you can gamble again",
+        "color": "green"
+    },
+    {
+        "lucky_chunk_minute": "lucky chunk in one minute!",
+        "color": "gold"
+    },
+    {
+        "failed_to_parse_warp_coords": "failed to parse a coordinate for warp: %s (it may be corrupted?)",
+        "color": "red"
+    }
+]

@@ -1,0 +1,462 @@
+[
+    {
+        "warp_name_taken": "já existe uma warp com o nome %s",
+        "color": "red"
+    },
+    {
+        "warp_no_owner_no_delete": "esta warp não pretence a ninguem, então por segurança não a podes deletar",
+        "color": "red"
+    },
+    {
+        "warp_not_yours": "esta warp não te pretence (pretence a %s)",
+        "color": "red"
+    },
+    {
+        "warp_no_yaw_1": "esta warp é antiga, então não sabe para onde estavas a olhar quando foi criada",
+        "color": "gray"
+    },
+    {
+        "warp_no_yaw_2": "se tu a atualizares agora, ficarás a olhar na direção correta na próxima vez que a usares ",
+        "color": "gray"
+    },
+    {
+        "error_grabbing_warps": "algo correu mal ao procurar pelas warps",
+        "color": "red"
+    },
+    {
+        "no_warps": "nenhuma warp disponível",
+        "color": "red"
+    },
+    {
+        "villager_killed_player": "um villager (%s) em %s %s %s na dimensão do '%s' foi morto por %s",
+        "color": "red"
+    },
+    {
+        "villager_died": "um villager (%s) em %s %s %s na dimensão do '%s' morreu",
+        "color": "yellow"
+    },
+    {
+        "self_teleport_error": "estas a tentar teleportarte para ti próprio burro de merda????",
+        "color": "red"
+    },
+    {
+        "invalid_teleport_target": "'%s' não é um jogador válido para teleportar",
+        "color": "red"
+    },
+    {
+        "already_sent_tpa_request": "já envias-te um pedido de teleport para %s",
+        "color": "red"
+    },
+    {
+        "teleport_request_accepted": "o teu pedido de teleport para %s foi aceite",
+        "color": "green"
+    },
+    {
+        "teleport_accepted": "pedido de teleport aceitado",
+        "color": "green"
+    },
+    {
+        "no_teleport_to_accept": "não tens pedidos de teleport para aceitar",
+        "color": "red"
+    },
+    {
+        "teleport_request_denied": "o teu pedido de teleport para %s foi recusado",
+        "color": "red"
+    },
+    {
+        "teleport_denied": "pedido de teleport recusado",
+        "color": "red"
+    },
+    {
+        "no_teleport_to_deny": "não tens pedidos de teleport para recusar",
+        "color": "red"
+    },
+    {
+        "sending_teleport_request": "a enviar pedido de teleport para %s",
+        "color": "yellow"
+    },
+    {
+        "teleport_expiry": "(expira em %s segundos)",
+        "color": "yellow"
+    },
+    {
+        "teleport_request": "%s gostaria de teleportar-se para ti",
+        "color": "yellow"
+    },
+    {
+        "tpy_to_accept": "'/tpy' para permitir este teleport",
+        "color": "green"
+    },
+    {
+        "tpn_to_deny": "'/tpn' para recusar este teleport",
+        "color": "red"
+    },
+    {
+        "request_sent": "pedido enviado",
+        "color": "yellow"
+    },
+    {
+        "teleport_request_to_player_expired": "o teu pedido de teleport para %s expirou",
+        "color": "red"
+    },
+    {
+        "teleport_request_from_player_expired": "o pedido de teleport de %s expirou",
+        "color": "red"
+    },
+    {
+        "stats_for_everyone": "comando mais usado entre todos: /%s %d vezes por %s!",
+        "color": "gold"
+    },
+    {
+        "no_entity_with_name": "entidade com o nome de %s não existe",
+        "color": "red"
+    },
+    {
+        "entity_spawned_on_player": "spawnou %s em %s",
+        "color": "green"
+    },
+    {
+        "maintenance_status_update": "modo de manutenção: %s -> %s",
+        "color": "green"
+    },
+    {
+        "server_currently_in_maintenance": "o servidor está em modo de manutenção",
+        "color": "red"
+    },
+    {
+        "server_unavailable_for_players": "o servidor não esta disponivel para jogadores agora",
+        "color": "yellow"
+    },
+    {
+        "join_back_later": "tenta ou entrar novamente mais tarde ou manda-me mensagem no discord",
+        "color": "blue"
+    },
+    {
+        "player_tried_to_join_during_maintenance": "%s tentou entrar",
+        "color": "red"
+    },
+    {
+        "player_suicided": "%s cometeu suicídio",
+        "color": "light_purple"
+    },
+    {
+        "player_gambled_life": "%s perdeu a vida em apostas",
+        "color": "light_purple"
+    },
+    {
+        "player_fell_into_void": "%s sacrificou-se no void",
+        "color": "light_purple"
+    },
+    {
+        "died_location": "tu morreste em %d %d %d",
+        "color": "blue"
+    },
+    {
+        "using_client_creepy_message": "oh, tu estas a usar %s... interessante",
+        "color": "yellow"
+    },
+    {
+        "unidentified_client_message": "não faço a mínima da ideia que cliente estás a usar",
+        "color": "red"
+    },
+    {
+        "maintenance_mode_warning": "aviso: o servidor está em modo de manutenção",
+        "color": "red"
+    },
+    {
+        "welcome_message": "bem vindo %s",
+        "color": "light_purple"
+    },
+    {
+        "server_time_message": "são %s",
+        "color": "light_purple"
+    },
+    {
+        "other_players_online": "%d outros jogadores estão online",
+        "color": "light_purple"
+    },
+    {
+        "lucky_chunk_enabled": "lucky chunk está ativa",
+        "color": "green"
+    },
+    {
+        "lucky_chunk_not_enabled": "lucky chunk está desativada",
+        "color": "red"
+    },
+    {
+        "player_kicked_reason": "%s foi kickado por: %s",
+        "color": "red"
+    },
+    {
+        "keep_inventory_off_in_dimension": "keep inventory não está ativo nesta dimensão!!!",
+        "color": "red"
+    },
+    {
+        "gamerule_changed_message": "gamerule %s foi mudada para: %s",
+        "color": "gray"
+    },
+    {
+        "vault_saved": "vault salvo!",
+        "color": "green"
+    },
+    {
+        "missing_chunk_material": "material para spawnar a chunk não existe",
+        "color": "red"
+    },
+    {
+        "remove_chunk_already_spawned": "não é possével spawnar outra chunk com uma já ativa, remove a outra primeiro",
+        "color": "red"
+    },
+    {
+        "lucky_chunk_has_spawned": "lucky chunk spawnou!",
+        "color": "green"
+    },
+    {
+        "lucky_chunk_has_unspawned": "lucky chunk desapareceu!",
+        "color": "red"
+    },
+    {
+        "nobody_found_chunk": "ninguem encontrou a chunk!",
+        "color": "yellow"
+    },
+    {
+        "player_found_chunk": "%s encontrou a chunk!",
+        "color": "green"
+    },
+    {
+        "lucky_chunk_block_identification": "é %s",
+        "color": "gold"
+    },
+    {
+        "lucky_chunk_was_block": "era %s",
+        "color": "yellow"
+    },
+    {
+        "listen_closely": "ouve bem...",
+        "color": "gold"
+    },
+    {
+        "click_to_teleport": "clica aqui para teleportar",
+        "color": "gold"
+    },
+    {
+        "chunk_not_found_yet": "a chunk ainda não foi encontrada!",
+        "color": "red"
+    },
+    {
+        "chunk_not_currently_spawned": "a chunk ainda não spawnou!",
+        "color": "red"
+    },
+    {
+        "firework_cooldown_still_present": "o tempo de espera para foguetes ainda não expirou",
+        "color": "red"
+    },
+    {
+        "been_given_fireworks": "recebeste %s foguetes, agora tens de esperar %s minutos",
+        "color": "green"
+    },
+    {
+        "firework_cooldown_expired": "o teu tempo de espera para foguetes terminou",
+        "color": "green"
+    },
+    {
+        "invalid_gamble_number": "insere uma quantidade valida de itens para apostar",
+        "color": "red"
+    },
+    {
+        "cannot_gamble_entity": "apostar a entidade '%s' não é permitido",
+        "color": "red"
+    },
+    {
+        "entity_does_not_exist": "uma entidade com o nome de '%s' não existe",
+        "color": "red"
+    },
+    {
+        "material_does_not_exist": "um materia com o nome de '%s' não existe",
+        "color": "red"
+    },
+    {
+        "custom_lucky_chunk_material_warning_1": "escolher materias customizados ira ignorar a blacklist",
+        "color": "yellow"
+    },
+    {
+        "custom_lucky_chunk_material_warning_2": "(por exemplo: água, lava, areia, tnt, etc...)",
+        "color": "yellow"
+    },
+    {
+        "custom_lucky_chunk_material_warning_3": "então usa com cuidado. ou não, não é assim tão sério",
+        "color": "yellow"
+    },
+    {
+        "no_previous_chunk": "não existe chunk anterior",
+        "color": "yellow"
+    },
+    {
+        "last_chunk_was": "a ultima chunk era feita de %s",
+        "color": "gold"
+    },
+    {
+        "chunk_currently_spawned": "chunk está spawnada!",
+        "color": "green"
+    },
+    {
+        "time_until_lucky_chunk_removal": "%dm %ds até ser removida",
+        "color": "red"
+    },
+    {
+        "time_until_lucky_chunk_spawn": "%dm %ds até a próxima lucky chunk",
+        "color": "yellow"
+    },
+    {
+        "player_not_found": "jogador '%s' não encontrado",
+        "color": "red"
+    },
+    {
+        "must_call_warp_something_else": "a warp tem de ter outro nome",
+        "color": "red"
+    },
+    {
+        "added_warp": "adicionou a warp %s",
+        "color": "green"
+    },
+    {
+        "failed_to_add_warp": "erro ao adicionar a warp %s",
+        "color": "red"
+    },
+    {
+        "found_number_warps": "foram encontradas %d warps:",
+        "color": "green"
+    },
+    {
+        "warp_owned_by_player": "%s pretence a %s",
+        "color": "yellow"
+    },
+    {
+        "removed_warp": "removeu a warp %s",
+        "color": "red"
+    },
+    {
+        "failed_to_remove_warp": "erro ao remover a warp %s",
+        "color": "red"
+    },
+    {
+        "failed_to_get_warp_owner": "erro ao buscar o dono da warp. não será atualizada",
+        "color": "red"
+    },
+    {
+        "updated_warp_position": "atualizou a warp %s para a posição atual",
+        "color": "yellow"
+    },
+    {
+        "failed_to_update_warp": "erro ao atualizar a warp %s",
+        "color": "red"
+    },
+    {
+        "failed_to_rename_owner_not_found": "erro ao buscar o dono da warp. não será renomeada",
+        "color": "red"
+    },
+    {
+        "failed_to_rename_parsing_failed": "ocorreu um erro. não será renomeada",
+        "color": "red"
+    },
+    {
+        "failed_to_find_warp_coords": "erro ao buscar as cordenadas da warp: %s",
+        "color": "red"
+    },
+    {
+        "renamed_warp": "warp %s renomeada para %s!",
+        "color": "green"
+    },
+    {
+        "failed_to_rename": "erro ao renomear a warp %s",
+        "color": "red"
+    },
+    {
+        "warp_failed": "erro ao dar warp (escreveste o nome certo?)",
+        "color": "red"
+    },
+    {
+        "warped_success": "deste warp para %s!",
+        "color": "yellow"
+    },
+    {
+        "most_used_command_personally": "comando mais utilizado por ti: /%s %d vezes!",
+        "color": "light_purple"
+    },
+    {
+        "failed_to_open_vault": "erro ao abrir o vault",
+        "color": "red"
+    },
+    {
+        "cannot_gamble_zero_items": "não podes apostar zero ou menos itens",
+        "color": "red"
+    },
+    {
+        "not_enough_levels_to_gamble": "não tens níveis necessários para apostar",
+        "color": "red"
+    },
+    {
+        "won_levels_gamble": "%s ganhou o dobro ou nada! ele(a) ganhou mais %s níveis!",
+        "color": "green"
+    },
+    {
+        "lost_levels_gamble": "%s perdeu o dobro ou nada! ele(a) perdeu %s níveis!",
+        "color": "red"
+    },
+    {
+        "won_items_gamble": "%s ganhou o dobro ou nada! ele(a) ganhou mais %s '%s'!",
+        "color": "green"
+    },
+    {
+        "lost_items_gamble": "%s perdeu o dobro ou nada! ele(a) perdeu %s '%s'!",
+        "color": "red"
+    },
+    {
+        "not_enough_mobs_to_gamble": "não tem '%s' suficientes por perto. apenas foram encontrados '%s'",
+        "color": "red"
+    },
+    {
+        "won_mobs_gamble": "%s ganhou o dobro ou nada! ele(a) spawnou mais %s '%s'!",
+        "color": "green"
+    },
+    {
+        "lost_mobs_gamble": "%s perdeu o dobro ou nada! ele(a) perdeu %s '%s'!",
+        "color": "red"
+    },
+    {
+        "not_enough_health_to_gamble": "só tens %d de vida, não podes apostar %d (1 coração = 2, meio coração = 1)",
+        "color": "red"
+    },
+    {
+        "won_health_gamble": "%s ganhou o dobro ou nada! ele(a) ganhou mais %s de vida!",
+        "color": "green"
+    },
+    {
+        "lost_health_gamble": "%s perdeu o dobro ou nada! ele(a) perdeu %s de vida!",
+        "color": "red"
+    },
+    {
+        "not_enough_items_to_gamble": "tu não tens '%s' suficientes para apostar (ou este item está encantado/durabilidade não completa)",
+        "color": "red"
+    },
+    {
+        "ensure_large_enough_stack_to_gamble": "certificate que tens uma stack de '%s' com pelo menos %s de tamanho no teu inventário",
+        "color": "red"
+    },
+    {
+        "gamble_cooldown": "tem calma caralho foda-se",
+        "color": "red"
+    },
+    {
+        "can_gamble_again": "podes apostar novamente",
+        "color": "green"
+    },
+    {
+        "lucky_chunk_minute": "lucky chunk num minuto!",
+        "color": "gold"
+    },
+    {
+        "failed_to_parse_warp_coords": "ocorreu um erro ao ler uma coordenada por warp: %s (talvez esteja corrompido?)",
+        "color": "red"
+    }
+]

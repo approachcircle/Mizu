@@ -30,16 +30,16 @@ public class TeleportAsk {
             return;
         }
         if (targetName.equalsIgnoreCase(commandSender.getName())) {
-            commandSender.sendMessage(String.format("%s%syou tryna teleport to yourself fool????", Utils.prefix, ChatColor.RED));
+            Localisation.sendMessage(commandSender, new KeyArgPair("self_teleport_error"));
             return;
         }
         Player target = Bukkit.getPlayer(targetName);
         if (target == null) {
-            commandSender.sendMessage(Utils.prefix + String.format("%s%s is not a valid player to teleport to", ChatColor.RED, targetName));
+            Localisation.sendMessage(commandSender, new KeyArgPair("invalid_teleport_target", targetName));
             return;
         }
         if (requesters.contains(commandSender) && targets.contains(target)) {
-            commandSender.sendMessage(Utils.prefix + String.format("%syou've already sent a teleport request to %s", ChatColor.RED, targetName));
+            Localisation.sendMessage(commandSender, new KeyArgPair("already_sent_tpa_request", targetName));
             return;
         }
         sendTeleportRequest(commandSender, target);
@@ -54,9 +54,8 @@ public class TeleportAsk {
             if (senderUUID.equalsIgnoreCase(targetUUID)) {
                 Location senderLocation = commandSender.getLocation();
                 Player requester = requesters.get(index);
-                Sentry.addBreadcrumb(String.format("%s accepted a teleport request from %s", commandSender.getName(), requester.getName()));
                 requester.teleport(senderLocation);
-                requester.sendMessage(Utils.prefix + String.format("%syour teleport to %s has been accepted", ChatColor.GREEN, target.getName()));
+                Localisation.sendMessage(commandSender, new KeyArgPair("teleport_request_accepted", target.getName()));
                 logger.info(String.format("%s accepted a teleport request from %s", commandSender.getName(), requester.getName()));
                 success = true;
                 break;
@@ -64,12 +63,12 @@ public class TeleportAsk {
             index++;
         }
         if (success) {
-            commandSender.sendMessage(Utils.prefix + ChatColor.GREEN + "okay, teleported accepted");
+            Localisation.sendMessage(commandSender, new KeyArgPair("teleport_accepted"));
             currentTask.cancel();
             requesters.remove(0);
             targets.remove(0);
         } else {
-            commandSender.sendMessage(Utils.prefix + ChatColor.RED + "you don't have a teleport request to accept");
+            Localisation.sendMessage(commandSender, new KeyArgPair("no_teleport_to_accept"));
         }
     }
 
@@ -80,8 +79,7 @@ public class TeleportAsk {
         for (Player target : targets) {
             String targetUUID = target.getUniqueId().toString();
             if (senderUUID.equalsIgnoreCase(targetUUID)) {
-                Sentry.addBreadcrumb(String.format("%s denied a teleport request from %s", commandSender.getName(), requesters.get(index)));
-                requesters.get(index).sendMessage(Utils.prefix + ChatColor.RED + "your teleport request to " + target.getName() + " was denied");
+                Localisation.sendMessage( requesters.get(index), new KeyArgPair("teleport_request_denied", commandSender.getName()));
                 logger.info(String.format("%s denied a teleport request from %s", commandSender.getName(), requesters.get(index)));
                 success = true;
                 break;
@@ -89,29 +87,27 @@ public class TeleportAsk {
             index++;
         }
         if (success) {
-            commandSender.sendMessage(Utils.prefix + ChatColor.YELLOW + "okay, teleport denied");
+            Localisation.sendMessage(commandSender, new KeyArgPair("teleport_denied"));
             currentTask.cancel();
             requesters.remove(0);
             targets.remove(0);
         } else {
-            commandSender.sendMessage(Utils.prefix + ChatColor.RED + "you don't have a teleport request to deny");
+            Localisation.sendMessage(commandSender, new KeyArgPair("no_teleport_to_deny"));
         }
-
-
     }
 
     private static void sendTeleportRequest(Player requester, Player target) {
-        Sentry.addBreadcrumb(String.format("%s just sent a teleport request to %s", requester.getName(), target.getName()));
-        requester.sendMessage(Utils.prefix + String.format("%ssending teleport request to %s", ChatColor.YELLOW, target.getName()));
-        requester.sendMessage(Utils.prefix + String.format("%s(expires in %s seconds)", ChatColor.YELLOW, timeToLive));
+        Localisation.sendMessage(requester, new KeyArgPair("sending_teleport_request", target.getName()));
+        Localisation.sendMessage(requester, new KeyArgPair("teleport_expiry", timeToLive));
         requesters.add(requester);
         targets.add(target);
         currentTask = beginTimer(requester, target);
-        target.sendMessage(Utils.prefix + String.format("%s%s would like to teleport to you", ChatColor.YELLOW, requester.getName()));
-        target.sendMessage(Utils.prefix + String.format("%s'/tpy' to allow this teleport", ChatColor.DARK_GREEN));
-        target.sendMessage(Utils.prefix + String.format("%s'/tpn' to deny this teleport", ChatColor.RED));
-        target.sendMessage(Utils.prefix + String.format("%s(expires in %s seconds)", ChatColor.YELLOW, timeToLive));
-        requester.sendMessage(Utils.prefix + String.format("%srequest sent", ChatColor.YELLOW));
+        Localisation.sendMessage(target, new KeyArgPair("teleport_request", requester.getName()));
+        Localisation.sendMessage(target, new KeyArgPair("tpy_to_accept"));
+        Localisation.sendMessage(target, new KeyArgPair("tpn_to_deny"));
+        Localisation.sendMessage(target, new KeyArgPair("teleport_expiry", timeToLive));
+        requester.sendMessage(String.format("%s%srequest sent", Utils.prefix, ChatColor.YELLOW)); // 24
+        Localisation.sendMessage(requester, new KeyArgPair("request_sent"));
         logger.info(String.format("%s just sent a teleport request to %s", requester.getName(), target.getName()));
     }
 
@@ -120,9 +116,8 @@ public class TeleportAsk {
         BukkitTask task = Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
-                Sentry.addBreadcrumb(String.format("%s's teleport request to %s expired", requester.getName(), target.getName()));
-                requester.sendMessage(Utils.prefix + String.format("%syour teleport request to %s expired", ChatColor.RED, target.getName()));
-                target.sendMessage(Utils.prefix + String.format("%sthe teleport request from %s expired", ChatColor.RED, requester.getName()));
+                Localisation.sendMessage(requester, new KeyArgPair("teleport_request_to_player_expired", target.getName()));
+                Localisation.sendMessage(target, new KeyArgPair("teleport_request_from_player_expired", requester.getName()));
                 requesters.remove(0);
                 targets.remove(0);
                 logger.info(String.format("%s's teleport request to %s has expired", requester.getName(), target.getName()));

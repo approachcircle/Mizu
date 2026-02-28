@@ -18,12 +18,12 @@ public class SpawnOn {
         try {
             entity = Enum.valueOf(EntityType.class, mobName.toUpperCase());
         } catch (IllegalArgumentException e) {
-            sender.sendMessage(Utils.prefix + ChatColor.RED + "entity of name '" + mobName + "' does not exist");
+            Localisation.sendMessage(sender, new KeyArgPair("no_entity_with_name", mobName));
             return;
         }
         World world = player.getWorld();
         world.spawnEntity(player.getLocation(), entity);
-        sender.sendMessage(Utils.prefix + "spawned " + entity + " on " + player.getName());
+        Localisation.sendMessage(sender, new KeyArgPair("entity_spawned_on_player", mobName, player.getName()));
         logger.info("a " + entity + " was just spawned on " + player.getName());
     }
 }
