@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class TeleportAsk {
+    // not a fan of this, we should use a hashmap
     private static final List<Player> requesters = new ArrayList<Player>();
     private static final List<Player> targets = new ArrayList<Player>();
     private static BukkitTask currentTask;
@@ -65,6 +66,7 @@ public class TeleportAsk {
         if (success) {
             Localisation.sendMessage(commandSender, new KeyArgPair("teleport_accepted"));
             currentTask.cancel();
+            // incorrect if multiple requests pending
             requesters.remove(0);
             targets.remove(0);
         } else {
@@ -106,7 +108,6 @@ public class TeleportAsk {
         Localisation.sendMessage(target, new KeyArgPair("tpy_to_accept"));
         Localisation.sendMessage(target, new KeyArgPair("tpn_to_deny"));
         Localisation.sendMessage(target, new KeyArgPair("teleport_expiry", timeToLive));
-        requester.sendMessage(String.format("%s%srequest sent", Utils.prefix, ChatColor.YELLOW)); // 24
         Localisation.sendMessage(requester, new KeyArgPair("request_sent"));
         logger.info(String.format("%s just sent a teleport request to %s", requester.getName(), target.getName()));
     }

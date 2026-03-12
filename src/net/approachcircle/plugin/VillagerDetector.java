@@ -1,5 +1,6 @@
 package net.approachcircle.plugin;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -14,22 +15,26 @@ public class VillagerDetector {
         // entity.minecraft.villager.librarian -> librarian
         // entity.minecraft.villager.none -> none
         String villagerType = Arrays.stream(villager.getProfession().translationKey().split("\\.")).toList().getLast();
+        if (villagerType.equalsIgnoreCase("none")) {
+            villagerType = "unemployed";
+        }
         Player villagerKiller = villager.getKiller();
+        Location loc = villager.getLocation();
         if (villagerKiller != null) {
             Localisation.broadcast(new KeyArgPair("villager_killed_player",
                     villagerType,
-                    (int)villager.getLocation().getX(),
-                    (int)villager.getLocation().getY(),
-                    (int)villager.getLocation().getZ(),
-                    villager.getLocation().getWorld().getName(),
+                    (int)loc.getX(),
+                    (int)loc.getY(),
+                    (int)loc.getZ(),
+                    loc.getWorld().getName(),
                     villagerKiller.getName()));
         } else {
             Localisation.broadcast(new KeyArgPair("villager_died",
                     villagerType,
-                    (int)villager.getLocation().getX(),
-                    (int)villager.getLocation().getY(),
-                    (int)villager.getLocation().getZ(),
-                    villager.getLocation().getWorld().getName()));
+                    (int)loc.getX(),
+                    (int)loc.getY(),
+                    (int)loc.getZ(),
+                    loc.getWorld().getName()));
         }
     }
 }

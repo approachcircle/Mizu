@@ -129,20 +129,12 @@ public class LuckyChunk {
         if (rng.nextBoolean()) {
             x = rng.nextDouble(spawnX, spawnX + spawnRadius);
         } else {
-            if (spawnX - spawnRadius < spawnX) {
-                x = rng.nextDouble(spawnX - spawnRadius, spawnX);
-            } else {
-                x = rng.nextDouble(spawnX, spawnX - spawnRadius);
-            }
+            x = rng.nextDouble(spawnX - spawnRadius, spawnX);
         }
         if (rng.nextBoolean()) {
             z = rng.nextDouble(spawnZ, spawnZ + spawnRadius);
         } else {
-            if (spawnZ - spawnRadius < spawnZ) {
-                z = rng.nextDouble(spawnZ - spawnRadius, spawnZ);
-            } else {
-                z = rng.nextDouble(spawnZ, spawnZ - spawnRadius);
-            }
+            z = rng.nextDouble(spawnZ - spawnRadius, spawnZ);
         }
         // chunk = 16x16
         Utils.commandAsConsole(String.format("/world %s", chunkSpawnWorld.getName()));

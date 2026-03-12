@@ -136,14 +136,12 @@ public class Casino {
             Localisation.sendMessage(player, new KeyArgPair("not_enough_items_to_gamble", material.toString().toLowerCase()));
             return false;
         }
-        int amountLeft = 0;
         boolean success = false;
         for (int i = 0; i < inv.getSize(); i++) {
             if (inv.getItem(i) == null)
                 continue;
             if (inv.getItem(i).getType() == material) {
                 if (inv.getItem(i).getAmount() >= amount) {
-                    amountLeft = inv.getItem(i).getAmount() - amount;
                     success = true;
                     break;
                 }
@@ -182,22 +180,14 @@ public class Casino {
 
     private static void startCooldown(Player player) {
         ineligible.add(player.getUniqueId());
-        Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(Mizu.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                ineligible.remove(player.getUniqueId());
-                Localisation.sendMessage(player, new KeyArgPair("can_gamble_again"));
-            }
+        // doesn't need to be asynchronous
+        Bukkit.getServer().getScheduler().runTaskLater(Mizu.getInstance(), () -> {
+            ineligible.remove(player.getUniqueId());
+            Localisation.sendMessage(player, new KeyArgPair("can_gamble_again"));
         }, cooldown);
     }
 
-    private static Boolean roll(Float chancePercent) {
-        Random rand = new Random();
-        if (chancePercent == 50.0f) {
-            return rand.nextBoolean();
-        }
-        int size = Math.round(100.0f / chancePercent);
-        int result = rand.nextInt(size);
-        return result == size - 1;
+    private static Boolean roll(double chancePercent) {
+        return new Random().nextDouble(100) < chancePercent;
     }
 }
