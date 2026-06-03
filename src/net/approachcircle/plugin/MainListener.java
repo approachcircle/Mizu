@@ -40,23 +40,16 @@ public class MainListener implements Listener {
             logger.severe("failed to detect message language");
             return;
         }
-        String targetLanguage;
-        if (messageLanguage.equalsIgnoreCase("en")) {
-            targetLanguage = "pt";
-        } else if (messageLanguage.equalsIgnoreCase("pt")) {
-            targetLanguage = "en";
-        } else {
-            logger.warning(String.format("language sent which is not english or portuguese (detected %s)", messageLanguage));
-            return;
-        }
-        String translatedMessage = TranslationClient.translate(message, messageLanguage, targetLanguage);
-        String translatedChatMessage = String.format("<%s> %s", event.getPlayer().getName(), translatedMessage);
+
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if (Localisation.getClientLocaleOrExplicit(player).equalsIgnoreCase(targetLanguage)) {
+            String playerLocale = Localisation.getClientLocaleOrExplicit(player);
+            if (!Localisation.getClientLocaleOrExplicit(player).equalsIgnoreCase(messageLanguage)) {
+                String translatedMessage = TranslationClient.translate(message, messageLanguage, playerLocale);
+                String translatedChatMessage = String.format("<%s> %s", event.getPlayer().getName(), translatedMessage);
+                logger.info(translatedChatMessage);
                 player.sendMessage(Component.text(translatedChatMessage, NamedTextColor.GRAY, TextDecoration.ITALIC));
             }
         }
-        logger.info(translatedChatMessage);
     }
 
     @EventHandler
