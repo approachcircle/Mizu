@@ -26,19 +26,24 @@ public class LuckyChunk {
     private static int progressTask = -1;
     private static int removeTask = -1;
     private static int spawnTask = -1;
-    // private static final int nextSpawnDelay = 36000; // 30m
+    // default ticks until next chunk spawn
     private static final int nextSpawnDelay = 24000; // 20m
+    // ticks left until next chunk spawn
     private static int nextSpawnProgress = nextSpawnDelay;
     private static int nextSpawnProgressTask = -1;
     private static int chunkFoundTask = -1;
     private static boolean chunkFound = false;
+    private static boolean broadcastTeleportMessage = true;
     private static final World chunkSpawnWorld = Bukkit.getWorld("world");
+    // radius away from chunk that detects it has been found
     private static final int chunkFoundRadius = 50;
+    // starting time until chunk disappears
     private static final int duration = 6000; // 5m
-    // private static final int duration = 20 * 30;
-    // private static final int nextSpawnDelay = 20 * 15;
+    // ticks left until chunk disappears
     private static int progress = duration;
+    // step to decrease progress (default by one second)
     private static final int progressStep = 20;
+    // chunk height
     private static final int height = 200;
     private static Material material;
     private static Material lastMaterial;
@@ -177,10 +182,13 @@ public class LuckyChunk {
                     }
                 }
             }
-            if (progress % (20 * 60) == 0 && progress != duration) { // every minute, excluding when first spawned (a sound already plays)
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    if (player.getWorld().getName().equals(chunkSpawnWorld.getName())) {
-                        player.playSound(Sound.sound(Key.key("minecraft:block.note_block.chime"), Sound.Source.BLOCK, 999, 1), finalX, y / 2, finalZ);
+            if (progress % (20 * 60) == 0 && progress != duration && progress != 0) { // every minute, excluding when first spawned (a sound already plays) and despawning
+                // sends the ping notification if the chunk hasn't been found, and we aren't sending the tp message
+                if (!chunkFound || !broadcastTeleportMessage) {
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        if (player.getWorld().getName().equals(chunkSpawnWorld.getName())) {
+                            player.playSound(Sound.sound(Key.key("minecraft:block.note_block.chime"), Sound.Source.BLOCK, 999, 1), finalX, y / 2, finalZ);
+                        }
                     }
                 }
             }
@@ -202,7 +210,7 @@ public class LuckyChunk {
                     String messageBuffer = String.format("%s found the chunk, it's %s", player.getName(), material.name().toLowerCase().replace("_", " "));
                     for (String valuable : valuables) {
                         if (material.name().toLowerCase().contains(valuable)) {
-                            messageBuffer += " @everyone";
+                            messageBuffer += " @here";
                             break;
                         }
                     }
@@ -210,7 +218,12 @@ public class LuckyChunk {
                     if (chunkFoundTask != -1) {
                         Bukkit.getScheduler().cancelTask(chunkFoundTask);
                     }
-                    sendTeleportMessage(); // no player specified so will broadcast
+                    if (broadcastTeleportMessage) {
+                        sendTeleportMessage(); // no player specified so will broadcast
+                    }
+                    if (progress > 1200) { // set progress to 1 minute on found
+                        progress = 1200;
+                    }
                     chunkFound = true;
                 }
             }
