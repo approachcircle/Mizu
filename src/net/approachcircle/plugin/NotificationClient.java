@@ -64,7 +64,6 @@ public class NotificationClient {
             while ((responseLine = br.readLine()) != null) {
                 response.append(responseLine.trim());
             }
-            logger.info("response from webhook: " + response.toString());
         } catch (IOException e) {
             e.printStackTrace();
             logger.severe("failed to read from notification server");

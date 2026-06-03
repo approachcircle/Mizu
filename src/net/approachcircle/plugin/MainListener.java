@@ -1,9 +1,10 @@
 package net.approachcircle.plugin;
 
-import io.sentry.Sentry;
+import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
@@ -26,6 +27,37 @@ public class MainListener implements Listener {
     private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     private final Logger logger = PluginLogger.getPluginLogger();
+
+    @EventHandler
+    public void onMessageSent(AsyncChatEvent event) {
+        String message = PlainTextComponentSerializer.plainText().serialize(event.message());
+        // effectively consume every chat message and broadcast it ourselves...
+        event.setCancelled(true);
+        String originalMessage = String.format("<%s> %s", event.getPlayer().getName(), message);
+        Bukkit.broadcast(Component.text(originalMessage));
+        String messageLanguage = TranslationClient.detect(message);
+        if (messageLanguage == null) {
+            logger.severe("failed to detect message language");
+            return;
+        }
+        String targetLanguage;
+        if (messageLanguage.equalsIgnoreCase("en")) {
+            targetLanguage = "pt";
+        } else if (messageLanguage.equalsIgnoreCase("pt")) {
+            targetLanguage = "en";
+        } else {
+            logger.warning(String.format("language sent which is not english or portuguese (detected %s)", messageLanguage));
+            return;
+        }
+        String translatedMessage = TranslationClient.translate(message, messageLanguage, targetLanguage);
+        String translatedChatMessage = String.format("<%s> %s", event.getPlayer().getName(), translatedMessage);
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (Localisation.getClientLocaleOrExplicit(player).equalsIgnoreCase(targetLanguage)) {
+                player.sendMessage(Component.text(translatedChatMessage, NamedTextColor.GRAY, TextDecoration.ITALIC));
+            }
+        }
+        logger.info(translatedChatMessage);
+    }
 
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
