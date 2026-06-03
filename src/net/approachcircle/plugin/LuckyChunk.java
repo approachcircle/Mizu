@@ -31,7 +31,7 @@ public class LuckyChunk {
     private static final boolean broadcastTeleportMessage = true;
     private static final World chunkSpawnWorld = Bukkit.getWorld("world");
     // radius away from chunk that detects it has been found
-    private static final int chunkFoundRadius = 50;
+    private static final int chunkFoundRadius = 30;
     // starting time until chunk disappears
     private static final int duration = 6000; // 5m
     // ticks left until chunk disappears
@@ -74,7 +74,6 @@ public class LuckyChunk {
             throw new RuntimeException("lucky chunk spawn world is null (misspelled or non-existent?)");
         }
         readBlacklist();
-        // Utils.deferredRepeatWithDelay(LuckyChunk::spawnChunk, nextSpawnDelay, 0, 1);
         scheduleNewChunk();
     }
 
@@ -155,6 +154,11 @@ public class LuckyChunk {
             progress -= progressStep;
             if (progress <= 0) {
                 progress = 0;
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    if (player.getWorld().getName().equals(chunkSpawnWorld.getName())) {
+                        player.playSound(Sound.sound(Key.key("minecraft:block.note_block.chime"), Sound.Source.PLAYER, 999, 0.05f), finalX, y, finalZ);
+                    }
+                }
                 removeChunk(true);
                 return;
             }
