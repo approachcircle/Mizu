@@ -7,16 +7,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.checkerframework.checker.units.qual.K;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class LuckyChunk {
@@ -24,7 +20,6 @@ public class LuckyChunk {
     private static final Logger logger = PluginLogger.getPluginLogger();
     private static final int spawnRadius = 500;
     private static int progressTask = -1;
-    private static int removeTask = -1;
     private static int spawnTask = -1;
     // default ticks until next chunk spawn
     private static final int nextSpawnDelay = 24000; // 20m
@@ -33,7 +28,7 @@ public class LuckyChunk {
     private static int nextSpawnProgressTask = -1;
     private static int chunkFoundTask = -1;
     private static boolean chunkFound = false;
-    private static boolean broadcastTeleportMessage = true;
+    private static final boolean broadcastTeleportMessage = true;
     private static final World chunkSpawnWorld = Bukkit.getWorld("world");
     // radius away from chunk that detects it has been found
     private static final int chunkFoundRadius = 50;
@@ -48,14 +43,7 @@ public class LuckyChunk {
     private static Material material;
     private static Material lastMaterial;
     private static boolean chunkDue = false; // used in the case when the server is empty
-    private static List<Material> spawnableBlocks = List.of(new Material[] {
-            Material.DIAMOND_ORE,
-            Material.REDSTONE_ORE,
-            Material.COAL_BLOCK,
-            Material.SLIME_BLOCK,
-            Material.NETHER_QUARTZ_ORE
-    }); //unused
-    private static List<String> valuables = List.of(
+    private static final List<String> valuables = List.of(
             "iron",
             "diamond",
             "gold",
@@ -79,8 +67,7 @@ public class LuckyChunk {
     private static double x;
     private static final double y = 60;
     private static double z;
-    private static boolean firstChunk = true;
-    private static DatadogReporter reporter = DatadogReporter.getInstance();
+    private static final DatadogReporter reporter = DatadogReporter.getInstance();
 
     public static void start() {
         if (chunkSpawnWorld == null) {
@@ -96,6 +83,10 @@ public class LuckyChunk {
     }
 
     public static void spawnChunk(Material material) {
+        if (!Mizu.getInstance().getConfig().getBoolean("lucky-chunk")) {
+            logger.severe("denying lucky chunk spawn as it is currently disabled in the configuration");
+            return;
+        }
         if (material == null) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (player.isOp()) {
@@ -148,9 +139,6 @@ public class LuckyChunk {
         reporter.suppressReporting();
         Utils.commandAsConsole(String.format("/set %s", material.name().toLowerCase()));
         reporter.returnReporting();
-        removeTask = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-            removeChunk(true);
-        }, duration);
         double finalX = x;
         double finalZ = z;
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -165,8 +153,10 @@ public class LuckyChunk {
         }
         progressTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> { // every second
             progress -= progressStep;
-            if (progress < 0) {
+            if (progress <= 0) {
                 progress = 0;
+                removeChunk(true);
+                return;
             }
             bar.progress(progress * ((float) 1 / duration));
             if (progress <= 20 * 60) { // 1 minute left
@@ -259,7 +249,6 @@ public class LuckyChunk {
 
     private static void resetState() {
         Bukkit.getScheduler().cancelTask(progressTask);
-        Bukkit.getScheduler().cancelTask(removeTask);
         Bukkit.getScheduler().cancelTask(chunkFoundTask);
         progress = duration;
         nextSpawnProgress = nextSpawnDelay;
