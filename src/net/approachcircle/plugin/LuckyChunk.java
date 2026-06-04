@@ -39,7 +39,7 @@ public class LuckyChunk {
     // step to decrease progress (default by one second)
     private static final int progressStep = 20;
     // chunk height
-    private static final int height = 200;
+    private static final int height = 100;
     private static Material material;
     private static Material lastMaterial;
     private static boolean chunkDue = false; // used in the case when the server is empty
