@@ -198,7 +198,9 @@ public class LuckyChunk {
                 Location loc = player.getLocation();
                 Location from = new Location(chunkSpawnWorld, finalX - chunkFoundRadius, y, finalZ - chunkFoundRadius);
                 Location to = new Location(chunkSpawnWorld, finalX + chunkFoundRadius, y + (height * 2), finalZ + chunkFoundRadius);
-                if ((from.x() < loc.x() && to.x() > loc.x()) && (from.y() < loc.y() && to.y() > loc.y()) && (from.z() < loc.z() && to.z() > loc.z())) {
+                // ensure they are in the same world as the chunk otherwise someone may be able to find the chunk from the nether
+                // (thank you rodrigo)
+                if ((from.x() < loc.x() && to.x() > loc.x()) && (from.y() < loc.y() && to.y() > loc.y()) && (from.z() < loc.z() && to.z() > loc.z()) && player.getWorld() == chunkSpawnWorld) {
                     Localisation.broadcast(new KeyArgPair("player_found_chunk", player.getName()));
                     Localisation.broadcast(new KeyArgPair("lucky_chunk_block_identification", material.name().toLowerCase().replace("_", " ")));
                     String messageBuffer = String.format("%s found the chunk, it's %s", player.getName(), material.name().toLowerCase().replace("_", " "));
