@@ -7,11 +7,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class TranslationClient {
     private static final Logger logger = PluginLogger.getPluginLogger();
     private static final String api_key = "";
+
+    public static final List<String> languagesToTranslate = List.of(
+            "pt",
+            "en",
+            "pl",
+            "ro",
+            "fr",
+            "cs"
+    );
 
     private static String request(String path, byte[] buffer) {
         URI uri;
@@ -108,10 +119,21 @@ public class TranslationClient {
             logger.severe("failed to parse response from translation API");
             return null;
         }
-        DetectionResponse strongest = jsonResponse[0];
-        // if the API gives us multiple languages back, we will attempt to use the language it is most likely to be
-        for (DetectionResponse detection : jsonResponse) {
+        // the API may return multiple languages that the message could be
+        // so we filter by the languages we support
+        DetectionResponse[] supportedDetections = Arrays.stream(jsonResponse).filter(
+                (item) -> languagesToTranslate.contains(item.language)
+        ).toArray(DetectionResponse[]::new);
+        if (supportedDetections.length == 0) {
+            return null;
+        }
+        if (supportedDetections.length == 1) {
+            return supportedDetections[0].language;
+        }
+        DetectionResponse strongest = supportedDetections[0];
+        for (DetectionResponse detection : supportedDetections) {
             logger.info(String.format("%s, confidence %d", detection.language, detection.confidence));
+            // then pick the language we're most confident in
             if (detection.confidence > strongest.confidence) {
                 strongest = detection;
             }
