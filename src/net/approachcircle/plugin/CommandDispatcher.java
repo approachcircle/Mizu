@@ -73,7 +73,9 @@ public class CommandDispatcher {
             "villager",
             "wolf",
             "player",
-            "horse"
+            "horse",
+            "parrot",
+            "cat"
     ); // TODO: need to make these entity types at some point
 
     private static Plugin plugin = Mizu.getInstance();
