@@ -165,4 +165,13 @@ public class Localisation {
     public static void broadcast(KeyArgPair keyArgPair) {
         broadcast(keyArgPair, true);
     }
+
+    public static boolean playersWithLocalePresent(String locale) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (getClientLocaleOrExplicit(player).equalsIgnoreCase(locale)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
