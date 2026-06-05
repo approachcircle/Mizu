@@ -31,9 +31,12 @@ public class LuckyChunk {
     private static final boolean broadcastTeleportMessage = true;
     private static final World chunkSpawnWorld = Bukkit.getWorld("world");
     // radius away from chunk that detects it has been found
-    private static final int chunkFoundRadius = 30;
+    // private static final int chunkFoundRadius = 40;
+    private static final int chunkFoundRadius = 12 * 16; // 16 blocks in a chunk, 12 chunks render distance
     // starting time until chunk disappears
     private static final int duration = 6000; // 5m
+    // time left until chunk disappears after it has been found
+    private static final int progressAfterDiscovery = 1800; // 1m30s
     // ticks left until chunk disappears
     private static int progress = duration;
     // step to decrease progress (default by one second)
@@ -217,8 +220,8 @@ public class LuckyChunk {
                     if (broadcastTeleportMessage) {
                         sendTeleportMessage(); // no player specified so will broadcast
                     }
-                    if (progress > 1200) { // set progress to 1 minute on found
-                        progress = 1200;
+                    if (progress > progressAfterDiscovery) {
+                        progress = progressAfterDiscovery;
                     }
                     chunkFound = true;
                 }
