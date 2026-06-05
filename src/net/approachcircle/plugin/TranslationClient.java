@@ -119,6 +119,15 @@ public class TranslationClient {
             logger.severe("failed to parse response from translation API");
             return null;
         }
+        if (jsonResponse.length == 1) {
+            // if the API detects spanish, it's definitely portuguese instead
+            // obviously in future, you'd wanna hedge a bet on the locale of the player
+            // the message is coming from to make an informed decision
+            // but for now, its DEFINITELY portuguese
+            if (jsonResponse[0].language.equalsIgnoreCase("es")) {
+                jsonResponse[0].language = "pt";
+            }
+        }
         // the API may return multiple languages that the message could be
         // so we filter by the languages we support
         DetectionResponse[] supportedDetections = Arrays.stream(jsonResponse).filter(
