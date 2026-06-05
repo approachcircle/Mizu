@@ -458,5 +458,13 @@
     {
         "failed_to_parse_warp_coords": "ocorreu um erro ao ler uma coordenada por warp: %s (talvez esteja corrompido?)",
         "color": "red"
+    },
+    {
+        "translation_failed": "não foi possível traduzir esta mensagem",
+        "color": "red"
+    },
+    {
+        "tpa_requester_cancelled": "o pedido de teleport para si foi cancelado (o jogador pediu a outra pessoa)",
+        "color": "red"
     }
 ]

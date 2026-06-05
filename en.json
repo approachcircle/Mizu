@@ -492,5 +492,13 @@
     {
         "failed_to_parse_warp_coords": "failed to parse a coordinate for warp: %s (it may be corrupted?)",
         "color": "red"
+    },
+    {
+        "translation_failed": "could not translate this message",
+        "color": "red"
+    },
+    {
+        "tpa_requester_cancelled": "the teleport request to you was cancelled (the player requested somebody else)",
+        "color": "red"
     }
 ]
