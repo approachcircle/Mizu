@@ -33,13 +33,12 @@ public class TeleportAsk {
             Localisation.sendMessage(commandSender, new KeyArgPair("invalid_teleport_target", targetName));
             return;
         }
-
-        if (teleportRequestMap.get(commandSender.getUniqueId()).equals(target.getUniqueId())) {
-            Localisation.sendMessage(commandSender, new KeyArgPair("already_sent_tpa_request", targetName));
-            return;
-        }
         // cancel (remove) the teleport that's already present for this player if one exists
         if (teleportRequestMap.containsKey(commandSender.getUniqueId())) {
+            if (teleportRequestMap.get(commandSender.getUniqueId()).equals(target.getUniqueId())) {
+                Localisation.sendMessage(commandSender, new KeyArgPair("already_sent_tpa_request", targetName));
+                return;
+            }
             Localisation.sendMessage(Bukkit.getPlayer(teleportRequestMap.get(commandSender.getUniqueId())), "tpa_requester_cancelled");
             teleportRequestMap.remove(commandSender.getUniqueId());
         }
