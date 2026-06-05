@@ -37,6 +37,7 @@ public class MainListener implements Listener {
         Bukkit.broadcast(Component.text(originalMessage));
         String messageLanguage = TranslationClient.detect(message);
         if (messageLanguage == null) {
+            Localisation.sendMessage(event.getPlayer(), "translation_failed");
             logger.severe(String.format("translation failed for %s", event.getPlayer().getName()));
             return;
         }
@@ -49,6 +50,7 @@ public class MainListener implements Listener {
         for (Player player : Bukkit.getOnlinePlayers()) {
             String playerLocale = Localisation.getClientLocaleOrExplicit(player);
             if (!playerLocale.equalsIgnoreCase(messageLanguage)) {
+                // TODO: lets just redo this, just figure out how we can do this without the "echo" variables
                 String translatedMessage = TranslationClient.translate(message, messageLanguage, playerLocale);
                 String translatedChatMessage = String.format("<%s> %s", event.getPlayer().getName(), translatedMessage);
                 // grab a copy of the portuguese message that is translated to send back to the player
@@ -65,6 +67,11 @@ public class MainListener implements Listener {
                 player.sendMessage(Component.text(translatedChatMessage, NamedTextColor.GRAY, TextDecoration.ITALIC));
             }
         }
+        // TODO: fix this dogshit ass bullshit fuckery
+        // TODO: dont like it, and it sends an empty line of text because the logic is fucked
+        // TODO: there must be a better way
+        // TODO: if translation fails then the empty line is sent, which makes sense
+        // TODO: but still, let's clean this up for the love of god
         if (messageLanguage.equalsIgnoreCase("pt") &&
                 Localisation.playersWithLocalePresent("en") &&
                 Localisation.getClientLocaleOrExplicit(event.getPlayer()).equalsIgnoreCase("pt")) {
@@ -164,13 +171,6 @@ public class MainListener implements Listener {
         Location location = player.getLocation();
         logger.info(String.format("player %s logged out at %s %s %s in world '%s'", player.getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), location.getWorld().getName()));
     }
-    
-//    @EventHandler
-//    public void onPlayerSleep(PlayerDeepSleepEvent event) {
-//        if (event.getPlayer().getWorld().getGameRuleValue(GameRule.PLAYERS_SLEEPING_PERCENTAGE) <= 1 / Bukkit.getOnlinePlayers().size() * 100) {
-//            Bukkit.broadcast(Component.text(Utils.prefix + ChatColor.GRAY + "night skipped" + ChatColor.RESET));
-//        }
-//    }
     
     @EventHandler
     public void onPlayerKicked(PlayerKickEvent event) {
