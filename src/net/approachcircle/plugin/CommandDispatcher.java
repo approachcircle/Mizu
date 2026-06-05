@@ -2,9 +2,9 @@ package net.approachcircle.plugin;
 
 import io.sentry.Sentry;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.TitlePart;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -23,10 +23,10 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 public class CommandDispatcher {
-    private static final String noPerms = Utils.prefix + ChatColor.RED + "sorry, you do not have the permission to run this command";
+    private static final Component noPerms = Localisation.unlocalisedPrefixComponent(new ColouredString("sorry, you do not have the permission to run this command", NamedTextColor.RED));
     private static final Logger logger = PluginLogger.getPluginLogger();
     private static final List<String> experienceAliases = List.of(new String[] {"exp", "xp", "levels", "experience", "level", "eckspee"});
-    private static final List<String> healthAliases = List.of(new String[] {"health", "hp", "life"});
+    private static final List<String> healthAliases = List.of(new String[] {"health", "hp", "life", "hearts"});
 //    private static final List<String> gambleableEntities = List.of(
 //            "pig",
 //            "sheep",
@@ -115,7 +115,7 @@ public class CommandDispatcher {
             case "tpy":
                 if (sender instanceof Player player) {
                     if (sender.hasPermission("mizu.command.tpa")) {
-                        TeleportAsk.acceptTeleport(player);
+                        TeleportAsk.answerTeleport(player, TeleportResponse.Accept);
                     } else {
                         insufficientPermissions(sender);
                     }
@@ -124,7 +124,7 @@ public class CommandDispatcher {
             case "tpn":
                 if (sender instanceof Player player) {
                     if (sender.hasPermission("mizu.command.tpa")) {
-                        TeleportAsk.denyTeleport(player);
+                        TeleportAsk.answerTeleport(player, TeleportResponse.Deny);
                     } else {
                         insufficientPermissions(sender);
                     }
@@ -229,7 +229,6 @@ public class CommandDispatcher {
                         try {
                             material = Enum.valueOf(Material.class, args[1].toUpperCase());
                         } catch (IllegalArgumentException e) {
-                            player.sendMessage(String.format("%s%sa material with the name '%s' doesn't exist", Utils.prefix, ChatColor.RED, args[1])); // 69
                             Localisation.sendMessage(player, new KeyArgPair("material_does_not_exist", args[1]));
                             return true;
                         }
@@ -311,7 +310,7 @@ public class CommandDispatcher {
                             for (PotionEffect effect : effects) {
                                 target.addPotionEffect(effect);
                             }
-                            target.sendTitlePart(TitlePart.TITLE, Component.text(ChatColor.RED + "fuck you"));
+                            target.sendTitlePart(TitlePart.TITLE, Component.text("fuck you", NamedTextColor.RED));
                         } else {
                             Localisation.sendMessage(sender, new KeyArgPair("player_not_found", args[0]));
                         }
@@ -507,7 +506,7 @@ public class CommandDispatcher {
             missing += "} ";
         }
         message += missing;
-        sender.sendMessage(Utils.prefix + ChatColor.RED + message);
+        sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString(message, NamedTextColor.RED)));
     }
 
     private static void insufficientPermissions(CommandSender sender) {
