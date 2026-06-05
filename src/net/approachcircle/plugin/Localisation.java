@@ -5,11 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -136,8 +134,16 @@ public class Localisation {
         return mizuPrefix.append(component(keyArgPair, region));
     }
 
+    public static TextComponent unlocalisedPrefixComponent(ColouredString message) {
+        return mizuPrefix.append(Component.text(message.string, message.color));
+    }
+
     public static void sendMessage(Player player, KeyArgPair keyArgPair) {
         player.sendMessage(Localisation.prefixComponent(keyArgPair, getClientLocaleOrExplicit(player)));
+    }
+
+    public static void sendMessage(Player player, String key) {
+        sendMessage(player, new KeyArgPair(key));
     }
 
     public static void sendMessage(CommandSender sender, KeyArgPair keyArgPair) {
@@ -146,6 +152,10 @@ public class Localisation {
         } else {
             sender.sendMessage(getLocalisedString(keyArgPair, "en").string);
         }
+    }
+
+    public static void sendMessage(CommandSender sender, String key) {
+        sendMessage(sender, new KeyArgPair(key));
     }
 
     public static void broadcast(KeyArgPair keyArgPair, boolean prefix) {
