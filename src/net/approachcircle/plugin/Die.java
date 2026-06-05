@@ -11,7 +11,6 @@ public class Die {
     public static List<UUID> suicided = new ArrayList<UUID>();
 
     public static void suicide(Player player) {
-        player.sendMessage(Utils.prefix + ChatColor.YELLOW + "good riddance");
         suicided.add(player.getUniqueId());
         player.setHealth(0);
     }
