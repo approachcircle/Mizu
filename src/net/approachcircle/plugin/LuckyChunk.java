@@ -32,7 +32,7 @@ public class LuckyChunk {
     private static final World chunkSpawnWorld = Bukkit.getWorld("world");
     // radius away from chunk that detects it has been found
     // private static final int chunkFoundRadius = 40;
-    private static final int chunkFoundRadius = 12 * 16; // 16 blocks in a chunk, 12 chunks render distance
+    private static int chunkFoundRadius = 12 * 16; // 16 blocks in a chunk, 12 chunks render distance
     // starting time until chunk disappears
     private static final int duration = 6000; // 5m
     // time left until chunk disappears after it has been found
@@ -60,7 +60,15 @@ public class LuckyChunk {
             "shulker",
             "emerald",
             "hopper",
-            "dragon"
+            "dragon",
+            "lapis",
+            "slime"
+    );
+    private static final List<Material> chunkDenySpawnList = List.of(
+            Material.CHEST,
+            Material.ITEM_FRAME,
+            Material.GLOW_ITEM_FRAME,
+            Material.FURNACE
     );
     private static List<String> blacklist;
 
@@ -76,6 +84,7 @@ public class LuckyChunk {
         if (chunkSpawnWorld == null) {
             throw new RuntimeException("lucky chunk spawn world is null (misspelled or non-existent?)");
         }
+        chunkFoundRadius = Mizu.getInstance().getServer().getViewDistance() * 16;
         readBlacklist();
         scheduleNewChunk();
     }
@@ -199,6 +208,11 @@ public class LuckyChunk {
         chunkFoundTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 Location loc = player.getLocation();
+                // if the client view distance is lower than the server view distance, use that instead
+                int serverViewDistance = Mizu.getInstance().getServer().getViewDistance();
+                if (player.getClientViewDistance() < serverViewDistance) {
+                    chunkFoundRadius = player.getClientViewDistance() * 16;
+                }
                 Location from = new Location(chunkSpawnWorld, finalX - chunkFoundRadius, y, finalZ - chunkFoundRadius);
                 Location to = new Location(chunkSpawnWorld, finalX + chunkFoundRadius, y + (height * 2), finalZ + chunkFoundRadius);
                 // ensure they are in the same world as the chunk otherwise someone may be able to find the chunk from the nether
