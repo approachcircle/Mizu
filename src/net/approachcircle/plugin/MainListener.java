@@ -149,10 +149,8 @@ public class MainListener implements Listener {
         String enabledKey = lcState ? "lucky_chunk_enabled" : "lucky_chunk_not_enabled";
         player.sendMessage(Localisation.prefixComponent(new KeyArgPair(enabledKey), Localisation.getClientLocaleOrExplicit(player)));
         if (LuckyChunk.isChunkSpawned()) {
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                if (p.isOp() || LuckyChunk.isChunkFound()) {
-                    LuckyChunk.sendTeleportMessage(p);
-                }
+            if (LuckyChunk.isChunkFound() || player.isOp()) {
+                LuckyChunk.sendTeleportMessage(player);
             }
         }
         if (LuckyChunk.isChunkDue()) {
