@@ -20,6 +20,7 @@ import org.bukkit.event.player.*;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -42,50 +43,32 @@ public class MainListener implements Listener {
             return;
         }
         // echo the translation to both portuguese and english back to the sender
-        boolean portugueseEchoed = false;
-        boolean englishEchoed = false;
-        String portugueseChatMessageEcho = "";
-        String englishChatMessageEcho = "";
-
+        HashMap<String, String> translatedMessages = new HashMap<>();
         for (Player player : Bukkit.getOnlinePlayers()) {
             String playerLocale = Localisation.getClientLocaleOrExplicit(player);
+            // this player does not speak the language that the message was sent in
             if (!playerLocale.equalsIgnoreCase(messageLanguage)) {
-                // TODO: lets just redo this, just figure out how we can do this without the "echo" variables
                 String translatedMessage = TranslationClient.translate(message, messageLanguage, playerLocale);
                 String translatedChatMessage = String.format("<%s> %s", event.getPlayer().getName(), translatedMessage);
-                // grab a copy of the portuguese message that is translated to send back to the player
-                // only do this if portuguese players are present
-                if (!portugueseEchoed && playerLocale.equalsIgnoreCase("pt")) {
-                    portugueseEchoed = true;
-                    portugueseChatMessageEcho = translatedChatMessage + " (portuguese translation)";
-                }
-                if (!englishEchoed && playerLocale.equalsIgnoreCase("en")) {
-                    englishEchoed = true;
-                    englishChatMessageEcho = translatedChatMessage + " (tradução em inglês)";
-                }
+                translatedMessages.put(playerLocale, translatedMessage);
                 logger.info(translatedChatMessage);
                 player.sendMessage(Component.text(translatedChatMessage, NamedTextColor.GRAY, TextDecoration.ITALIC));
             }
         }
-        // TODO: fix this dogshit ass bullshit fuckery
-        // TODO: dont like it, and it sends an empty line of text because the logic is fucked
-        // TODO: there must be a better way
-        // TODO: if translation fails then the empty line is sent, which makes sense
-        // TODO: but still, let's clean this up for the love of god
         if (messageLanguage.equalsIgnoreCase("pt") &&
                 Localisation.playersWithLocalePresent("en") &&
                 Localisation.getClientLocaleOrExplicit(event.getPlayer()).equalsIgnoreCase("pt")) {
             // if the message is portuguese and coming from a portuguese player, send the translation
-            event.getPlayer().sendMessage(Component.text(englishChatMessageEcho, NamedTextColor.GRAY, TextDecoration.ITALIC));
+            event.getPlayer().sendMessage(Component.text(translatedMessages.get("en"), NamedTextColor.GRAY, TextDecoration.ITALIC));
         } else if (messageLanguage.equalsIgnoreCase("en") &&
                 Localisation.playersWithLocalePresent("pt") &&
                 Localisation.getClientLocaleOrExplicit(event.getPlayer()).equalsIgnoreCase("en")) {
             // if the message is english and coming from an english player, send the portuguese translation
-            event.getPlayer().sendMessage(Component.text(portugueseChatMessageEcho, NamedTextColor.GRAY, TextDecoration.ITALIC));
+            event.getPlayer().sendMessage(Component.text(translatedMessages.get("pt"), NamedTextColor.GRAY, TextDecoration.ITALIC));
         } else if (!messageLanguage.equalsIgnoreCase("en") && !messageLanguage.equalsIgnoreCase("pt")) {
             // if the message is anything else, show the portuguese translation
             // the english translation will be sent anyway + you should know what you're writing
-            event.getPlayer().sendMessage(Component.text(portugueseChatMessageEcho, NamedTextColor.GRAY, TextDecoration.ITALIC));
+            event.getPlayer().sendMessage(Component.text(translatedMessages.get("pt"), NamedTextColor.GRAY, TextDecoration.ITALIC));
         }
     }
 
