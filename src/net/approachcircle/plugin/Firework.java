@@ -40,7 +40,7 @@ public class Firework {
         logger.info(String.format("%s just got fireworks", target.getName()));
         target.getInventory().addItem(fireworks);
         ineligible.add(target.getUniqueId());
-        Localisation.sendMessage(target, new KeyArgPair("been_given_fireworks", fireworks.getAmount(), cooldownMinutes));
+        Localisation.sendMessage(target, new KeyArgPair("been_given_fireworks", 64, cooldownMinutes));
         startTimer(target);
     }
 
