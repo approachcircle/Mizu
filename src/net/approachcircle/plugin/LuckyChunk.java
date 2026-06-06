@@ -36,13 +36,13 @@ public class LuckyChunk {
     // starting time until chunk disappears
     private static final int duration = 6000; // 5m
     // time left until chunk disappears after it has been found
-    private static final int progressAfterDiscovery = 1800; // 1m30s
+    private static final int progressAfterDiscovery = 1500; // 1m15s
     // ticks left until chunk disappears
     private static int progress = duration;
     // step to decrease progress (default by one second)
     private static final int progressStep = 20;
     // chunk height
-    private static final int height = 100;
+    private static final int height = 80;
     private static Material material;
     private static Material lastMaterial;
     private static boolean chunkDue = false; // used in the case when the server is empty
