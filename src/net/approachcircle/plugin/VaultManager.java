@@ -19,6 +19,7 @@ public class VaultManager {
     private final Logger logger = PluginLogger.getPluginLogger();
     public static final String viewName = "Mizu Vault";
     public static final List<UUID> currentlyViewingVault = new ArrayList<>();
+    public static final int vaultSize = 36;
 
     private VaultManager() {
         vaultFolder = new File(Mizu.getInstance().getDataFolder().getAbsolutePath() + "\\vaults");
@@ -37,7 +38,7 @@ public class VaultManager {
     }
 
     public Inventory getVault(Player player) {
-        Inventory vault = Bukkit.createInventory(player, 27, Component.text(viewName));
+        Inventory vault = Bukkit.createInventory(player, vaultSize, Component.text(viewName));
         File vaultFile = new File(vaultFolder, player.getUniqueId() + ".yml");
         if (!vaultFile.exists()) {
             try {
