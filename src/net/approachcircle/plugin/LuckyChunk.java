@@ -62,8 +62,10 @@ public class LuckyChunk {
             "hopper",
             "dragon",
             "lapis",
-            "slime"
+            "slime",
+            "wither"
     );
+    // need to add a valuables blacklist to stop detecting "iron bars" etc
     private static final List<Material> chunkDenySpawnList = List.of(
             Material.CHEST,
             Material.ITEM_FRAME,
@@ -210,6 +212,7 @@ public class LuckyChunk {
                 Location loc = player.getLocation();
                 // if the client view distance is lower than the server view distance, use that instead
                 int serverViewDistance = Mizu.getInstance().getServer().getViewDistance();
+                chunkFoundRadius = serverViewDistance;
                 if (player.getClientViewDistance() < serverViewDistance) {
                     chunkFoundRadius = player.getClientViewDistance() * 16;
                 }
@@ -379,9 +382,9 @@ public class LuckyChunk {
     public static void readBlacklist() {
         blacklist = plugin.getConfig().getStringList("blacklist");
         if (blacklist.isEmpty()) {
-            logger.warning("blacklist empty");
+            logger.warning("lucky chunk blacklist empty");
         } else {
-            logger.info("blacklist contains: " + String.join(", ", blacklist));
+            logger.info(String.format("lucky chunk blacklist contains %d entries", blacklist.size()));
         }
     }
 
