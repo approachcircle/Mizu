@@ -35,7 +35,7 @@ public class Casino {
             return;
         }
         startCooldown(player);
-        boolean winner = roll(50.0f);
+        boolean winner = rollDouble();
         switch (type) {
             case Experience -> {
                 if (amount > player.getLevel()) {
@@ -189,5 +189,8 @@ public class Casino {
 
     private static Boolean roll(double chancePercent) {
         return new Random().nextDouble(100) < chancePercent;
+    }
+    private static Boolean rollDouble() {
+        return new Random().nextBoolean();
     }
 }
