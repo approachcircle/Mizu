@@ -50,7 +50,11 @@ public class MainListener implements Listener {
             if (!playerLocale.equalsIgnoreCase(messageLanguage)) {
                 String translatedMessage = TranslationClient.translate(message, messageLanguage, playerLocale);
                 String translatedChatMessage = String.format("<%s> %s", event.getPlayer().getName(), translatedMessage);
-                translatedMessages.put(playerLocale, translatedMessage);
+                if (playerLocale.equalsIgnoreCase("pt")) {
+                    translatedMessages.put(playerLocale, translatedChatMessage + " (portuguese translation)");
+                } else if (playerLocale.equalsIgnoreCase("en")) {
+                    translatedMessages.put(playerLocale, translatedChatMessage + " (tradução em inglês)");
+                }
                 logger.info(translatedChatMessage);
                 player.sendMessage(Component.text(translatedChatMessage, NamedTextColor.GRAY, TextDecoration.ITALIC));
             }
