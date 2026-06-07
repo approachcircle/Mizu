@@ -38,6 +38,30 @@ public class Localisation {
         }
         PluginLogger.getPluginLogger().info("loaded language files successfully");
         PluginLogger.getPluginLogger().info(english.size() + " english entries");
+        Set<String> portugueseKeys = getKeysForLocale("pt");
+        for (HashMap<String, String> englishEntry : english) {
+            for (String key : englishEntry.keySet()) {
+                if (!key.equals("color")) {
+                    if (!portugueseKeys.contains(key)) {
+                        PluginLogger.getPluginLogger().warning(String.format("missing portuguese translation for key: %s", key));
+                    }
+                }
+            }
+        }
+    }
+
+    public static Set<String> getKeysForLocale(String locale) {
+        Set<String> keys = new HashSet<>();
+        if (locale.equalsIgnoreCase("en")) {
+            for (HashMap<String, String> englishEntry : english) {
+                keys.addAll(englishEntry.keySet());
+            }
+        } else if (locale.equalsIgnoreCase("pt")) {
+            for (HashMap<String, String> portugueseEntry : portuguese) {
+                keys.addAll(portugueseEntry.keySet());
+            }
+        }
+        return keys;
     }
 
     public static void loadExplicitLocaleSettings() {
@@ -121,7 +145,13 @@ public class Localisation {
             PluginLogger.getPluginLogger().warning(String.format("key %s not found in %s.json file, returning english", keyArgPair.key, region));
             return getLocalisedString(keyArgPair, "en");
         } else {
-            return new ColouredString(String.format("string key is unknown: '%s'", keyArgPair.key), NamedTextColor.RED);
+            String message = "%s";
+            if (region.equalsIgnoreCase("pt")) {
+                message += " (par de chaves em falta)";
+            } else if (region.equalsIgnoreCase("en")) {
+                message += " (missing key pair)";
+            }
+            return new ColouredString(String.format(message, keyArgPair.key), NamedTextColor.WHITE);
         }
     }
 
