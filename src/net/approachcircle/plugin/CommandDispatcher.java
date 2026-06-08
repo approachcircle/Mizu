@@ -1,6 +1,8 @@
 package net.approachcircle.plugin;
 
 import io.sentry.Sentry;
+import net.approachcircle.plugin.government.Party;
+import net.approachcircle.plugin.government.PartyManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.TitlePart;
@@ -14,6 +16,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -473,6 +477,50 @@ public class CommandDispatcher {
                     }
                 }
                 break;
+            case "party":
+                if (!sender.hasPermission("mizu.command.party")) {
+                    insufficientPermissions(sender);
+                    return true;
+                }
+                if (sender instanceof Player player) {
+                    if (args.length < 1) {
+                        insufficientArguments(new String[]{"create", "view", "add", "remove", "delete", "rename", "changecolour"}, sender);
+                        return true;
+                    }
+                    if (args[0].equalsIgnoreCase("create")) {
+                        if (args.length < 3) {
+                            insufficientArguments(new String[]{"name", "colour"}, sender);
+                            return true;
+                        }
+                        List<Party> parties = PartyManager.getInstance().getParties();
+                        if (parties == null) {
+                            Localisation.sendMessage(player, "error_occurred_getting_parties");
+                            return true;
+                        }
+                        for (Party party : parties) {
+                            if (party.name.equalsIgnoreCase(args[1])) {
+                                Localisation.sendMessage(player, new KeyArgPair("party_name_taken", args[1]));
+                                return true;
+                            }
+                        }
+                        NamedTextColor teamColor = NamedTextColor.NAMES.value(args[2]);
+                        if (teamColor == null) {
+                            Localisation.sendMessage(player, new KeyArgPair("not_a_valid_colour", args[2]));
+                            return true;
+                        }
+                        if (!PartyManager.getInstance().createParty(args[1], args[2], player.getUniqueId())) {
+                            Localisation.sendMessage(player, new KeyArgPair("error_occurred_creating_party", args[1]));
+                            return true;
+                        }
+                        Localisation.sendMessage(player, new KeyArgPair("party_created", args[1]));
+                        Localisation.sendMessage(player, "auto_appointed_leader");
+                        Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+                        Team team = scoreboard.registerNewTeam(args[1]);
+                        team.color(teamColor);
+                        team.addEntry(player.getName());
+                    }
+                }
+                break;
         }
         return true;
     }
@@ -492,18 +540,20 @@ public class CommandDispatcher {
                 new PotionEffect(PotionEffectType.INFESTED, duration, 255),
                 new PotionEffect(PotionEffectType.WIND_CHARGED, duration, 255),
                 new PotionEffect(PotionEffectType.OOZING, duration, 255),
-                new PotionEffect(PotionEffectType.MINING_FATIGUE, duration ,255)
+                new PotionEffect(PotionEffectType.MINING_FATIGUE, duration,255),
+                // 255 is too much
+                // 30 kills with max feather falling
+                new PotionEffect(PotionEffectType.LEVITATION, duration, 30)
         );
     }
 
     private static void insufficientArguments(String[] missingArgs, CommandSender sender) {
-        String message = "";
-        message += "not enough arguments: <command> ";
-        String missing = "";
+        String message = "not enough arguments: <command> ";
+        StringBuilder missing = new StringBuilder();
         for (String arg : missingArgs) {
-            missing += "{";
-            missing += arg;
-            missing += "} ";
+            missing.append("{");
+            missing.append(arg);
+            missing.append("} ");
         }
         message += missing;
         sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString(message, NamedTextColor.RED)));

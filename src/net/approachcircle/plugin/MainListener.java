@@ -1,6 +1,8 @@
 package net.approachcircle.plugin;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
+import net.approachcircle.plugin.government.Party;
+import net.approachcircle.plugin.government.PartyManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -34,8 +36,15 @@ public class MainListener implements Listener {
         String message = PlainTextComponentSerializer.plainText().serialize(event.message());
         // effectively consume every chat message and broadcast it ourselves...
         event.setCancelled(true);
-        String originalMessage = String.format("<%s> %s", event.getPlayer().getName(), message);
-        Bukkit.broadcast(Component.text(originalMessage));
+        Component formattedMessage = Component.text("<");
+        Party playerParty = PartyManager.getInstance().getPartyForPlayer(event.getPlayer().getUniqueId());
+        if (playerParty != null) {
+            formattedMessage = formattedMessage.append(Component.text(event.getPlayer().getName(), NamedTextColor.NAMES.value(playerParty.color)));
+        } else {
+            formattedMessage = formattedMessage.append(Component.text(event.getPlayer().getName()));
+        }
+        formattedMessage = formattedMessage.append(Component.text("> ")).append(Component.text(message));
+        Bukkit.broadcast(formattedMessage);
         String messageLanguage = TranslationClient.detect(message);
         if (messageLanguage == null) {
             Localisation.sendMessage(event.getPlayer(), "translation_failed");
