@@ -51,8 +51,8 @@ public class TeleportAsk {
             for (UUID id : teleportRequestMap.keySet()) {
                 if (teleportRequestMap.get(id).equals(senderUUID)) {
                     Player requester = Bukkit.getPlayer(id);
-                    // if the requester is null, i assume that means they have left the server
-                    // either that or it's a fallback in case the UUID doesn't exist i'm not sure
+                    // if the requester is null, i assume that means they have left the server.
+                    // either that, or it's a fallback in case the UUID doesn't exist i'm not sure.
                     // whatever the case, we don't care
                     if (requester == null) {
                         return;
