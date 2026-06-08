@@ -41,7 +41,7 @@ public class Localisation {
         Set<String> portugueseKeys = getKeysForLocale("pt");
         for (HashMap<String, String> englishEntry : english) {
             for (String key : englishEntry.keySet()) {
-                if (!key.equals("color")) {
+                if (!key.equals("color") && !key.equals("translation_notes")) {
                     if (!portugueseKeys.contains(key)) {
                         PluginLogger.getPluginLogger().warning(String.format("missing portuguese translation for key: %s", key));
                     }
@@ -140,12 +140,15 @@ public class Localisation {
                 }
             }
         }
-        // no key present in this language, try english then return an error if not in english either
+        // key not present in this language, try english
         if (selected != english) {
             PluginLogger.getPluginLogger().warning(String.format("key %s not found in %s.json file, returning english", keyArgPair.key, region));
             return getLocalisedString(keyArgPair, "en");
         } else {
-            String message = "%s";
+            // if no english, send the key and args along with a warning
+            PluginLogger.getPluginLogger().warning(String.format("missing key %s", keyArgPair.key));
+            String message = "%s: ";
+            message += Arrays.toString(keyArgPair.args);
             if (region.equalsIgnoreCase("pt")) {
                 message += " (par de chaves em falta)";
             } else if (region.equalsIgnoreCase("en")) {
