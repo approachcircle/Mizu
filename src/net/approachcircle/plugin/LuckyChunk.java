@@ -210,12 +210,10 @@ public class LuckyChunk {
         chunkFoundTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 Location loc = player.getLocation();
-                // if the client view distance is lower than the server view distance, use that instead
-                int serverViewDistance = Mizu.getInstance().getServer().getViewDistance();
-                chunkFoundRadius = serverViewDistance;
-                if (player.getClientViewDistance() < serverViewDistance) {
-                    chunkFoundRadius = player.getClientViewDistance() * 16;
-                }
+                // use the player's render distance to determine if they can "see" the chunk
+                // * 16 since the radius is in blocks
+                // chunkFoundRadius = player.getClientViewDistance() * 16;
+                chunkFoundRadius = 100;
                 Location from = new Location(chunkSpawnWorld, finalX - chunkFoundRadius, y, finalZ - chunkFoundRadius);
                 Location to = new Location(chunkSpawnWorld, finalX + chunkFoundRadius, y + (height * 2), finalZ + chunkFoundRadius);
                 // ensure they are in the same world as the chunk otherwise someone may be able to find the chunk from the nether
