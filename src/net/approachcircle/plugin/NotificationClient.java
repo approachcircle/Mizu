@@ -17,6 +17,8 @@ public class NotificationClient {
         }
         URL url;
         try {
+            // TODO: SENSITIVE
+            // TODO: HIDE AND CHANGE BEFORE OPEN SOURCE
             url = new URL("https://discord.com/api/webhooks/1288578553021202442/_BU3bOaREmctGsZUVMXEkzXwWmYRLUiGy7br2l5BsCYT9oogvjlJOiFs83T65U58yTRd");
         } catch (MalformedURLException e) {
             e.printStackTrace();

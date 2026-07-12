@@ -13,7 +13,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Scoreboard;
@@ -23,53 +22,16 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.logging.Logger;
 
 public class CommandDispatcher {
+    //TODO: could refactor missing permissions into an exception that is thrown and caught by the caller
+    //TODO: so that we have a single point to check permissions instead of an if statement every time
+    //TODO: also the same with args?
     private static final Component noPerms = Localisation.unlocalisedPrefixComponent(new ColouredString("sorry, you do not have the permission to run this command", NamedTextColor.RED));
     private static final Logger logger = PluginLogger.getPluginLogger();
     private static final List<String> experienceAliases = List.of(new String[] {"exp", "xp", "levels", "experience", "level", "eckspee"});
     private static final List<String> healthAliases = List.of(new String[] {"health", "hp", "life", "hearts"});
-//    private static final List<String> gambleableEntities = List.of(
-//            "pig",
-//            "sheep",
-//            "cow",
-//            "chicken",
-//            "creeper",
-//            "zombie",
-//            "skeleton",
-//            "squid",
-//            "axolotl",
-//            "glow_squid",
-//            "tropical_fish",
-//            "cod",
-//            "spider",
-//            "enderman",
-//            "wither",
-//            "warden",
-//            "blaze",
-//            "wither_skeleton",
-//            "guardian",
-//            "elder_guardian",
-//            "pufferfish",
-//            "allay",
-//            "stray",
-//            "husk",
-//            "phantom",
-//            "bat",
-//            "silverfish",
-//            "ocelot",
-//            "shulker",
-//            "hoglin",
-//            "piglin",
-//            "zombified_piglin",
-//            "strider",
-//            "zombified_hoglin",
-//            "witch",
-//            "armadillo",
-//            "bee"
-//    );
 
     public static final List<String> EntityBlacklist = List.of(
             "ender_dragon",
@@ -80,9 +42,7 @@ public class CommandDispatcher {
             "horse",
             "parrot",
             "cat"
-    ); // TODO: need to make these entity types at some point
-
-    private static Plugin plugin = Mizu.getInstance();
+    ); // TODO: need to make these entity types at some point (not that deep but yknow)
 
     public static boolean dispatch(String label, CommandSender sender, String[] args) {
         logger.info(String.format("dispatching command '/%s' through Mizu ", label));
@@ -104,7 +64,7 @@ public class CommandDispatcher {
                 break;
             case "tpa":
                 if (sender instanceof Player player) {
-                    if (args.length <= 0) {
+                    if (args.length == 0) {
                         String[] missing = {"playerName"};
                         insufficientArguments(missing, sender);
                         return true;
@@ -136,7 +96,7 @@ public class CommandDispatcher {
                 break;
             case "mock":
                 if (sender.hasPermission("mizu.command.mock")) {
-                    if (args.length <= 0) {
+                    if (args.length == 0) {
                         String[] missing = {"playerName", "message"};
                         insufficientArguments(missing, sender);
                         return true;
@@ -298,7 +258,7 @@ public class CommandDispatcher {
             case "mizu-reload-config":
                 if (sender.hasPermission("mizu.reload-config")) {
                     sender.sendMessage(Utils.prefix + "config reloading...");
-                    plugin.reloadConfig();
+                    Mizu.getInstance().reloadConfig();
                     sender.sendMessage(Utils.prefix + "done!");
                     LuckyChunk.readBlacklist();
                 } else {
@@ -326,110 +286,117 @@ public class CommandDispatcher {
             case "warp":
                 if (sender.hasPermission("mizu.warp")) {
                     if (args.length > 0) {
-                        if (Objects.equals(args[0], "add")) {
-                            if (args.length < 2) {
-                                insufficientArguments(new String[]{"warp name"}, sender);
-                                return true;
-                            }
-                            if (sender instanceof Player player) {
-                                if (Arrays.stream(WarpManager.reservedCommands).anyMatch((reserved) -> reserved.equalsIgnoreCase(args[1]))) {
-                                    Localisation.sendMessage(sender, new KeyArgPair("must_call_warp_something_else"));
+                        switch (args[0]) {
+                            case "add" -> {
+                                if (args.length < 2) {
+                                    insufficientArguments(new String[]{"warp name"}, sender);
                                     return true;
                                 }
-                                if (WarpManager.getInstance().addNewWarp(args[1], player)) {
-                                    Localisation.sendMessage(sender, new KeyArgPair("added_warp", args[1]));
+                                if (sender instanceof Player player) {
+                                    if (Arrays.stream(WarpManager.reservedCommands).anyMatch((reserved) -> reserved.equalsIgnoreCase(args[1]))) {
+                                        Localisation.sendMessage(sender, new KeyArgPair("must_call_warp_something_else"));
+                                        return true;
+                                    }
+                                    if (WarpManager.getInstance().addNewWarp(args[1], player)) {
+                                        Localisation.sendMessage(sender, new KeyArgPair("added_warp", args[1]));
+                                    } else {
+                                        Localisation.sendMessage(sender, new KeyArgPair("failed_to_add_warp", args[1]));
+                                    }
+                                }
+                            }
+                            case "list" -> {
+                                List<String> warpLines = WarpManager.getInstance().listWarps(sender);
+                                if (warpLines != null) {
+                                    Localisation.sendMessage(sender, new KeyArgPair("found_number_warps", warpLines.size()));
+                                    for (String warp : warpLines) {
+                                        Localisation.sendMessage(sender, new KeyArgPair("warp_owned_by_player", warp.split(" ")[0], warp.split(" ")[5]));
+                                    }
+                                }
+                            }
+                            case "remove" -> {
+                                if (WarpManager.getInstance().removeWarp(args[1], sender)) {
+                                    Localisation.sendMessage(sender, new KeyArgPair("removed_warp", args[1]));
                                 } else {
-                                    Localisation.sendMessage(sender, new KeyArgPair("failed_to_add_warp", args[1]));
+                                    Localisation.sendMessage(sender, new KeyArgPair("failed_to_remove_warp", args[1]));
                                 }
                             }
-                        } else if (Objects.equals(args[0], "list")) {
-                            List<String> warpLines = WarpManager.getInstance().listWarps(sender);
-                            if (warpLines != null) {
-                                Localisation.sendMessage(sender, new KeyArgPair("found_number_warps", warpLines.size()));
-                                for (String warp : warpLines) {
-                                    Localisation.sendMessage(sender, new KeyArgPair("warp_owned_by_player", warp.split(" ")[0], warp.split(" ")[5]));
+                            case "update" -> {
+                                // update just does the equivalent of remove then add with the same name
+                                if (sender instanceof Player player) {
+                                    if (args.length < 2) {
+                                        insufficientArguments(new String[]{"warp name to update"}, player);
+                                        //TODO: for QoL, can make this update the closest warp to the player within 1/2 blocks?
+                                        // might be lowkey kinda useless but y'know
+                                        return true;
+                                    }
+                                    String owner = WarpManager.getInstance().getOwner(args[1]);
+                                    if (owner == null) {
+                                        Localisation.sendMessage(sender, new KeyArgPair("failed_to_get_warp_owner"));
+                                        return true;
+                                    }
+                                    // use boolean AND so that the condition short circuits if either remove or add fails
+                                    if (WarpManager.getInstance().removeWarp(args[1], sender) &&
+                                            WarpManager.getInstance().addNewWarp(args[1], player, owner)) {
+                                        Localisation.sendMessage(sender, new KeyArgPair("updated_warp_position", args[1]));
+                                    } else {
+                                        Localisation.sendMessage(sender, new KeyArgPair("failed_to_update_warp", args[1]));
+                                    }
                                 }
                             }
-                        } else if (Objects.equals(args[0], "remove")) {
-                            if (WarpManager.getInstance().removeWarp(args[1], sender)) {
-                                Localisation.sendMessage(sender, new KeyArgPair("removed_warp", args[1]));
-                            } else {
-                                Localisation.sendMessage(sender, new KeyArgPair("failed_to_remove_warp", args[1]));
-                            }
-                        } else if (Objects.equals(args[0], "update")) {
-                            // update just does the equivalent of remove then add with the same name
-                            if (sender instanceof Player player) {
-                                if (args.length < 2) {
-                                    insufficientArguments(new String[]{"warp name to update"}, player);
-                                    //TODO: for QoL, can make this update the closest warp to the player within 1/2 blocks?
-                                    // might be lowkey kinda useless but y'know
+                            case "rename" -> {
+                                if (args.length < 3) {
+                                    insufficientArguments(new String[]{"old warp name and new warp name"}, sender);
                                     return true;
                                 }
                                 String owner = WarpManager.getInstance().getOwner(args[1]);
                                 if (owner == null) {
-                                    Localisation.sendMessage(sender, new KeyArgPair("failed_to_get_warp_owner"));
+                                    Localisation.sendMessage(sender, new KeyArgPair("failed_to_rename_owner_not_found"));
                                     return true;
                                 }
-                                // use boolean AND so that the condition short circuits if either remove or add fails
+                                String[] oldWarpTokens = WarpManager.getInstance().getWarpTokens(args[1]);
+                                if (oldWarpTokens == null) {
+                                    Localisation.sendMessage(sender, new KeyArgPair("failed_to_rename_parsing_failed"));
+                                    return true;
+                                }
+                                Location reusedLocation = null;
+                                try {
+                                    reusedLocation = new Location(
+                                            Bukkit.getWorld(oldWarpTokens[4]),
+                                            Double.parseDouble(oldWarpTokens[1]),
+                                            Double.parseDouble(oldWarpTokens[2]),
+                                            Double.parseDouble(oldWarpTokens[3]),
+                                            Float.parseFloat(oldWarpTokens[6]),
+                                            0
+                                    );
+                                } catch (NumberFormatException e) {
+                                    logger.severe("failed to parse a coordinate for warp: " + args[1] + "(it may be corrupted?)");
+                                    Localisation.sendMessage(sender, new KeyArgPair("failed_to_parse_warp_coords", args[1]));
+                                    return true;
+                                } catch (ArrayIndexOutOfBoundsException e) {
+                                    logger.severe("failed to find coordinates for warp: " + args[1]);
+                                    Localisation.sendMessage(sender, new KeyArgPair("failed_to_find_warp_coords", args[1]));
+                                }
+                                if (WarpManager.getInstance().getWarpTokens(args[2]) != null) {
+                                    Localisation.sendMessage(sender, new KeyArgPair("warp_name_taken", args[2]));
+                                    return true;
+                                }
                                 if (WarpManager.getInstance().removeWarp(args[1], sender) &&
-                                        WarpManager.getInstance().addNewWarp(args[1], player, owner)) {
-                                    Localisation.sendMessage(sender, new KeyArgPair("updated_warp_position", args[1]));
+                                        WarpManager.getInstance().addNewWarpRaw(args[2], reusedLocation, owner)) {
+                                    Localisation.sendMessage(sender, new KeyArgPair("renamed_warp", args[1], args[2]));
                                 } else {
-                                    Localisation.sendMessage(sender, new KeyArgPair("failed_to_update_warp", args[1]));
+                                    Localisation.sendMessage(sender, new KeyArgPair("failed_to_rename", args[1]));
                                 }
                             }
-                        } else if (Objects.equals(args[0], "rename")) {
-                            if (args.length < 3) {
-                                insufficientArguments(new String[]{"old warp name and new warp name"}, sender);
-                                return true;
-                            }
-                            String owner = WarpManager.getInstance().getOwner(args[1]);
-                            if (owner == null) {
-                                Localisation.sendMessage(sender, new KeyArgPair("failed_to_rename_owner_not_found"));
-                                return true;
-                            }
-                            String[] oldWarpTokens = WarpManager.getInstance().getWarpTokens(args[1]);
-                            if (oldWarpTokens == null) {
-                                Localisation.sendMessage(sender, new KeyArgPair("failed_to_rename_parsing_failed"));
-                                return true;
-                            }
-                            Location reusedLocation = null;
-                            try {
-                                reusedLocation = new Location(
-                                        Bukkit.getWorld(oldWarpTokens[4]),
-                                        Double.parseDouble(oldWarpTokens[1]),
-                                        Double.parseDouble(oldWarpTokens[2]),
-                                        Double.parseDouble(oldWarpTokens[3]),
-                                        Float.parseFloat(oldWarpTokens[6]),
-                                        0
-                                );
-                            } catch (NumberFormatException e) {
-                                logger.severe("failed to parse a coordinate for warp: " + args[1] + "(it may be corrupted?)");
-                                Localisation.sendMessage(sender, new KeyArgPair("failed_to_parse_warp_coords", args[1]));
-                                return true;
-                            } catch (ArrayIndexOutOfBoundsException e) {
-                                logger.severe("failed to find coordinates for warp: " + args[1]);
-                                Localisation.sendMessage(sender, new KeyArgPair("failed_to_find_warp_coords", args[1]));
-                            }
-                            if (WarpManager.getInstance().getWarpTokens(args[2]) != null) {
-                                Localisation.sendMessage(sender, new KeyArgPair("warp_name_taken", args[2]));
-                                return true;
-                            }
-                            if (WarpManager.getInstance().removeWarp(args[1], sender) &&
-                                    WarpManager.getInstance().addNewWarpRaw(args[2], reusedLocation, owner)) {
-                                Localisation.sendMessage(sender, new KeyArgPair("renamed_warp", args[1], args[2]));
-                            } else {
-                                Localisation.sendMessage(sender, new KeyArgPair("failed_to_rename", args[1]));
-                            }
-                        } else {
-                            if (sender instanceof Player player) {
-                                Location warpTarget = WarpManager.getInstance().getWarpLocation(args[0], player);
-                                if (warpTarget == null) {
-                                    Localisation.sendMessage(sender, new KeyArgPair("warp_failed"));
-                                    return true;
+                            case null, default -> {
+                                if (sender instanceof Player player) {
+                                    Location warpTarget = WarpManager.getInstance().getWarpLocation(args[0], player);
+                                    if (warpTarget == null) {
+                                        Localisation.sendMessage(sender, new KeyArgPair("warp_failed"));
+                                        return true;
+                                    }
+                                    player.teleport(warpTarget);
+                                    Localisation.sendMessage(sender, new KeyArgPair("warped_success", args[0]));
                                 }
-                                player.teleport(warpTarget);
-                                Localisation.sendMessage(sender, new KeyArgPair("warped_success", args[0]));
                             }
                         }
                     } else {

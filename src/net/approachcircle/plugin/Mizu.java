@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 public class Mizu extends JavaPlugin {
     private Logger logger = getLogger();
     private PluginManager pluginManager = getServer().getPluginManager();
+    // TODO: NOT THAT SENSITIVE BUT HIDE STILL
     private String sentryDsn = "https://80903f313fc7478284aadb5982eb248e@o4504855501602816.ingest.sentry.io/4504855620747264";
     private static Mizu instance = null;
     private DatadogReporter reporter = DatadogReporter.getInstance();
@@ -41,7 +42,6 @@ public class Mizu extends JavaPlugin {
         pluginManager.registerEvents(new MainListener(), this);
         logger.info("all events have been registered");
         Sentry.addBreadcrumb("events registered");
-        // LagNotifier.startObserving();
         reporter.startReportingMSPT();
         reporter.startReportingTPS();
         Sentry.addBreadcrumb("started monitoring lag");
@@ -69,10 +69,8 @@ public class Mizu extends JavaPlugin {
         if (LuckyChunk.isChunkSpawned() && getConfig().getBoolean("lucky-chunk")) {
             logger.info("undoing last lucky chunk...");
             reporter.suppressReporting();
-            // LagNotifier.suppressNotifications();
             Utils.commandAsConsole("/undo");
             reporter.returnReporting();
-            //LagNotifier.returnNotifications();
             logger.info("done!");
             return;
         }

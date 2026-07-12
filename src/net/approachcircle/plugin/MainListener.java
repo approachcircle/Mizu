@@ -108,7 +108,8 @@ public class MainListener implements Listener {
             deathLocation.getWorld().playSound(deathLocation, Sound.ENTITY_GUARDIAN_DEATH_LAND, 10.0f, 0.5f);
             Casino.gambledLife.remove(player.getUniqueId());
         } else if (player.getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.VOID) { // void
-            deathLocation.getWorld().playSound(deathLocation, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 10.0f, 1.0f);
+            // deathLocation.getWorld().playSound(deathLocation, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 10.0f, 1.0f);
+            player.getWorld().spawnEntity(player.getLocation(), EntityType.LIGHTNING_BOLT);
             event.deathMessage(null);
             Localisation.broadcast(new KeyArgPair("player_fell_into_void", player.getName()), false);
         } else { // other
