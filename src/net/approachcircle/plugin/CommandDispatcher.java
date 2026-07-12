@@ -119,6 +119,10 @@ public class CommandDispatcher {
                     insufficientPermissions(sender);
                 break;
             case "firework":
+                if (!Mizu.getInstance().getConfig().getBoolean("firework")) {
+                    sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString("/firework is disabled!", NamedTextColor.RED)));
+                    return true;
+                }
                 if (sender.hasPermission("mizu.command.firework")) {
                     if (sender instanceof Player)
                         Firework.giveIfPossible((Player) sender);
@@ -145,6 +149,10 @@ public class CommandDispatcher {
                 NotificationClient.send(String.format("test notification from minecraft server '%s'", System.getenv("COMPUTERNAME")));
                 break;
             case "gamble":
+                if (!Mizu.getInstance().getConfig().getBoolean("gambling")) {
+                    sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString("gambling is disabled!", NamedTextColor.RED)));
+                    return true;
+                }
                 if (sender instanceof Player player) {
                     if (player.hasPermission("mizu.command.gamble")) {
                         if (args.length <= 1) {

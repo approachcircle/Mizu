@@ -45,6 +45,12 @@ public class MainListener implements Listener {
         }
         formattedMessage = formattedMessage.append(Component.text("> ")).append(Component.text(message));
         Bukkit.broadcast(formattedMessage);
+        // stop here if translation is disabled
+        // up until here everything behaves "normally" to the user
+        // might be worth returning from within the translation client class instead of here but it'll be fine for now
+        if (!Mizu.getInstance().getConfig().getBoolean("translation")) {
+            return;
+        }
         String messageLanguage = TranslationClient.detect(message);
         if (messageLanguage == null) {
             Localisation.sendMessage(event.getPlayer(), "translation_failed");
