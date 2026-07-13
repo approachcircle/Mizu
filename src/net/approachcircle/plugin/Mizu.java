@@ -1,6 +1,7 @@
 package net.approachcircle.plugin;
 
 import io.sentry.Sentry;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.HandlerList;
@@ -16,12 +17,12 @@ import java.util.logging.Logger;
 //TODO: add jail system (every tick will teleport someone inside a bedrock jail somewhere)
 //TODO: add echest command for personal echest
 public class Mizu extends JavaPlugin {
-    private Logger logger = getLogger();
-    private PluginManager pluginManager = getServer().getPluginManager();
+    private final Logger logger = getLogger();
+    private final PluginManager pluginManager = getServer().getPluginManager();
     // TODO: NOT THAT SENSITIVE BUT HIDE STILL
-    private String sentryDsn = "https://80903f313fc7478284aadb5982eb248e@o4504855501602816.ingest.sentry.io/4504855620747264";
+    private final String sentryDsn = "https://80903f313fc7478284aadb5982eb248e@o4504855501602816.ingest.sentry.io/4504855620747264";
     private static Mizu instance = null;
-    private DatadogReporter reporter = DatadogReporter.getInstance();
+    private final DatadogReporter reporter = DatadogReporter.getInstance();
 
     public static Mizu getInstance() {
         if (instance == null) {
@@ -81,10 +82,16 @@ public class Mizu extends JavaPlugin {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
         try {
             return CommandDispatcher.dispatch(label, sender, args);
+        } catch (MissingPermissionException e) {
+            sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString(e.getMessage(), NamedTextColor.RED)));
+            PluginLogger.getPluginLogger().warning(String.format("missing permissions! sender: %s, permission: %s", sender.getName(), e.getPermission()));
+            return true;
         } catch (Exception e) {
+            sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString("an error occurred executing this command!", NamedTextColor.RED)));
+            e.printStackTrace(System.err);
             Sentry.captureException(e);
             return true;
         }

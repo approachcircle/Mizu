@@ -24,8 +24,6 @@ commands:
     description: gives a stack of fireworks every 5 minutes
   test-sentry:
     description: tests sentry notifications
-  gwen-walk:
-    description: no longer functional, but used to spawn fake guardians below the players feet
   gamble:
     description: allows you to gamble a specified amount of materials, mobs, experience or health
   test-notifications:
@@ -52,95 +50,89 @@ commands:
     description: teleports you to the lucky chunk if has been found or the player is an operator
   vault:
     description: opens the players personal vault
-  party:
-    description: gives the player utilities to manage their party
    
 permissions:
-  mizu.command.*:
+  mizu.*:
     description: access to every Mizu feature
     children:
-      mizu.command.die: true
-      mizu.command.firework: true
-      mizu.command.maintenance: true
-      mizu.command.tpa: true
-      mizu.command.spawnon: true
-      mizu.command.mock: true
+      mizu.die: true
+      mizu.firework: true
+      mizu.maintenance: true
+      mizu.tpa: true
+      mizu.spawnon: true
+      mizu.mock: true
       mizu.magicwand: true
-      mizu.command.test-sentry: true
-      mizu.command.test-notifications: true
-      mizu.command.gwen-walk: true
-      mizu.command.gamble: true
-      mizu.spawn-chunk: true
-      mizu.remove-chunk: true
-      mizu.command.lc: true
-      mizu.reload-config: true
-      mizu.command.fuck-you: true
+      mizu.test-sentry: true
+      mizu.test-notifications: true
+      mizu.gamble: true
+      mizu.spawn-chunk-now: true
+      mizu.remove-chunk-now: true
+      mizu.lc: true
+      mizu.mizu-reload-config: true
+      mizu.fuck-you: true
       mizu.warp: true
-      mizu.command.stats: true
-      mizu.command.teleport-chunk: true
-      mizu.command.vault: true
-      mizu.command.party: true
+      mizu.stats: true
+      mizu.lctp: true
+      mizu.vault: true
+      mizu.party: true
 
-  mizu.command.die:
+  mizu.die:
     description: allows a user to kill themselves
     default: true
-  mizu.command.firework:
+  mizu.firework:
     description: allows a user to receive a set amount of fireworks after a set cooldown
     default: true
-  mizu.command.maintenance:
+  mizu.maintenance:
     description: allows a user to toggle maintenance mode for the server
     default: op
-  mizu.command.tpa:
+  mizu.tpa:
     description: allows a user to request to teleport to another user
     default: true
-  mizu.command.spawnon:
+  mizu.spawnon:
     description: allows a user to spawn a mob of their choosing inside of another player
     default: op
-  mizu.command.mock:
+  mizu.mock:
     description: allows a user to disguise a message to appear to come from another user
     default: true
   mizu.magicwand:
     description: allows a user to use the magic wand
     default: op
-  mizu.command.test-sentry:
+  mizu.test-sentry:
     description: allows a user to throw a test exception for sentry
     default: op
-  mizu.command.test-notifications:
+  mizu.test-notifications:
     description: allows a user to test the notification server
     default: op
-  mizu.command.gwen-walk:
-    description: allows a user to walk spawning elder guardians beneath their feet
-    default: op
-  mizu.command.gamble:
+  mizu.gamble:
     description: allows a user to gamble a given amount of items for double or nothing
     default: true
-  mizu.spawn-chunk:
+  mizu.spawn-chunk-now:
     description: allows a user to immediately spawn a lucky chunk
     default: op
-  mizu.remove-chunk:
+  mizu.remove-chunk-now:
     description: allows a user to immediately remove a lucky chunk
     default: op
-  mizu.command.lc:
+  mizu.lc:
     description: allows a user to query the time until the next lucky chunk spawn
     default: true
-  mizu.reload-config:
+  mizu.mizu-reload-config:
     description: allows a user to reload the config from disk
     default: op
-  mizu.command.fuck-you:
+  mizu.fuck-you:
     description: allows a user to apply loads of negative effects to another player
     default: op
   mizu.warp:
     description: allows a user to warp to a specified player-made warp
     default: true
-  mizu.command.stats:
+  mizu.stats:
     description: allows a user to view their most used commands
     default: true
-  mizu.command.teleport-chunk:
+  mizu.lctp:
     description: allows a user to teleport to the lucky chunk when it has been found by at least one person
     default: true
-  mizu.command.vault:
+  mizu.vault:
     description: allows a user to open their vault
     default: true
-  mizu.command.party:
+  mizu.party:
     description: allows a user to manage their party
     default: true
