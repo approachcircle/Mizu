@@ -45,13 +45,15 @@ public class TeleportAsk extends MizuCommand {
             answerTeleport(commandSender, TeleportResponse.Deny);
             return;
         }
-        if (targetName.equalsIgnoreCase(commandSender.getName())) {
-            Localisation.sendMessage(commandSender, new KeyArgPair("self_teleport_error"));
-            return;
-        }
         Player target = Bukkit.getPlayer(targetName);
         if (target == null) {
             Localisation.sendMessage(commandSender, new KeyArgPair("invalid_teleport_target", targetName));
+            return;
+        }
+        // getPlayer can find a partially typed name, which can bypass the old targetName == senderName check
+        // so we compare the name of the actual returned player with the sender
+        if (target.getName().equalsIgnoreCase(commandSender.getName())) {
+            Localisation.sendMessage(commandSender, new KeyArgPair("self_teleport_error"));
             return;
         }
         // cancel (remove) the teleport that's already present for this player if one exists
