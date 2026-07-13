@@ -25,10 +25,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 public class CommandDispatcher {
-    //TODO: could refactor missing permissions into an exception that is thrown and caught by the caller
-    //TODO: so that we have a single point to check permissions instead of an if statement every time
-    //TODO: also the same with args?
-    private static final Component noPerms = Localisation.unlocalisedPrefixComponent(new ColouredString("sorry, you do not have the permission to run this command", NamedTextColor.RED));
     private static final Logger logger = PluginLogger.getPluginLogger();
     private static final List<String> experienceAliases = List.of(new String[] {"exp", "xp", "levels", "experience", "level", "eckspee"});
     private static final List<String> healthAliases = List.of(new String[] {"health", "hp", "life", "hearts"});
