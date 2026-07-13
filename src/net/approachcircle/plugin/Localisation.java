@@ -8,6 +8,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.checkerframework.dataflow.qual.Pure;
+import org.jetbrains.annotations.Contract;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -136,17 +138,25 @@ public class Localisation {
         for (HashMap<String, String> map : selected) {
             for (String k : map.keySet()) {
                 if (k.equalsIgnoreCase(keyArgPair.key)) {
-                    return new ColouredString(String.format(map.get(k), keyArgPair.args), NamedTextColor.NAMES.value(map.get("color")));
+                    try {
+                        return new ColouredString(String.format(map.get(k), keyArgPair.args), NamedTextColor.NAMES.value(map.get("color")));
+                    } catch (IllegalFormatException e) {
+                        PluginLogger.getPluginLogger().severe(String.format("argument mismatch for '%s', sending raw message", k));
+                        Utils.attention("localisation");
+                        return new ColouredString(map.get(k), NamedTextColor.NAMES.value(map.get("color")));
+                    }
                 }
             }
         }
         // key not present in this language, try english
         if (selected != english) {
             PluginLogger.getPluginLogger().warning(String.format("key %s not found in %s.json file, returning english", keyArgPair.key, region));
+            Utils.attention("localisation");
             return getLocalisedString(keyArgPair, "en");
         } else {
             // if no english, send the key and args along with a warning
             PluginLogger.getPluginLogger().warning(String.format("missing key %s", keyArgPair.key));
+            Utils.attention("localisation");
             String message = "%s: ";
             message += Arrays.toString(keyArgPair.args);
             if (region.equalsIgnoreCase("pt")) {
@@ -183,7 +193,8 @@ public class Localisation {
         if (sender instanceof Player) {
             sendMessage((Player) sender, keyArgPair);
         } else {
-            sender.sendMessage(getLocalisedString(keyArgPair, "en").string);
+            // before we would just send a plain english string, now we send it as a component with colouring maintained
+            sender.sendMessage(unlocalisedPrefixComponent(getLocalisedString(keyArgPair, "en")));
         }
     }
 

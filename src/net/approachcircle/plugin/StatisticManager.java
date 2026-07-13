@@ -28,10 +28,12 @@ public class StatisticManager {
                 } catch (IOException e) {
                     logger.severe("failed to initialise statistics file");
                     e.printStackTrace(System.err);
+                    Utils.attention("statistic manager");
                 }
             } catch (IOException e) {
                 logger.severe("failed to create statistics file");
                 e.printStackTrace(System.err);
+                Utils.attention("statistic manager");
             }
         }
     }
@@ -51,6 +53,7 @@ public class StatisticManager {
         } catch (IOException e) {
             logger.severe("failed to read statistics file");
             e.printStackTrace(System.err);
+            Utils.attention("statistic manager");
             return null;
         }
         return result;
@@ -89,6 +92,7 @@ public class StatisticManager {
         } catch (IOException e) {
             logger.severe("failed to update statistics file for player: " + player.getName());
             e.printStackTrace(System.err);
+            Utils.attention("statistic manager");
         }
     }
     

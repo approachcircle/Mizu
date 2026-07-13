@@ -25,7 +25,6 @@ public class BackupManager {
     }
 
     public static void backup(String world) {
-        Bukkit.broadcast(Component.text(String.format("%s%sbacking up %s...", Utils.prefix, ChatColor.GRAY, world)));
 
     }
 }

@@ -36,6 +36,7 @@ public class WarpManager {
             } catch (IOException e) {
                 logger.severe("failed to create warp file");
                 e.printStackTrace(System.err);
+                Utils.attention("warp manager");
             }
         }
     }
@@ -69,6 +70,7 @@ public class WarpManager {
         } catch (IOException e) {
             logger.severe("failed to add warp to warp file");
             e.printStackTrace(System.err);
+            Utils.attention("warp manager");
             return false;
         }
         return true;
@@ -91,6 +93,7 @@ public class WarpManager {
         } catch (IOException e) {
             logger.severe("failed to add warp to warp file");
             e.printStackTrace(System.err);
+            Utils.attention("warp manager");
             return false;
         }
         return true;
@@ -130,6 +133,7 @@ public class WarpManager {
             } catch (IOException e) {
                 logger.severe("failed to clear warp file");
                 e.printStackTrace(System.err);
+                Utils.attention("warp manager");
                 return false;
             }
         }
@@ -140,6 +144,7 @@ public class WarpManager {
         } catch (IOException e) {
             logger.severe("failed to restore warp file");
             e.printStackTrace(System.err);
+            Utils.attention("warp manager");
             return false;
         }
         return true;
@@ -153,6 +158,7 @@ public class WarpManager {
         World world = Bukkit.getWorld(warpTokens[4]);
         if (world == null) {
             logger.severe("got null while parsing world for warp: " + name);
+            Utils.attention("warp manager");
             return null;
         }
         float yaw = 0;
@@ -170,6 +176,7 @@ public class WarpManager {
             return new Location(world, Double.parseDouble(warpTokens[1]), Double.parseDouble(warpTokens[2]), Double.parseDouble(warpTokens[3]), yaw, 0);
         } catch (NumberFormatException e) {
             logger.severe("failed to parse a coordinate for warp: " + name + "(it may be corrupted?)");
+            Utils.attention("warp manager");
             return null;
         }
     }
@@ -183,6 +190,7 @@ public class WarpManager {
         } catch (IOException e) {
             logger.severe("something went wrong grabbing warps");
             e.printStackTrace(System.err);
+            Utils.attention("warp manager");
             return null;
         }
         return lines;
@@ -214,6 +222,7 @@ public class WarpManager {
         List<String> warpLines = getWarpFileLines();
         if (warpLines == null) {
             Localisation.sendMessage(sender, new KeyArgPair("error_grabbing_warps"));
+            Utils.attention("warp manager");
             return null;
         }
         if (warpLines.isEmpty()) {

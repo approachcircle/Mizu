@@ -1,21 +1,42 @@
-package net.approachcircle.plugin;
+package net.approachcircle.plugin.commands;
 
+import net.approachcircle.plugin.*;
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-public class TeleportAsk {
+public class TeleportAsk extends MizuCommand {
     // requester : target
     private static final HashMap<UUID, UUID> teleportRequestMap = new HashMap<>();
     private static BukkitTask currentTask;
     private static final Logger logger = PluginLogger.getPluginLogger();
     private static final Integer timeToLive = 20;
 
-    public static void requestTeleport(Player commandSender, String targetName) {
+    @Override
+    public boolean run(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
+        if (sender instanceof Player player) {
+            if (label.equalsIgnoreCase("tpa")) {
+                if (args.length == 0) {
+                    return false;
+                }
+                requestTeleport(player, args[0]);
+            } else if (label.equalsIgnoreCase("tpy")) {
+                answerTeleport(player, TeleportResponse.Accept);
+            } else if (label.equalsIgnoreCase("tpn")) {
+                answerTeleport(player, TeleportResponse.Deny);
+            }
+        }
+        return true;
+    }
+
+    private static void requestTeleport(Player commandSender, String targetName) {
         if (targetName.equalsIgnoreCase("yes")) {
             answerTeleport(commandSender, TeleportResponse.Accept);
             return;
@@ -24,13 +45,15 @@ public class TeleportAsk {
             answerTeleport(commandSender, TeleportResponse.Deny);
             return;
         }
-        if (targetName.equalsIgnoreCase(commandSender.getName())) {
-            Localisation.sendMessage(commandSender, new KeyArgPair("self_teleport_error"));
-            return;
-        }
         Player target = Bukkit.getPlayer(targetName);
         if (target == null) {
             Localisation.sendMessage(commandSender, new KeyArgPair("invalid_teleport_target", targetName));
+            return;
+        }
+        // getPlayer can find a partially typed name, which can bypass the old targetName == senderName check
+        // so we compare the name of the actual returned player with the sender
+        if (target.getName().equalsIgnoreCase(commandSender.getName())) {
+            Localisation.sendMessage(commandSender, new KeyArgPair("self_teleport_error"));
             return;
         }
         // cancel (remove) the teleport that's already present for this player if one exists
@@ -101,4 +124,5 @@ public class TeleportAsk {
             logger.info(String.format("%s's teleport request to %s has expired", requester.getName(), target.getName()));
         }, 20L * timeToLive);
     }
+
 }
