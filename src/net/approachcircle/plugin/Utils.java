@@ -6,6 +6,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.plugin.Plugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -50,5 +51,16 @@ public class Utils {
     public static void commandAsConsole(String command) {
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
         PluginLogger.getPluginLogger().info("as console: " + command);
+    }
+
+    public static void attention(String source) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player.isOp()) {
+                Localisation.unlocalisedPrefixComponent(new ColouredString(String.format("something very bad has happened in '%s'. check the console for details", source), NamedTextColor.RED));
+            }
+        }
+    }
+    public static void attention() {
+        attention("unknown");
     }
 }

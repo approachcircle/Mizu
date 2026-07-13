@@ -26,6 +26,7 @@ public class VaultManager {
         if (!vaultFolder.exists()) {
             if (!vaultFolder.mkdirs()) {
                 logger.severe("failed to create vaults folder");
+                Utils.attention("vault manager");
             }
         }
     }
@@ -46,6 +47,7 @@ public class VaultManager {
             } catch (IOException e) {
                 logger.severe(Utils.prefix + ChatColor.RED + "failed to create vault file for " + player.getName());
                 e.printStackTrace(System.err);
+                Utils.attention("vault manager");
                 return null;
             }
             return vault;
@@ -77,6 +79,7 @@ public class VaultManager {
         } catch (IOException e) {
             logger.severe(Utils.prefix + ChatColor.RED + "failed to save vault for " + player.getName());
             e.printStackTrace(System.err);
+            Utils.attention("vault manager");
         }
     }
 }

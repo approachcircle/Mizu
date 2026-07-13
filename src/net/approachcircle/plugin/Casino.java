@@ -32,6 +32,7 @@ public class Casino {
         }
         if ((type != GambleType.Experience && type != GambleType.Health) && args.length == 0) {
             logger.severe("args required for gamble types which are not Health or Experience");
+            Utils.attention("casino");
             return;
         }
         startCooldown(player);
@@ -55,6 +56,7 @@ public class Casino {
             case Items -> {
                 if (!(args[0] instanceof Material material)) {
                     logger.severe("material parsed correctly, but cannot be casted here (args in wrong place?)");
+                    Utils.attention("casino");
                     return;
                 }
                 logger.info(material.name());
@@ -73,6 +75,7 @@ public class Casino {
             case Entities -> {
                 if (!(args[0] instanceof EntityType entity)) {
                     logger.severe("entity type parsed correctly, but cannot be casted here (args in wrong place?)");
+                    Utils.attention("casino");
                     return;
                 }
                 logger.info(entity.name());
@@ -120,7 +123,7 @@ public class Casino {
             }
             default -> {
                 logger.severe(String.format("enum constant not present, type = %s, constant = %s", GambleType.class, type.name()));
-                return;
+                Utils.attention("casino");
             }
         }
     }

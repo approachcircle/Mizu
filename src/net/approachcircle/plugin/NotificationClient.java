@@ -23,6 +23,7 @@ public class NotificationClient {
         } catch (MalformedURLException e) {
             e.printStackTrace();
             logger.severe("notification server URL is malformed.");
+            Utils.attention("notification client");
             return;
         }
         HttpURLConnection connection;
@@ -31,6 +32,7 @@ public class NotificationClient {
         } catch (IOException e) {
             e.printStackTrace();
             logger.severe("failed to open connection to notification server");
+            Utils.attention("notification client");
             return;
         }
         try {
@@ -38,6 +40,7 @@ public class NotificationClient {
         } catch (ProtocolException e) {
             e.printStackTrace();
             logger.severe("notification server protocol is malformed.");
+            Utils.attention("notification client");
             return;
         }
         connection.setDoOutput(true);
@@ -52,6 +55,7 @@ public class NotificationClient {
         } catch (IOException e) {
             e.printStackTrace();
             logger.severe("failed to establish connection to notification server");
+            Utils.attention("notification client");
             return;
         }
         try (OutputStream stream = connection.getOutputStream()) {
@@ -59,6 +63,7 @@ public class NotificationClient {
         } catch (IOException e) {
             e.printStackTrace();
             logger.severe("failed to write to notification server");
+            Utils.attention("notification client");
         }
         try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"))) {
             StringBuilder response = new StringBuilder();
@@ -69,6 +74,7 @@ public class NotificationClient {
         } catch (IOException e) {
             e.printStackTrace();
             logger.severe("failed to read from notification server");
+            Utils.attention("notification client");
         }
         connection.disconnect();
     }
