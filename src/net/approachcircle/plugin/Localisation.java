@@ -183,7 +183,8 @@ public class Localisation {
         if (sender instanceof Player) {
             sendMessage((Player) sender, keyArgPair);
         } else {
-            sender.sendMessage(getLocalisedString(keyArgPair, "en").string);
+            // before we would just send a plain english string, now we send it as a component with colouring maintained
+            sender.sendMessage(unlocalisedPrefixComponent(getLocalisedString(keyArgPair, "en")));
         }
     }
 
