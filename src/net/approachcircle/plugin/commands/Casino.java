@@ -1,27 +1,95 @@
-package net.approachcircle.plugin;
+package net.approachcircle.plugin.commands;
 
 import io.sentry.Sentry;
-import net.kyori.adventure.text.Component;
+import net.approachcircle.plugin.*;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.logging.Logger;
 
-public class Casino {
-    private static final List<UUID> ineligible = new ArrayList<UUID>();
+public class Casino extends MizuCommand {
+    private static final List<UUID> ineligible = new ArrayList<>();
     private static final Integer cooldownSeconds = 2;
     private static final Integer cooldown = cooldownSeconds * 20;
     private static final int entitySearchRadius = 15;
     public static final List<UUID> gambledLife = new ArrayList<>();
     private static final Logger logger = PluginLogger.getPluginLogger();
+    private static final List<String> experienceAliases = List.of(new String[] {"exp", "xp", "levels", "experience", "level", "eckspee"});
+    private static final List<String> healthAliases = List.of(new String[] {"health", "hp", "life", "hearts"});
+    public static final List<String> EntityBlacklist = List.of(
+            "ender_dragon",
+            "wither",
+            "villager",
+            "wolf",
+            "player",
+            "horse",
+            "parrot",
+            "cat"
+    ); // could be entity types, don't mind it here though
+
+    @Override
+    public boolean run(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
+        if (sender instanceof Player player) {
+            if (args.length <= 1) {
+                return false;
+            }
+            int amount;
+            try {
+                amount = Integer.parseInt(args[0]);
+            } catch (NumberFormatException e) {
+                Sentry.addBreadcrumb(player.getName() + " supplied an invalid amount of items to gamble");
+                Localisation.sendMessage(player, new KeyArgPair("invalid_gamble_number"));
+                return true;
+            }
+            if (experienceAliases.contains(args[1].toLowerCase())) {
+                Casino.gamble(player, GambleType.Experience, amount);
+                return true;
+            }
+            List<String> entListNames = Arrays.stream(EntityType.values()).map(Enum::name).toList();
+            // add check to account for entities that are also materials
+            // favour materials
+            if (entListNames.contains(args[1].toUpperCase()) && Material.matchMaterial(args[1].toUpperCase()) == null) {
+                if (EntityBlacklist.contains(args[1].toLowerCase())) {
+                    Localisation.sendMessage(player, new KeyArgPair("cannot_gamble_entity", args[1]));
+                    logger.warning(String.format("%s tried gambling a disallowed entity: %s", player.getName(), args[1]));
+                    return true;
+                }
+                EntityType entity;
+                try {
+                    entity = Enum.valueOf(EntityType.class, args[1].toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    Localisation.sendMessage(player, new KeyArgPair("entity_does_not_exist", args[1]));
+                    return true;
+                }
+                Casino.gamble(player, GambleType.Entities, amount, new Object[] {entity});
+                return true;
+            }
+            if (healthAliases.contains(args[1].toLowerCase())) {
+                Casino.gamble(player, GambleType.Health, amount);
+                return true;
+            }
+            Material material;
+            try {
+                material = Enum.valueOf(Material.class, args[1].toUpperCase());
+            } catch (IllegalArgumentException e) {
+                Localisation.sendMessage(player, new KeyArgPair("material_does_not_exist", args[1]));
+                return true;
+            }
+            gamble(player, GambleType.Items, amount, new Object[] {material});
+        }
+        return true;
+    }
+
     public static void gamble(Player player, GambleType type, int amount, Object[] args) {
         if (checkCooldown(player)) {
             return;
@@ -81,7 +149,7 @@ public class Casino {
                 logger.info(entity.name());
                 Location playerLoc = player.getLocation();
                 Collection<LivingEntity> ents = playerLoc.getNearbyLivingEntities(entitySearchRadius);
-                List<LivingEntity> targets = new ArrayList<LivingEntity>();
+                List<LivingEntity> targets = new ArrayList<>();
                 for (LivingEntity ent : ents) {
                     if (ent.getType() == entity) {
                         targets.add(ent);
@@ -190,9 +258,6 @@ public class Casino {
         }, cooldown);
     }
 
-    private static Boolean roll(double chancePercent) {
-        return new Random().nextDouble(100) < chancePercent;
-    }
     private static Boolean rollDouble() {
         return new Random().nextBoolean();
     }

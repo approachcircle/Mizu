@@ -48,7 +48,7 @@ public class Utils {
     public static void attention(String source) {
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player.isOp()) {
-                Localisation.unlocalisedPrefixComponent(new ColouredString(String.format("something very bad has happened in '%s'. check the console for details", source), NamedTextColor.RED));
+                player.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString(String.format("something very bad has happened in '%s'. check the console for details", source), NamedTextColor.RED)));
             }
         }
     }

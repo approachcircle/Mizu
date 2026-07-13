@@ -1,5 +1,6 @@
 package net.approachcircle.plugin;
 
+import net.approachcircle.plugin.commands.Casino;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -66,7 +67,7 @@ public class TabCompletionManager {
                 }
                 for (EntityType type : EntityType.values()) {
                     // could fail, unsure if we need type.name() or type.toString() here
-                    if (CommandDispatcher.EntityBlacklist.contains(type.name().toLowerCase())) {
+                    if (Casino.EntityBlacklist.contains(type.name().toLowerCase())) {
                         continue;
                     }
                     options.add(type.name().toLowerCase());

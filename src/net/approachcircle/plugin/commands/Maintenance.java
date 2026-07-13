@@ -1,22 +1,26 @@
-package net.approachcircle.plugin;
+package net.approachcircle.plugin.commands;
 
+import net.approachcircle.plugin.KeyArgPair;
+import net.approachcircle.plugin.Localisation;
+import net.approachcircle.plugin.Mizu;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.logging.Logger;
 
-public class Maintenance {
+public class Maintenance extends MizuCommand {
     private static final Plugin plugin = Mizu.getInstance();
     private static final Logger logger = plugin.getLogger();
     private static Boolean maintenanceMode = false;
 
-    public static void toggleMaintenance(CommandSender sender) {
+    @Override
+    public boolean run(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         Localisation.sendMessage(sender, new KeyArgPair("maintenance_status_update", maintenanceMode, !maintenanceMode));
         maintenanceMode = !maintenanceMode;
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -24,6 +28,7 @@ public class Maintenance {
                 turnAwayPlayer(player, false);
             }
         }
+        return true;
     }
 
     public static void turnAwayPlayer(Player player, Boolean triedToJoin) {
@@ -43,7 +48,7 @@ public class Maintenance {
                     Localisation.sendMessage(curPlayer, new KeyArgPair("player_tried_to_join_during_maintenance", player.getName()));
                 }
             }
-            logger.info(player.getName() + " just tried to join"); 
+            logger.info(player.getName() + " just tried to join");
         }
     }
 

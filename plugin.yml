@@ -1,4 +1,3 @@
-# need to rewrite this so bad
 name: Mizu
 main: net.approachcircle.plugin.Mizu
 description: a plugin containing useful features and functions
@@ -12,69 +11,92 @@ website: https://approachcircle.site
 commands: 
   die:
     description: kills the player
+    usage: /die
+    permission: mizu.die
   tpa:
     description: sends a teleport request to another player
-  mock:
-    description: sends a fake message appearing to come from another player
-  spawnon:
-    description: spawns an entity on another player
-  maintenance:
-    description: puts the server into maintenance mode that kicks every player who is not an operator, and only allows operators to join back
-  firework:
-    description: gives a stack of fireworks every 5 minutes
-  test-sentry:
-    description: tests sentry notifications
-  gamble:
-    description: allows you to gamble a specified amount of materials, mobs, experience or health
-  test-notifications:
-    description: tests lucky chunk discord notifications
-  spawn-chunk-now:
-    description: immediately spawns the lucky chunk, with the ability to pass in a custom block
-  remove-chunk-now:
-    description: immediately removes the lucky chunk
-  lc:
-    description: queries the time until the next lucky chunk, or until the current chunk disappears
-  mizu-reload-config:
-    description: reloads the configuration
+    usage: /tpa <user>
+    permission: mizu.tpa
   tpy:
     description: accepts a teleport request
+    usage: /tpy
+    permission: mizu.tpy
   tpn:
     description: rejects a teleport request
+    usage: /tpn
+    permission: mizu.tpn
+  mock:
+    description: sends a fake message appearing to come from another player
+    usage: /mock <player> <message>
+    permission: mizu.mock
+  spawnon:
+    description: spawns an entity on another player
+    usage: /spawnon <player> <entity>
+    permission: mizu.spawnon
+  maintenance:
+    description: puts the server into maintenance mode that kicks every player who is not an operator, and only allows operators to join back
+    usage: /maintenance
+    permission: mizu.maintenance
+  firework:
+    description: gives a stack of fireworks every 5 minutes
+    usage: /firework
+    permission: mizu.firework
+  test-sentry:
+    description: tests sentry notifications
+    usage: /test-sentry
+    permission: mizu.test-sentry
+  gamble:
+    description: allows you to gamble a specified amount of materials, mobs, experience or health
+    usage: /gamble <number> <item|xp|health|entity>
+    permission: mizu.gamble
+  test-notifications:
+    description: tests lucky chunk discord notifications
+    usage: /test-notifications
+    permission: mizu.test-notifications
+  spawn-chunk-now:
+    description: immediately spawns the lucky chunk, with the ability to pass in a custom block
+    usage: /spawn-chunk-now {material}
+    permission: mizu.spawn-chunk-now
+  remove-chunk-now:
+    description: immediately removes the lucky chunk
+    usage: /remove-chunk-now
+    permission: mizu.remove-chunk-now
+  lc:
+    description: queries the time until the next lucky chunk, or until the current chunk disappears
+    usage: /lc
+    permission: mizu.lc
+  mizu-reload-config:
+    description: reloads the configuration
+    usage: /mizu-reload-config
+    permission: mizu.mizu-reload-config
   fuck-you:
     description: applies an assortment of debuffs to a user with a title screen saying "fuck you"
+    usage: /fuck-you
+    permission: mizu.fuck-you
   warp:
     description: allows you to teleport to set coordinates within the map. these teleports can be removed, added, updated or renamed
+    usage: /warp <location|add|update|remove|rename|list> {warpName}
+    permission: mizu.warp
   stats:
     description: displays statistics on the most used commands globally or by the player
+    usage: /stats
+    permission: mizu.stats
   lctp:
     description: teleports you to the lucky chunk if has been found or the player is an operator
+    usage: /lctp
+    permission: mizu.lctp
   vault:
     description: opens the players personal vault
-   
-permissions:
-  mizu.*:
-    description: access to every Mizu feature
-    children:
-      mizu.die: true
-      mizu.firework: true
-      mizu.maintenance: true
-      mizu.tpa: true
-      mizu.spawnon: true
-      mizu.mock: true
-      mizu.magicwand: true
-      mizu.test-sentry: true
-      mizu.test-notifications: true
-      mizu.gamble: true
-      mizu.spawn-chunk-now: true
-      mizu.remove-chunk-now: true
-      mizu.lc: true
-      mizu.mizu-reload-config: true
-      mizu.fuck-you: true
-      mizu.warp: true
-      mizu.stats: true
-      mizu.lctp: true
-      mizu.vault: true
-      mizu.party: true
+    usage: /vault
+    permission: mizu.vault
+  party:
+    description: commands related to your political party
+    usage: /party
+    permission: mizu.party
+  killswitch:
+    description: enables or disables a killswitch for a command
+    usage: /killswitch <on|off> <command>
+    permission: mizu.killswitch
 
   mizu.die:
     description: allows a user to kill themselves
@@ -87,6 +109,12 @@ permissions:
     default: op
   mizu.tpa:
     description: allows a user to request to teleport to another user
+    default: true
+  mizu.tpy:
+    description: allows a user to accept a teleport request
+    default: true
+  mizu.tpn:
+    description: allows a user to deny a teleport request
     default: true
   mizu.spawnon:
     description: allows a user to spawn a mob of their choosing inside of another player
@@ -136,3 +164,6 @@ permissions:
   mizu.party:
     description: allows a user to manage their party
     default: true
+  mizu.killswitch:
+    description: allows a user to toggle a command killswitch
+    default: op

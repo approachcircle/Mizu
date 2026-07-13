@@ -1,21 +1,42 @@
-package net.approachcircle.plugin;
+package net.approachcircle.plugin.commands;
 
+import net.approachcircle.plugin.*;
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-public class TeleportAsk {
+public class TeleportAsk extends MizuCommand {
     // requester : target
     private static final HashMap<UUID, UUID> teleportRequestMap = new HashMap<>();
     private static BukkitTask currentTask;
     private static final Logger logger = PluginLogger.getPluginLogger();
     private static final Integer timeToLive = 20;
 
-    public static void requestTeleport(Player commandSender, String targetName) {
+    @Override
+    public boolean run(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
+        if (sender instanceof Player player) {
+            if (label.equalsIgnoreCase("tpa")) {
+                if (args.length == 0) {
+                    return false;
+                }
+                requestTeleport(player, args[0]);
+            } else if (label.equalsIgnoreCase("tpy")) {
+                answerTeleport(player, TeleportResponse.Accept);
+            } else if (label.equalsIgnoreCase("tpn")) {
+                answerTeleport(player, TeleportResponse.Deny);
+            }
+        }
+        return true;
+    }
+
+    private static void requestTeleport(Player commandSender, String targetName) {
         if (targetName.equalsIgnoreCase("yes")) {
             answerTeleport(commandSender, TeleportResponse.Accept);
             return;
@@ -101,4 +122,5 @@ public class TeleportAsk {
             logger.info(String.format("%s's teleport request to %s has expired", requester.getName(), target.getName()));
         }, 20L * timeToLive);
     }
+
 }

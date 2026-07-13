@@ -1,6 +1,7 @@
 package net.approachcircle.plugin;
 
 import io.sentry.Sentry;
+import net.approachcircle.plugin.commands.*;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -39,20 +40,23 @@ public class Mizu extends JavaPlugin {
             options.setSampleRate(1.0);
         });
         logger.info("plugin enabled");
-        Sentry.addBreadcrumb("plugin enabled");
         pluginManager.registerEvents(new MainListener(), this);
-        logger.info("all events have been registered");
-        Sentry.addBreadcrumb("events registered");
+        logger.info("events registered!");
+        registerCommands();
+        logger.info("commands registered!");
         reporter.startReportingMSPT();
         reporter.startReportingTPS();
-        Sentry.addBreadcrumb("started monitoring lag");
         logger.info("started monitoring lag");
         saveDefaultConfig();
         // will throw runtime if something goes wrong
         Localisation.loadStrings();
         Localisation.loadExplicitLocaleSettings();
+        logger.info("localisation initialised!");
         if (getConfig().getBoolean("lucky-chunk")) {
+            logger.info("lucky chunk is enabled");
             LuckyChunk.start();
+        } else {
+            logger.warning("lucky chunk is NOT enabled");
         }
         if (getConfig().getBoolean("notify-chunk")) {
             logger.info("lucky chunk is notifying on chunk found");
@@ -64,6 +68,7 @@ public class Mizu extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        saveConfig();
         reporter.close();
         Sentry.addBreadcrumb("datadog reporter closed");
         logger.info("datadog reporter closed");
@@ -81,19 +86,41 @@ public class Mizu extends JavaPlugin {
         logger.info("goodbye!");
     }
 
-    @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
+    // suppressing because IntelliJ doesn't care about the try/catch for some reason
+    @SuppressWarnings("DataFlowIssue")
+    private void registerCommands() {
         try {
-            return CommandDispatcher.dispatch(label, sender, args);
-        } catch (MissingPermissionException e) {
-            sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString(e.getMessage(), NamedTextColor.RED)));
-            PluginLogger.getPluginLogger().warning(String.format("missing permissions! sender: %s, permission: %s", sender.getName(), e.getPermission()));
-            return true;
-        } catch (Exception e) {
-            sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString("an error occurred executing this command!", NamedTextColor.RED)));
-            e.printStackTrace(System.err);
-            Sentry.captureException(e);
-            return true;
+            getCommand("die").setExecutor(new Die());
+
+            getCommand("tpa").setExecutor(new TeleportAsk());
+            getCommand("tpy").setExecutor(new TeleportAsk());
+            getCommand("tpn").setExecutor(new TeleportAsk());
+
+            getCommand("mock").setExecutor(new Mock());
+            getCommand("spawnon").setExecutor(new SpawnOn());
+            getCommand("maintenance").setExecutor(new Maintenance());
+            getCommand("firework").setExecutor(new Firework());
+
+            getCommand("test-sentry").setExecutor(new Test());
+            getCommand("test-notifications").setExecutor(new Test());
+
+            getCommand("gamble").setExecutor(new Casino());
+
+            getCommand("spawn-chunk-now").setExecutor(new LuckyChunkManagement());
+            getCommand("remove-chunk-now").setExecutor(new LuckyChunkManagement());
+            getCommand("lctp").setExecutor(new LuckyChunkTeleport());
+            getCommand("lc").setExecutor(new LuckyChunkStatus());
+
+            getCommand("mizu-reload-config").setExecutor(new ReloadConfig());
+            getCommand("fuck-you").setExecutor(new FuckYou());
+            getCommand("warp").setExecutor(new Warp());
+            getCommand("stats").setExecutor(new Stats());
+            getCommand("vault").setExecutor(new Vault());
+            getCommand("killswitch").setExecutor(new Killswitch());
+        } catch (NullPointerException e) {
+            logger.severe("we're missing an entry for a command in the plugin.yml file! not good!");
+            // rethrow so that the server automatically disables the plugin
+            throw e;
         }
     }
 }

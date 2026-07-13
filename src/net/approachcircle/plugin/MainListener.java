@@ -1,6 +1,9 @@
 package net.approachcircle.plugin;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
+import net.approachcircle.plugin.commands.Casino;
+import net.approachcircle.plugin.commands.Die;
+import net.approachcircle.plugin.commands.Maintenance;
 import net.approachcircle.plugin.government.Party;
 import net.approachcircle.plugin.government.PartyManager;
 import net.kyori.adventure.text.Component;
@@ -207,8 +210,17 @@ public class MainListener implements Listener {
     public void onPlayerSendCommand(PlayerCommandPreprocessEvent event) {
         if (event.getPlayer().hasPermission("minecraft.command.gamerule") && event.getMessage().startsWith("/gamerule")) {
             String[] commandParts = event.getMessage().split(" ");
+            // if it's not three, then it's just a query not a set
+            if (commandParts.length < 3) {
+                return;
+            }
             Localisation.broadcast(new KeyArgPair("gamerule_changed_message", commandParts[1], commandParts[2]));
         }
+        // this is an absolutely disgusting compromise and i am so unhappy. i wanted to use the onCommand function on
+        // the Mizu instance to check which commands are killswitched, but now i have to mangle it together from a string
+        // where everything other than the command name is discarded anyway, because now that we are using command
+        // executors, the onCommand function on the Mizu instance is completely ignored.
+        if (Mizu.getInstance().getConfig().getBoolean("killswitch." + event.getMessage().split(" ")[0].replaceFirst("/", ""))) {}
     }
 
     @EventHandler
