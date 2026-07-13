@@ -11,14 +11,6 @@ import org.bukkit.entity.Player;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Utils {
-    /**
-     * legacy prefix using ChatColor
-     */
-    public static String prefix = ChatColor.ITALIC + "" + ChatColor.DARK_AQUA + "Mizu" + ChatColor.RESET + "> ";
-    /**
-     * new prefix using components
-     */
-    public static TextComponent cPrefix = Component.text("Mizu", NamedTextColor.DARK_AQUA).append(Component.text("> ", NamedTextColor.WHITE));
     private static int repeatImmediatelyTask = -1;
     private static int repeatDeferredTask = -1;
     
@@ -60,6 +52,7 @@ public class Utils {
             }
         }
     }
+
     public static void attention() {
         attention("unknown");
     }
