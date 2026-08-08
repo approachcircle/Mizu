@@ -2,21 +2,12 @@ package net.approachcircle.plugin;
 
 import io.sentry.Sentry;
 import net.approachcircle.plugin.commands.*;
-import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.logging.Logger;
 
-//TODO: add hit system (bounties can be placed on people for a reward)
-//TODO: also lifelink as a random event (would be better with no keep inven, temporarily disable during?)
-//TODO: random coordinate that must be reached
-//TODO: add jail system (every tick will teleport someone inside a bedrock jail somewhere)
-//TODO: add echest command for personal echest
 public class Mizu extends JavaPlugin {
     private final Logger logger = getLogger();
     private final PluginManager pluginManager = getServer().getPluginManager();

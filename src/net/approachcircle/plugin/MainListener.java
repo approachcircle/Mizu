@@ -54,6 +54,10 @@ public class MainListener implements Listener {
         if (!Mizu.getInstance().getConfig().getBoolean("translation")) {
             return;
         }
+        // pre-check to see if the server is doing okay first
+        if (!TranslationClient.serverIsHealthy()) {
+            return;
+        }
         String messageLanguage = TranslationClient.detect(message);
         if (messageLanguage == null) {
             Localisation.sendMessage(event.getPlayer(), "translation_failed");

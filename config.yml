@@ -1,7 +1,5 @@
 lucky-chunk: true
 notify-chunk: true
-gamble: true
-firework: true
 translation: true
 blacklist:
   - banner

@@ -9,11 +9,13 @@ import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public class TranslationClient {
     private static final Logger logger = PluginLogger.getPluginLogger();
     private static final String api_key = "";
+    private static final String host = "http://127.0.0.1";
 
     public static final List<String> languagesToTranslate = List.of(
             "pt",
@@ -27,7 +29,7 @@ public class TranslationClient {
     private static String request(String path, byte[] buffer) {
         URI uri;
         try {
-            uri = new URI("http://127.0.0.1:5080/" + path);
+            uri = new URI(host + ":5080/" + path);
         } catch (java.net.URISyntaxException e) {
             e.printStackTrace(System.err);
             logger.severe("translation API URL is malformed");
@@ -86,6 +88,57 @@ public class TranslationClient {
         }
         connection.disconnect();
         return response.toString();
+    }
+
+    public static boolean serverIsHealthy() {
+        URI uri;
+        try {
+            uri = new URI(host + ":5080/health");
+        } catch (java.net.URISyntaxException e) {
+            e.printStackTrace(System.err);
+            logger.severe("translation API URL is malformed");
+            Utils.attention("translation client");
+            return false;
+        }
+        HttpURLConnection connection;
+        try {
+            connection = (HttpURLConnection) uri.toURL().openConnection();
+        } catch (IOException e) {
+            e.printStackTrace(System.err);
+            logger.severe("failed to open connection for translation API");
+            Utils.attention("translation client");
+            return false;
+        }
+        try {
+            connection.setRequestMethod("GET");
+        } catch (ProtocolException e) {
+            e.printStackTrace(System.err);
+            logger.severe("error in underlying protocol");
+            Utils.attention("translation client");
+            return false;
+        }
+        connection.setDoOutput(true);
+        try {
+            connection.connect();
+        } catch (IOException e) {
+            e.printStackTrace(System.err);
+            logger.severe("failed to connect to translation API");
+            return false;
+        }
+        StringBuilder response;
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"))) {
+            response = new StringBuilder();
+            String responseLine;
+            while ((responseLine = br.readLine()) != null) {
+                response.append(responseLine.trim());
+            }
+        } catch (IOException e) {
+            e.printStackTrace(System.err);
+            logger.severe("failed to read response from translation API");
+            return false;
+        }
+        connection.disconnect();
+        return response.toString().equals("ok");
     }
 
     public static String translate(String message, String from, String to) {
