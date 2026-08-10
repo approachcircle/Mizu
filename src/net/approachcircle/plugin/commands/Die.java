@@ -1,6 +1,5 @@
 package net.approachcircle.plugin.commands;
 
-import net.approachcircle.plugin.PluginLogger;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -11,11 +10,10 @@ import java.util.List;
 import java.util.UUID;
 
 public class Die extends MizuCommand {
-    public static List<UUID> suicided = new ArrayList<UUID>();
+    public static List<UUID> suicided = new ArrayList<>();
 
     @Override
     public boolean run(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
-        PluginLogger.getPluginLogger().info("onCommand also caught here! " + label);
         if (sender instanceof Player player) {
             suicided.add(player.getUniqueId());
             player.setHealth(0);

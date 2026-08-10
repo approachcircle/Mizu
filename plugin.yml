@@ -98,6 +98,7 @@ commands:
     usage: /killswitch <on|off> <command>
     permission: mizu.killswitch
 
+permissions:
   mizu.die:
     description: allows a user to kill themselves
     default: true
