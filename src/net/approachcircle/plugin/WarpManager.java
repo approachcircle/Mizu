@@ -34,9 +34,7 @@ public class WarpManager {
             try {
                 warpFile.createNewFile();
             } catch (IOException e) {
-                logger.severe("failed to create warp file");
-                e.printStackTrace(System.err);
-                Utils.attention("warp manager");
+                Utils.error(e, "failed to create warp file");
             }
         }
     }
@@ -68,9 +66,7 @@ public class WarpManager {
                     player.getYaw()
             ));
         } catch (IOException e) {
-            logger.severe("failed to add warp to warp file");
-            e.printStackTrace(System.err);
-            Utils.attention("warp manager");
+            Utils.error(e, "failed to add warp to warp file");
             return false;
         }
         return true;
@@ -91,9 +87,7 @@ public class WarpManager {
                     location.getYaw()
             ));
         } catch (IOException e) {
-            logger.severe("failed to add warp to warp file");
-            e.printStackTrace(System.err);
-            Utils.attention("warp manager");
+            Utils.error(e, "failed to add warp to warp file");
             return false;
         }
         return true;
@@ -131,9 +125,7 @@ public class WarpManager {
                 writer.append("");
                 return true;
             } catch (IOException e) {
-                logger.severe("failed to clear warp file");
-                e.printStackTrace(System.err);
-                Utils.attention("warp manager");
+                Utils.error(e, "failed to clear warp file");
                 return false;
             }
         }
@@ -142,9 +134,7 @@ public class WarpManager {
                 writer.append(line).append("\n");
             }
         } catch (IOException e) {
-            logger.severe("failed to restore warp file");
-            e.printStackTrace(System.err);
-            Utils.attention("warp manager");
+            Utils.error(e, "failed to restore warp file");
             return false;
         }
         return true;
@@ -157,8 +147,7 @@ public class WarpManager {
         }
         World world = Bukkit.getWorld(warpTokens[4]);
         if (world == null) {
-            logger.severe("got null while parsing world for warp: " + name);
-            Utils.attention("warp manager");
+            Utils.error("got null while parsing world for warp: " + name);
             return null;
         }
         float yaw = 0;
@@ -175,8 +164,7 @@ public class WarpManager {
             // pitch is 0 since we don't care
             return new Location(world, Double.parseDouble(warpTokens[1]), Double.parseDouble(warpTokens[2]), Double.parseDouble(warpTokens[3]), yaw, 0);
         } catch (NumberFormatException e) {
-            logger.severe("failed to parse a coordinate for warp: " + name + "(it may be corrupted?)");
-            Utils.attention("warp manager");
+            Utils.error(e, "failed to parse a coordinate for warp: " + name + "(it may be corrupted?)");
             return null;
         }
     }
@@ -188,9 +176,7 @@ public class WarpManager {
                 lines.add(scanner.nextLine());
             }
         } catch (IOException e) {
-            logger.severe("something went wrong grabbing warps");
-            e.printStackTrace(System.err);
-            Utils.attention("warp manager");
+            Utils.error(e, "an error occurred parsing warps");
             return null;
         }
         return lines;
@@ -222,7 +208,6 @@ public class WarpManager {
         List<String> warpLines = getWarpFileLines();
         if (warpLines == null) {
             Localisation.sendMessage(sender, new KeyArgPair("error_grabbing_warps"));
-            Utils.attention("warp manager");
             return null;
         }
         if (warpLines.isEmpty()) {

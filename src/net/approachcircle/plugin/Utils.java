@@ -1,13 +1,11 @@
 package net.approachcircle.plugin;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.md_5.bungee.api.plugin.Plugin;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Utils {
@@ -45,7 +43,16 @@ public class Utils {
         PluginLogger.getPluginLogger().info("as console: " + command);
     }
 
-    public static void attention(String source) {
+    public static void error(@Nullable Exception e, @Nullable String message) {
+        if (e != null) {
+            e.printStackTrace(System.err);
+        }
+        if (message != null) {
+            PluginLogger.getPluginLogger().severe(message);
+        }
+        StackTraceElement stack;
+        stack = Thread.currentThread().getStackTrace()[2];
+        String source = stack.getClassName() + "." + stack.getMethodName();
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player.isOp()) {
                 player.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString(String.format("something very bad has happened in '%s'. check the console for details", source), NamedTextColor.RED)));
@@ -53,7 +60,11 @@ public class Utils {
         }
     }
 
-    public static void attention() {
-        attention("unknown");
+    public static void error(String message) {
+        error(null, message);
+    }
+
+    public static void error(Exception e) {
+        error(e, null);
     }
 }

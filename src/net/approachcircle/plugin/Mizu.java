@@ -94,6 +94,7 @@ public class Mizu extends JavaPlugin {
 
             getCommand("test-sentry").setExecutor(new Test());
             getCommand("test-notifications").setExecutor(new Test());
+            getCommand("test-error-func").setExecutor(new Test());
 
             getCommand("gamble").setExecutor(new Casino());
 

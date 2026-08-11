@@ -97,6 +97,10 @@ commands:
     description: enables or disables a killswitch for a command
     usage: /killswitch <on|off> <command>
     permission: mizu.killswitch
+  test-error-func:
+    description: tests the functionality of the Utils.error function
+    usage: /test-error-func
+    permission: mizu.test-error-func
 
 permissions:
   mizu.die:
@@ -167,4 +171,7 @@ permissions:
     default: true
   mizu.killswitch:
     description: allows a user to toggle a command killswitch
+    default: op
+  mizu.test-error-func:
+    description: allows a user to test the error function
     default: op

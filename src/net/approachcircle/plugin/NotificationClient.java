@@ -21,26 +21,20 @@ public class NotificationClient {
             // TODO: HIDE AND CHANGE BEFORE OPEN SOURCE
             url = new URL("https://discord.com/api/webhooks/1288578553021202442/_BU3bOaREmctGsZUVMXEkzXwWmYRLUiGy7br2l5BsCYT9oogvjlJOiFs83T65U58yTRd");
         } catch (MalformedURLException e) {
-            e.printStackTrace();
-            logger.severe("notification server URL is malformed.");
-            Utils.attention("notification client");
+            Utils.error(e, "notification server URL is malformed.");
             return;
         }
         HttpURLConnection connection;
         try {
             connection = (HttpURLConnection) url.openConnection();
         } catch (IOException e) {
-            e.printStackTrace();
-            logger.severe("failed to open connection to notification server");
-            Utils.attention("notification client");
+            Utils.error(e, "failed to open connection to notification server");
             return;
         }
         try {
             connection.setRequestMethod("POST");
         } catch (ProtocolException e) {
-            e.printStackTrace();
-            logger.severe("notification server protocol is malformed.");
-            Utils.attention("notification client");
+            Utils.error(e, "notification server protocol is malformed.");
             return;
         }
         connection.setDoOutput(true);
@@ -53,17 +47,13 @@ public class NotificationClient {
         try {
             connection.connect();
         } catch (IOException e) {
-            e.printStackTrace();
-            logger.severe("failed to establish connection to notification server");
-            Utils.attention("notification client");
+            Utils.error(e, "failed to establish connection to notification server");
             return;
         }
         try (OutputStream stream = connection.getOutputStream()) {
             stream.write(buffer);
         } catch (IOException e) {
-            e.printStackTrace();
-            logger.severe("failed to write to notification server");
-            Utils.attention("notification client");
+            Utils.error(e, "failed to write to notification server");
         }
         try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"))) {
             StringBuilder response = new StringBuilder();
@@ -72,9 +62,7 @@ public class NotificationClient {
                 response.append(responseLine.trim());
             }
         } catch (IOException e) {
-            e.printStackTrace();
-            logger.severe("failed to read from notification server");
-            Utils.attention("notification client");
+            Utils.error(e, "failed to read from notification server");
         }
         connection.disconnect();
     }

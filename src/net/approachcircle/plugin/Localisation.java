@@ -141,8 +141,7 @@ public class Localisation {
                     try {
                         return new ColouredString(String.format(map.get(k), keyArgPair.args), NamedTextColor.NAMES.value(map.get("color")));
                     } catch (IllegalFormatException e) {
-                        PluginLogger.getPluginLogger().severe(String.format("argument mismatch for '%s', sending raw message", k));
-                        Utils.attention("localisation");
+                        Utils.error(e, String.format("argument mismatch for '%s', sending raw message", k));
                         return new ColouredString(map.get(k), NamedTextColor.NAMES.value(map.get("color")));
                     }
                 }
@@ -150,13 +149,11 @@ public class Localisation {
         }
         // key not present in this language, try english
         if (selected != english) {
-            PluginLogger.getPluginLogger().warning(String.format("key %s not found in %s.json file, returning english", keyArgPair.key, region));
-            Utils.attention("localisation");
+            Utils.error(String.format("key %s not found in %s.json file, returning english", keyArgPair.key, region));
             return getLocalisedString(keyArgPair, "en");
         } else {
             // if no english, send the key and args along with a warning
-            PluginLogger.getPluginLogger().warning(String.format("missing key %s", keyArgPair.key));
-            Utils.attention("localisation");
+            Utils.error(String.format("missing key %s", keyArgPair.key));
             String message = "%s: ";
             message += Arrays.toString(keyArgPair.args);
             if (region.equalsIgnoreCase("pt")) {

@@ -99,8 +99,7 @@ public class Casino extends MizuCommand {
             return;
         }
         if ((type != GambleType.Experience && type != GambleType.Health) && args.length == 0) {
-            logger.severe("args required for gamble types which are not Health or Experience");
-            Utils.attention("casino");
+            Utils.error("args required for gamble types which are not Health or Experience");
             return;
         }
         startCooldown(player);
@@ -123,8 +122,7 @@ public class Casino extends MizuCommand {
             // AND to gamble actual durability numbers
             case Items -> {
                 if (!(args[0] instanceof Material material)) {
-                    logger.severe("material parsed correctly, but cannot be casted here (args in wrong place?)");
-                    Utils.attention("casino");
+                    Utils.error("material parsed correctly, but cannot be casted here (args in wrong place?)");
                     return;
                 }
                 logger.info(material.name());
@@ -142,8 +140,7 @@ public class Casino extends MizuCommand {
             }
             case Entities -> {
                 if (!(args[0] instanceof EntityType entity)) {
-                    logger.severe("entity type parsed correctly, but cannot be casted here (args in wrong place?)");
-                    Utils.attention("casino");
+                    Utils.error("entity type parsed correctly, but cannot be casted here (args in wrong place?)");
                     return;
                 }
                 logger.info(entity.name());
@@ -190,8 +187,7 @@ public class Casino extends MizuCommand {
                 }
             }
             default -> {
-                logger.severe(String.format("enum constant not present, type = %s, constant = %s", GambleType.class, type.name()));
-                Utils.attention("casino");
+                Utils.error(String.format("enum constant not present, type = %s, constant = %s", GambleType.class, type.name()));
             }
         }
     }

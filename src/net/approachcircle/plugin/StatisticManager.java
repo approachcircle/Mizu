@@ -26,14 +26,10 @@ public class StatisticManager {
                 try (FileWriter writer = new FileWriter(statFile)) {
                     writer.write("[]");
                 } catch (IOException e) {
-                    logger.severe("failed to initialise statistics file");
-                    e.printStackTrace(System.err);
-                    Utils.attention("statistic manager");
+                    Utils.error(e, "failed to initialise statistics file");
                 }
             } catch (IOException e) {
-                logger.severe("failed to create statistics file");
-                e.printStackTrace(System.err);
-                Utils.attention("statistic manager");
+                Utils.error(e, "failed to create statistics file");
             }
         }
     }
@@ -51,9 +47,7 @@ public class StatisticManager {
         try {
             result = mapper.readValue(statFile, new TypeReference<>(){});
         } catch (IOException e) {
-            logger.severe("failed to read statistics file");
-            e.printStackTrace(System.err);
-            Utils.attention("statistic manager");
+            Utils.error(e, "failed to read statistics file");
             return null;
         }
         return result;
@@ -90,9 +84,7 @@ public class StatisticManager {
         try {
             mapper.writeValue(statFile, current);
         } catch (IOException e) {
-            logger.severe("failed to update statistics file for player: " + player.getName());
-            e.printStackTrace(System.err);
-            Utils.attention("statistic manager");
+            Utils.error("failed to update statistics file for player: " + player.getName());
         }
     }
     

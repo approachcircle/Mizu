@@ -27,10 +27,8 @@ public abstract class MizuCommand implements CommandExecutor {
             }
             return execResult;
         } catch (Exception e) {
-            sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString("an error occurred executing this command", NamedTextColor.RED)));
-            PluginLogger.getPluginLogger().severe("uncaught exception during command execution!");
-            e.printStackTrace(System.err);
-            Utils.attention(command.getName());
+            sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString("an unexpected error occurred executing this command", NamedTextColor.RED)));
+            Utils.error(e, "uncaught exception during command execution!");
         }
         return true;
     }

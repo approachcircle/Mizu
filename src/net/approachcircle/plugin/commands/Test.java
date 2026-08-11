@@ -2,6 +2,7 @@ package net.approachcircle.plugin.commands;
 
 import io.sentry.Sentry;
 import net.approachcircle.plugin.NotificationClient;
+import net.approachcircle.plugin.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +18,12 @@ public class Test extends MizuCommand {
             }
         } else if (label.equalsIgnoreCase("test-notifications")) {
             NotificationClient.send(String.format("test notification from minecraft server '%s'", System.getenv("COMPUTERNAME")));
+        } else if (label.equalsIgnoreCase("test-error-func")) {
+            try {
+                throw new Exception("test exception");
+            } catch (Exception e) {
+                Utils.error(e, "test exception thrown");
+            }
         }
         return true;
     }

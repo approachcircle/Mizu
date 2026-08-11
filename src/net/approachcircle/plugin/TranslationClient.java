@@ -31,26 +31,20 @@ public class TranslationClient {
         try {
             uri = new URI(host + ":5080/" + path);
         } catch (java.net.URISyntaxException e) {
-            e.printStackTrace(System.err);
-            logger.severe("translation API URL is malformed");
-            Utils.attention("translation client");
+            Utils.error(e, "translation API URL is malformed");
             return null;
         }
         HttpURLConnection connection;
         try {
             connection = (HttpURLConnection) uri.toURL().openConnection();
         } catch (IOException e) {
-            e.printStackTrace(System.err);
-            logger.severe("failed to open connection for translation API");
-            Utils.attention("translation client");
+            Utils.error(e, "failed to open connection for translation API");
             return null;
         }
         try {
             connection.setRequestMethod("POST");
         } catch (ProtocolException e) {
-            e.printStackTrace(System.err);
-            logger.severe("error in underlying protocol");
-            Utils.attention("translation client");
+            Utils.error(e, "error in underlying protocol");
             return null;
         }
         connection.setDoOutput(true);
@@ -60,17 +54,13 @@ public class TranslationClient {
         try {
             connection.connect();
         } catch (IOException e) {
-            e.printStackTrace(System.err);
-            logger.severe("failed to connect to translation API");
-            Utils.attention("translation client");
+            Utils.error(e, "failed to connect to translation API");
             return null;
         }
         try (OutputStream stream = connection.getOutputStream()) {
             stream.write(buffer);
         } catch (IOException e) {
-            e.printStackTrace(System.err);
-            logger.severe("failed to write buffer to translation API");
-            Utils.attention("translation client");
+            Utils.error(e, "failed to write buffer to translation API");
             return null;
         }
         StringBuilder response;
@@ -81,9 +71,7 @@ public class TranslationClient {
                 response.append(responseLine.trim());
             }
         } catch (IOException e) {
-            e.printStackTrace(System.err);
-            logger.severe("failed to read response from translation API");
-            Utils.attention("translation client");
+            Utils.error(e, "failed to read response from translation API");
             return null;
         }
         connection.disconnect();
@@ -95,34 +83,27 @@ public class TranslationClient {
         try {
             uri = new URI(host + ":5080/health");
         } catch (java.net.URISyntaxException e) {
-            e.printStackTrace(System.err);
-            logger.severe("translation API URL is malformed");
-            Utils.attention("translation client");
+            Utils.error(e, "translation API URL is malformed");
             return false;
         }
         HttpURLConnection connection;
         try {
             connection = (HttpURLConnection) uri.toURL().openConnection();
         } catch (IOException e) {
-            e.printStackTrace(System.err);
-            logger.severe("failed to open connection for translation API");
-            Utils.attention("translation client");
+            Utils.error(e, "failed to open connection for translation API");
             return false;
         }
         try {
             connection.setRequestMethod("GET");
         } catch (ProtocolException e) {
-            e.printStackTrace(System.err);
-            logger.severe("error in underlying protocol");
-            Utils.attention("translation client");
+            Utils.error(e, "error in underlying protocol");
             return false;
         }
         connection.setDoOutput(true);
         try {
             connection.connect();
         } catch (IOException e) {
-            e.printStackTrace(System.err);
-            logger.severe("failed to connect to translation API");
+            Utils.error(e, "failed to connect to translation API");
             return false;
         }
         StringBuilder response;
@@ -133,8 +114,7 @@ public class TranslationClient {
                 response.append(responseLine.trim());
             }
         } catch (IOException e) {
-            e.printStackTrace(System.err);
-            logger.severe("failed to read response from translation API");
+            Utils.error(e, "failed to read response from translation API");
             return false;
         }
         connection.disconnect();
@@ -156,9 +136,7 @@ public class TranslationClient {
         try {
             jsonResponse = mapper.readValue(response, new TypeReference<>(){});
         } catch (JsonProcessingException e) {
-            e.printStackTrace(System.err);
-            logger.severe("failed to parse response from translation API");
-            Utils.attention("translation client");
+            Utils.error(e, "failed to parse response from translation API");
             return null;
         }
         return jsonResponse.translatedText;
@@ -176,9 +154,7 @@ public class TranslationClient {
         try {
             jsonResponse = mapper.readValue(response, new TypeReference<>(){});
         } catch (JsonProcessingException e) {
-            e.printStackTrace(System.err);
-            logger.severe("failed to parse response from translation API");
-            Utils.attention("translation client");
+            Utils.error(e, "failed to parse response from translation API");
             return null;
         }
         if (jsonResponse.length == 1) {
