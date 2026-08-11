@@ -1,8 +1,8 @@
 package net.approachcircle.plugin;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -16,17 +16,17 @@ import java.util.logging.Logger;
 public class VaultManager {
     private static VaultManager instance;
     private final File vaultFolder;
-    private final Logger logger = PluginLogger.getPluginLogger();
-    public static final String viewName = "Mizu Vault";
-    public static final List<UUID> currentlyViewingVault = new ArrayList<>();
-    public static final int vaultSize = 36;
+    public final String viewName = "Mizu Vault";
+    // had to change this because the person viewing the vault may not actually be its owner
+    // viewer : owner
+    public final HashMap<UUID, UUID> vaultsOpen = new HashMap<>();
+    public final int vaultSize = 36;
 
     private VaultManager() {
         vaultFolder = new File(Mizu.getInstance().getDataFolder().getAbsolutePath() + "\\vaults");
         if (!vaultFolder.exists()) {
             if (!vaultFolder.mkdirs()) {
-                logger.severe("failed to create vaults folder");
-                Utils.attention("vault manager");
+                Utils.error("failed to create vaults folder");
             }
         }
     }
@@ -38,22 +38,28 @@ public class VaultManager {
         return instance;
     }
 
-    public Inventory getVault(Player player) {
-        Inventory vault = Bukkit.createInventory(player, vaultSize, Component.text(viewName));
-        File vaultFile = new File(vaultFolder, player.getUniqueId() + ".yml");
+    public Inventory getVault(Player sender, UUID uuid) {
+        // the inventory being created belongs to the sender as they're the VIEWER, not because it's actually their vault
+        Inventory vault = Bukkit.createInventory(sender, vaultSize, Component.text(viewName));
+        File vaultFile = new File(vaultFolder, uuid + ".yml");
         if (!vaultFile.exists()) {
             try {
                 vaultFile.createNewFile();
+                YamlConfiguration config = YamlConfiguration.loadConfiguration(vaultFile);
+                // initialise as empty list of ItemStacks
+                config.set("contents", new ArrayList<ItemStack>());
             } catch (IOException e) {
-                logger.severe("failed to create vault file for " + player.getName());
-                e.printStackTrace(System.err);
-                Utils.attention("vault manager");
+                sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString("failed to create vault file", NamedTextColor.RED)));
+                Utils.error(e, "failed to create vault file for " + Bukkit.getOfflinePlayer(uuid).getName());
                 return null;
             }
             return vault;
         }
         List<ItemStack> items = parseVault(vaultFile);
         if (items == null) {
+            return null;
+        }
+        if (items.isEmpty()) {
             return vault;
         }
         for (ItemStack item : items) {
@@ -67,19 +73,31 @@ public class VaultManager {
 
     private List<ItemStack> parseVault(File vault) {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(vault);
-        return (List<ItemStack>) config.getList("contents");
+        List<?> items = config.getList("contents");
+        if (items == null) {
+            Utils.error("got null from contents of vault file");
+            return null;
+        }
+        List<ItemStack> castedItems;
+        try {
+            // i'm sorry, child... this is the best i can do
+            //noinspection unchecked
+            castedItems = (List<ItemStack>) items;
+        } catch (ClassCastException e) {
+            Utils.error(e, "type of list in vault file is not List<ItemStack>");
+            return null;
+        }
+        return castedItems;
     }
 
-    public void saveVault(Player player, Inventory inventory) {
-        File vaultFile = new File(vaultFolder, player.getUniqueId() + ".yml");
+    public void saveVault(UUID player, Inventory inventory) {
+        File vaultFile = new File(vaultFolder, player + ".yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(vaultFile);
         config.set("contents", Arrays.asList(inventory.getContents()));
         try {
             config.save(vaultFile);
         } catch (IOException e) {
-            logger.severe("failed to save vault for " + player.getName());
-            e.printStackTrace(System.err);
-            Utils.attention("vault manager");
+            Utils.error(e, "failed to save vault for " + Bukkit.getOfflinePlayer(player).getName());
         }
     }
 }

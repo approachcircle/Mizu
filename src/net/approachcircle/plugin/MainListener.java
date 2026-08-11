@@ -27,6 +27,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 public class MainListener implements Listener {
@@ -55,9 +56,10 @@ public class MainListener implements Listener {
             return;
         }
         // pre-check to see if the server is doing okay first
-        if (!TranslationClient.serverIsHealthy()) {
-            return;
-        }
+        // fix later
+//        if (!TranslationClient.serverIsHealthy()) {
+//            return;
+//        }
         String messageLanguage = TranslationClient.detect(message);
         if (messageLanguage == null) {
             Localisation.sendMessage(event.getPlayer(), "translation_failed");
@@ -220,21 +222,18 @@ public class MainListener implements Listener {
             }
             Localisation.broadcast(new KeyArgPair("gamerule_changed_message", commandParts[1], commandParts[2]));
         }
-        // this is an absolutely disgusting compromise and i am so unhappy. i wanted to use the onCommand function on
-        // the Mizu instance to check which commands are killswitched, but now i have to mangle it together from a string
-        // where everything other than the command name is discarded anyway, because now that we are using command
-        // executors, the onCommand function on the Mizu instance is completely ignored.
-        if (Mizu.getInstance().getConfig().getBoolean("killswitch." + event.getMessage().split(" ")[0].replaceFirst("/", ""))) {}
     }
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
-        if (!VaultManager.currentlyViewingVault.contains(event.getPlayer().getUniqueId())) {
+        if (!VaultManager.getInstance().vaultsOpen.containsKey(event.getPlayer().getUniqueId())) {
             return;
         }
-        VaultManager.currentlyViewingVault.remove(event.getPlayer().getUniqueId());
-        VaultManager.getInstance().saveVault((Player) event.getPlayer(), event.getInventory());
+        // save the vault of the player found in the vaultsOpen hashmap as it is theirs, and it does not necessarily belong to the person viewing it
+        UUID vaultOwner = VaultManager.getInstance().vaultsOpen.get(event.getPlayer().getUniqueId());
+        VaultManager.getInstance().saveVault(vaultOwner, event.getInventory());
         Localisation.sendMessage(event.getPlayer(), new KeyArgPair("vault_saved"));
-        logger.info(String.format("%s closed their vault", event.getPlayer().getName()));
+        logger.info(String.format("%s closed the vault belonging to %s", event.getPlayer().getName(), Bukkit.getOfflinePlayer(vaultOwner).getName()));
+        VaultManager.getInstance().vaultsOpen.remove(event.getPlayer().getUniqueId());
     }
 }
