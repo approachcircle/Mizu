@@ -101,6 +101,10 @@ commands:
     description: tests the functionality of the Utils.error function
     usage: /test-error-func
     permission: mizu.test-error-func
+  mizu-effect:
+    description: gives or removes proprietary Mizu effects from players
+    usage: /mizu-effect <give|clear> <effect|player> {player}
+    permission: mizu.suppress
 
 permissions:
   mizu.die:
@@ -174,4 +178,7 @@ permissions:
     default: op
   mizu.test-error-func:
     description: allows a user to test the error function
+    default: op
+  mizu.mizu-effect:
+    description: allows a user to apply and remove proprietary effects from players
     default: op

@@ -1,4 +1,4 @@
-package net.approachcircle.plugin.commands;
+package net.approachcircle.plugin.command;
 
 import io.sentry.Sentry;
 import net.approachcircle.plugin.NotificationClient;

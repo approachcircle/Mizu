@@ -1,6 +1,8 @@
-package net.approachcircle.plugin.commands;
+package net.approachcircle.plugin.command;
 
 import net.approachcircle.plugin.*;
+import net.approachcircle.plugin.effect.MizuEffectRegistry;
+import net.approachcircle.plugin.effect.MizuEffectType;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -18,6 +20,15 @@ public abstract class MizuCommand implements CommandExecutor {
             sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString("sorry, this command is currently killswitched", NamedTextColor.RED)));
             return true;
         }
+        if (sender instanceof Player player && MizuEffectRegistry.getEffect(MizuEffectType.SUPPRESSED).playerHasEffect(player)) {
+            if (label.equalsIgnoreCase("die")) {
+                // feels the aura
+                sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString("death is not an escape...", NamedTextColor.RED)));
+                return true;
+            }
+            sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString("you are currently suppressed!", NamedTextColor.RED)));
+            return true;
+        }
         PluginLogger.getPluginLogger().info("executing mizu command: " + command.getName());
         try {
             boolean execResult = run(sender, command, label, args);
@@ -27,7 +38,7 @@ public abstract class MizuCommand implements CommandExecutor {
             }
             return execResult;
         } catch (Exception e) {
-            sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString("an unexpected error occurred executing this command", NamedTextColor.RED)));
+            sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString("an unexpected error occurred executing this command!", NamedTextColor.RED)));
             Utils.error(e, "uncaught exception during command execution!");
         }
         return true;

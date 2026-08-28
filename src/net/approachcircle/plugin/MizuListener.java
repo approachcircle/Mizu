@@ -1,9 +1,12 @@
 package net.approachcircle.plugin;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
-import net.approachcircle.plugin.commands.Casino;
-import net.approachcircle.plugin.commands.Die;
-import net.approachcircle.plugin.commands.Maintenance;
+import io.papermc.paper.event.player.PrePlayerAttackEntityEvent;
+import net.approachcircle.plugin.command.Casino;
+import net.approachcircle.plugin.command.Die;
+import net.approachcircle.plugin.command.Maintenance;
+import net.approachcircle.plugin.effect.MizuEffectRegistry;
+import net.approachcircle.plugin.effect.MizuEffectType;
 import net.approachcircle.plugin.government.Party;
 import net.approachcircle.plugin.government.PartyManager;
 import net.kyori.adventure.text.Component;
@@ -30,7 +33,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-public class MainListener implements Listener {
+public class MizuListener implements Listener {
     private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     private final Logger logger = PluginLogger.getPluginLogger();
@@ -40,6 +43,10 @@ public class MainListener implements Listener {
         String message = PlainTextComponentSerializer.plainText().serialize(event.message());
         // effectively consume every chat message and broadcast it ourselves...
         event.setCancelled(true);
+        if (MizuEffectRegistry.getEffect(MizuEffectType.SILENCED).playerHasEffect(event.getPlayer())) {
+            event.getPlayer().sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString("you are currently silenced!", NamedTextColor.RED)));
+            return;
+        }
         Component formattedMessage = Component.text("<");
         Party playerParty = PartyManager.getInstance().getPartyForPlayer(event.getPlayer().getUniqueId());
         if (playerParty != null) {
@@ -235,5 +242,25 @@ public class MainListener implements Listener {
         Localisation.sendMessage(event.getPlayer(), new KeyArgPair("vault_saved"));
         logger.info(String.format("%s closed the vault belonging to %s", event.getPlayer().getName(), Bukkit.getOfflinePlayer(vaultOwner).getName()));
         VaultManager.getInstance().vaultsOpen.remove(event.getPlayer().getUniqueId());
+    }
+
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event) {
+        if (MizuEffectRegistry.getEffect(MizuEffectType.IMMOBILIZED).playerHasEffect(event.getPlayer())) {
+            Location previousLocation = event.getFrom();
+            Location futureLocation = event.getTo();
+            futureLocation.set(previousLocation.x(), previousLocation.y(), previousLocation.z());
+            // instead of just cancelling, copy the future location and manually set the x, y, z back to the previous value
+            // we do this so that players can still freely look around without the server correcting their pitch
+            // and yaw, but they stay stuck in the same place
+            event.setTo(futureLocation);
+        }
+    }
+
+    @EventHandler
+    public void onPrePlayerAttackEntity(PrePlayerAttackEntityEvent event) {
+        if (MizuEffectRegistry.getEffect(MizuEffectType.DISARMED).playerHasEffect(event.getPlayer())) {
+            event.setCancelled(true);
+        }
     }
 }

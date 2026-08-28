@@ -1,4 +1,4 @@
-package net.approachcircle.plugin.commands;
+package net.approachcircle.plugin.command;
 
 import net.approachcircle.plugin.ColouredString;
 import net.approachcircle.plugin.KeyArgPair;

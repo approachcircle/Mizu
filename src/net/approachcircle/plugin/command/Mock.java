@@ -1,4 +1,4 @@
-package net.approachcircle.plugin.commands;
+package net.approachcircle.plugin.command;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;

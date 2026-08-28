@@ -1,7 +1,8 @@
 package net.approachcircle.plugin;
 
 import io.sentry.Sentry;
-import net.approachcircle.plugin.commands.*;
+import net.approachcircle.plugin.command.*;
+import net.approachcircle.plugin.effect.MizuEffectRegistry;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -31,10 +32,12 @@ public class Mizu extends JavaPlugin {
             options.setSampleRate(1.0);
         });
         logger.info("plugin enabled");
-        pluginManager.registerEvents(new MainListener(), this);
+        pluginManager.registerEvents(new MizuListener(), this);
         logger.info("events registered!");
         registerCommands();
         logger.info("commands registered!");
+        MizuEffectRegistry.registerEffects();
+        logger.info("effects registered!");
         reporter.startReportingMSPT();
         reporter.startReportingTPS();
         logger.info("started monitoring lag");
@@ -109,6 +112,8 @@ public class Mizu extends JavaPlugin {
             getCommand("stats").setExecutor(new Stats());
             getCommand("vault").setExecutor(new Vault());
             getCommand("killswitch").setExecutor(new Killswitch());
+
+            getCommand("mizu-effect").setExecutor(new MizuEffectCommand());
         } catch (NullPointerException e) {
             logger.severe("we're missing an entry for a command in the plugin.yml file! not good!");
             // rethrow so that the server automatically disables the plugin

@@ -1,16 +1,14 @@
 package net.approachcircle.plugin;
 
-import net.approachcircle.plugin.commands.Casino;
+import net.approachcircle.plugin.command.Casino;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -111,6 +109,12 @@ public class TabCompletionManager {
         });
         mizu.getCommand("stats").setTabCompleter(this::getNoCompletions);
         mizu.getCommand("lctp").setTabCompleter(this::getNoCompletions);
+        mizu.getCommand("vault").setTabCompleter(this::getNoCompletions);
+        mizu.getCommand("party").setTabCompleter(this::getNoCompletions);
+        // don't think there is a way that i can find rn to get registered commands and their aliases.
+        // we don't keep a local registry of commands, so unless we can get their registry or subscribe to some sort of
+        // event, i don't see a way to get these commands
+        mizu.getCommand("killswitch").setTabCompleter(this::getNoCompletions);
     }
     
     private List<String> getPlayerCompletions(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
