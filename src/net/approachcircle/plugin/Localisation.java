@@ -125,9 +125,9 @@ public class Localisation {
 
     /**
      * Returns a localised string based on the key within the KeyArgPair, and the provided region.
-     * @param keyArgPair an object so
-     * @param region
-     * @return
+     * @param keyArgPair an object containing the key and the arguments which are inserted into the key's resulting string
+     * @param region the region describing the region file in which this key will be retrieved from
+     * @return a ColouredString object containing the resulting string, with arguments inserted, and with a corresponding colour
      */
     public static ColouredString getLocalisedString(KeyArgPair keyArgPair, String region) {
         List<HashMap<String, String>> selected = english;
