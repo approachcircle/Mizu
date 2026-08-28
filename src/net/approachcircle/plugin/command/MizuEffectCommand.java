@@ -16,41 +16,36 @@ public class MizuEffectCommand extends MizuCommand {
     @Override
     protected boolean run(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
         if (args.length < 1) return false;
-
         switch (args[0]) {
             // if /give + effect, effect is given to everyone
             // if /give + effect + player, effect is given to one player
-            case "give":
-                // add a scope here because code within these case statements are treated as one scope even with
-                // break statements (why)
-                {
-                    if (args.length < 2) return false;
-                    MizuEffect effect;
-                    try {
-                        effect = MizuEffectRegistry.getEffect(args[1]);
-                    } catch (IllegalArgumentException e) {
-                        sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString(String.format("effect '%s' not found", args[1]), NamedTextColor.RED)));
+            case "give" -> {
+                if (args.length < 2) return false;
+                MizuEffect effect;
+                try {
+                    effect = MizuEffectRegistry.getEffect(args[1]);
+                } catch (IllegalArgumentException e) {
+                    sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString(String.format("effect '%s' not found", args[1]), NamedTextColor.RED)));
+                    return false;
+                }
+                if (args.length == 2) {
+                    effect.applyToAllPlayers();
+                    sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString(String.format("applied '%s' to everyone", effect.type.name()), NamedTextColor.GREEN)));
+                } else if (args.length == 3) {
+                    Player player = Bukkit.getPlayer(args[2]);
+                    if (player == null) {
+                        Localisation.sendMessage(sender, new KeyArgPair("player_not_found", args[2]));
                         return false;
                     }
-                    if (args.length == 2) {
-                        effect.applyToAllPlayers();
-                        sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString(String.format("applied '%s' to everyone", effect.type.name()), NamedTextColor.GREEN)));
-                    } else if (args.length == 3) {
-                        Player player = Bukkit.getPlayer(args[2]);
-                        if (player == null) {
-                            Localisation.sendMessage(sender, new KeyArgPair("player_not_found", args[2]));
-                            return false;
-                        }
-                        effect.applyEffect(player);
-                        sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString(String.format("applied '%s' to %s", effect.type.name(), player.getName()), NamedTextColor.GREEN)));
-                    }
+                    effect.applyEffect(player);
+                    sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString(String.format("applied '%s' to %s", effect.type.name(), player.getName()), NamedTextColor.GREEN)));
                 }
-                break;
+            }
             // if /clear, ALL effects are cleared from everyone
             // if /clear + person, ALL effects are cleared from one player
             // if /clear + effect, effect is removed from everyone
             // if /clear + effect + person, effect is removed from one player
-            case "clear":
+            case "clear" -> {
                 if (args.length == 1) {
                     MizuEffectRegistry.clearAllEffects();
                     sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString("cleared all effects from everyone", NamedTextColor.GREEN)));
@@ -88,6 +83,7 @@ public class MizuEffectCommand extends MizuCommand {
                     effect.clearEffect(player);
                     sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString(String.format("cleared '%s' from %s", effect.type.name(), player.getName()), NamedTextColor.GREEN)));
                 }
+            }
         }
         return true;
     }
