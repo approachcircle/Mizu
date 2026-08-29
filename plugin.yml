@@ -104,7 +104,7 @@ commands:
   mizu-effect:
     description: gives or removes proprietary Mizu effects from players
     usage: /mizu-effect <give|clear> <effect|player> {player}
-    permission: mizu.suppress
+    permission: mizu.mizu-effect
 
 permissions:
   mizu.die:
