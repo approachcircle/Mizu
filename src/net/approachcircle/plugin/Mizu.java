@@ -57,7 +57,6 @@ public class Mizu extends JavaPlugin {
         } else {
             logger.warning("lucky chunk is NOT notifying on chunk found");
         }
-        TabCompletionManager.getInstance().initTabCompletions();
     }
 
     @Override

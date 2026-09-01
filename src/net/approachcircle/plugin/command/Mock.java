@@ -6,6 +6,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class Mock extends MizuCommand {
     @Override
     public boolean run(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
@@ -19,5 +21,10 @@ public class Mock extends MizuCommand {
         }
         Bukkit.broadcast(Component.text("<" + args[1] + "> " + joinedMessage));
         return true;
+    }
+
+    @Override
+    protected List<String> getTabCompletions(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
+        return copyMatchesAndSort(args[0], getPlayerNames());
     }
 }

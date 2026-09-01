@@ -8,6 +8,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class LuckyChunkManagement extends MizuCommand {
     @Override
     public boolean run(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
@@ -29,5 +32,19 @@ public class LuckyChunkManagement extends MizuCommand {
             LuckyChunk.removeChunk();
         }
         return true;
+    }
+
+    @Override
+    protected List<String> getTabCompletions(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
+        if (label.equalsIgnoreCase("remove-chunk-now")) {
+            return List.of();
+        }
+        List<String> options = new ArrayList<>();
+        for (Material type : Material.values()) {
+            if (type.isBlock()) {
+                options.add(type.name().toLowerCase());
+            }
+        }
+        return copyMatches(args[0], options);
     }
 }

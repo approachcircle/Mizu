@@ -8,6 +8,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Objects;
 
 public class Killswitch extends MizuCommand {
@@ -36,5 +37,15 @@ public class Killswitch extends MizuCommand {
         sender.sendMessage(Localisation.unlocalisedPrefixComponent(cs));
         Mizu.getInstance().saveConfig();
         return true;
+    }
+
+    @Override
+    protected List<String> getTabCompletions(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
+        if (args.length == 1) {
+            return List.of("<state>");
+        } else if (args.length == 2) {
+            return List.of("<command>");
+        }
+        return List.of();
     }
 }

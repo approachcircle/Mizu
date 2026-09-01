@@ -9,6 +9,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -34,6 +35,15 @@ public class TeleportAsk extends MizuCommand {
             }
         }
         return true;
+    }
+
+    @Override
+    protected List<String> getTabCompletions(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
+        if (label.equalsIgnoreCase("tpa")) {
+            return copyMatchesAndSort(args[0], getPlayerNames());
+        } else {
+            return List.of();
+        }
     }
 
     private static void requestTeleport(Player commandSender, String targetName) {

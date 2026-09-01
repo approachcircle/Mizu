@@ -11,6 +11,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 public class SpawnOn extends MizuCommand {
@@ -37,5 +38,15 @@ public class SpawnOn extends MizuCommand {
         Localisation.sendMessage(sender, new KeyArgPair("entity_spawned_on_player", mobName, player.getName()));
         logger.info(String.format("a %s was spawned on %s", entity, player.getName()));
         return true;
+    }
+
+    @Override
+    protected List<String> getTabCompletions(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
+        if (args.length == 1) {
+            return copyMatchesAndSort(args[0], getPlayerNames());
+        } else if (args.length == 2) {
+            return copyMatchesAndSort(args[1], getEntityNames());
+        }
+        return List.of();
     }
 }

@@ -55,4 +55,9 @@ public class FuckYou extends MizuCommand {
                 new PotionEffect(PotionEffectType.LEVITATION, duration, 30)
         );
     }
+
+    @Override
+    protected List<String> getTabCompletions(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
+        return copyMatchesAndSort(args[0], getPlayerNames());
+    }
 }

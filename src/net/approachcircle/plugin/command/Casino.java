@@ -90,6 +90,27 @@ public class Casino extends MizuCommand {
         return true;
     }
 
+    @Override
+    protected List<String> getTabCompletions(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
+        List<String> options = new ArrayList<>();
+        if (args.length == 1) {
+            return List.of("<number>");
+        } else if (args.length == 2) {
+            options.add("xp");
+            options.add("levels");
+            options.add("hp");
+            options.add("health");
+            options.addAll(getMaterialNames());
+            for (EntityType type : EntityType.values()) {
+                if (Casino.EntityBlacklist.contains(type.name().toLowerCase())) {
+                    continue;
+                }
+                options.add(type.name().toLowerCase());
+            }
+        }
+        return copyMatches(args[1], options);
+    }
+
     public static void gamble(Player player, GambleType type, int amount, Object[] args) {
         if (checkCooldown(player)) {
             return;

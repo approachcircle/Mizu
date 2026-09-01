@@ -11,6 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
@@ -132,5 +133,26 @@ public class Warp extends MizuCommand {
             }
         }
         return true;
+    }
+
+    @Override
+    protected List<String> getTabCompletions(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
+        List<String> options = new ArrayList<>();
+        if (args.length == 1) {
+            options.addAll(Arrays.asList(WarpManager.reservedCommands));
+            for (String line : WarpManager.getInstance().getWarpFileLines()) {
+                options.add(line.split(" ")[0]);
+            }
+            return copyMatchesAndSort(args[0], options);
+        } else if (args.length == 2 && (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("update") || args[0].equalsIgnoreCase("rename"))) {
+            for (String line : WarpManager.getInstance().getWarpFileLines()) {
+                // only suggest warps to remove or update which are owned by the sender (unless operator)
+                if (line.split(" ")[5].equals(sender.getName()) || sender.isOp()) {
+                    options.add(line.split(" ")[0]);
+                }
+            }
+            return copyMatchesAndSort(args[1], options);
+        }
+        return List.of();
     }
 }
