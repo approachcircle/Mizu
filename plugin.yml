@@ -103,7 +103,7 @@ commands:
     permission: mizu.test-error-func
   mizu-effect:
     description: gives or removes proprietary Mizu effects from players
-    usage: /mizu-effect <give|clear> <effect|player> {player}
+    usage: /mizu-effect <give|clear> <effect|all> <player|all>
     permission: mizu.mizu-effect
 
 permissions:
