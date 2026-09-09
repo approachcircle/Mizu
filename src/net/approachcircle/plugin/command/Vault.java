@@ -24,13 +24,13 @@ public class Vault extends MizuCommand {
             UUID target = player.getUniqueId();
             if (args.length > 0) {
                 if (!player.isOp()) {
-                    player.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString("you do not have permission to open other another player's vault!", NamedTextColor.RED)));
+                    player.sendMessage(Localisation.rawPrefixComponent(new ColouredString("you do not have permission to open other another player's vault!", NamedTextColor.RED)));
                     return true;
                 }
                 // if we're given a player's name, grab THEIR UUID, even if they're offline
                 OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(args[0]);
                 if (!offlinePlayer.hasPlayedBefore()) {
-                    player.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString("this player has never joined the server before!", NamedTextColor.RED)));
+                    player.sendMessage(Localisation.rawPrefixComponent(new ColouredString("this player has never joined the server before!", NamedTextColor.RED)));
                     return true;
                 }
                 target = offlinePlayer.getUniqueId();
@@ -40,9 +40,9 @@ public class Vault extends MizuCommand {
             if (vault != null) {
                 player.openInventory(vault);
                 if (player.getUniqueId().equals(target)) {
-                    player.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString("now viewing your vault!", NamedTextColor.GREEN)));
+                    player.sendMessage(Localisation.rawPrefixComponent(new ColouredString("now viewing your vault!", NamedTextColor.GREEN)));
                 } else {
-                    player.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString(String.format("viewing the vault of: %s", Bukkit.getOfflinePlayer(args[0]).getName()), NamedTextColor.YELLOW)));
+                    player.sendMessage(Localisation.rawPrefixComponent(new ColouredString(String.format("viewing the vault of: %s", Bukkit.getOfflinePlayer(args[0]).getName()), NamedTextColor.YELLOW)));
                 }
                 // viewer : owner
                 VaultManager.getInstance().vaultsOpen.put(player.getUniqueId(), target);

@@ -5,7 +5,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Utils {
@@ -55,7 +54,7 @@ public class Utils {
         String source = stack.getClassName() + "." + stack.getMethodName();
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player.isOp()) {
-                player.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString(String.format("something very bad has happened in '%s'. check the console for details", source), NamedTextColor.RED)));
+                player.sendMessage(Localisation.rawPrefixComponent(new ColouredString(String.format("something very bad has happened in '%s'. check the console for details", source), NamedTextColor.RED)));
             }
         }
     }

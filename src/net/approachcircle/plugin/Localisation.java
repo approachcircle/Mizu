@@ -8,8 +8,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.checkerframework.dataflow.qual.Pure;
-import org.jetbrains.annotations.Contract;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -174,7 +172,7 @@ public class Localisation {
         return mizuPrefix.append(component(keyArgPair, region));
     }
 
-    public static TextComponent unlocalisedPrefixComponent(ColouredString message) {
+    public static TextComponent rawPrefixComponent(ColouredString message) {
         return mizuPrefix.append(Component.text(message.string, message.color));
     }
 
@@ -191,7 +189,7 @@ public class Localisation {
             sendMessage((Player) sender, keyArgPair);
         } else {
             // before we would just send a plain english string, now we send it as a component with colouring maintained
-            sender.sendMessage(unlocalisedPrefixComponent(getLocalisedString(keyArgPair, "en")));
+            sender.sendMessage(rawPrefixComponent(getLocalisedString(keyArgPair, "en")));
         }
     }
 

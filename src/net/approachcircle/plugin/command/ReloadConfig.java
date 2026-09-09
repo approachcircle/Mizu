@@ -12,9 +12,9 @@ import org.jetbrains.annotations.NotNull;
 public class ReloadConfig extends MizuCommand {
     @Override
     public boolean run(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
-        sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString("config reloading...", NamedTextColor.YELLOW)));
+        sender.sendMessage(Localisation.rawPrefixComponent(new ColouredString("config reloading...", NamedTextColor.YELLOW)));
         Mizu.getInstance().reloadConfig();
-        sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString("done!", NamedTextColor.GREEN)));
+        sender.sendMessage(Localisation.rawPrefixComponent(new ColouredString("done!", NamedTextColor.GREEN)));
         LuckyChunk.readBlacklist();
         return true;
     }

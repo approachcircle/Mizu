@@ -29,7 +29,7 @@ public class MizuEffectCommand extends MizuCommand {
             try {
                 effect = MizuEffectRegistry.getEffect(args[1]);
             } catch (IllegalArgumentException e) {
-                sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString(String.format("effect '%s' not found", args[1]), NamedTextColor.RED)));
+                sender.sendMessage(Localisation.rawPrefixComponent(new ColouredString(String.format("effect '%s' not found", args[1]), NamedTextColor.RED)));
                 return false;
             }
             effects.add(effect);
@@ -69,7 +69,7 @@ public class MizuEffectCommand extends MizuCommand {
                 (effects.size() == 1 ? String.format(" '%s'", effects.getFirst().type.name().toLowerCase()) : " all effects") +
                 (args[0].equalsIgnoreCase("give") ? " to" : " from") +
                 (players.size() == 1 ? String.format(" '%s'", players.getFirst().getName()) : String.format(" %d players", players.size()));
-        sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString(message, NamedTextColor.GREEN)));
+        sender.sendMessage(Localisation.rawPrefixComponent(new ColouredString(message, NamedTextColor.GREEN)));
         return true;
     }
 

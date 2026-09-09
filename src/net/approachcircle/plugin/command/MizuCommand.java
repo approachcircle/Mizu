@@ -7,7 +7,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.*;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
@@ -16,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public abstract class MizuCommand implements TabExecutor {
@@ -32,16 +30,16 @@ public abstract class MizuCommand implements TabExecutor {
         // true = command is on, not killswitch is on
         // false = commands is off, not killswitch is off
         if (!Mizu.getInstance().getConfig().getBoolean(command.getName(), true)) {
-            sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString("sorry, this command is currently killswitched", NamedTextColor.RED)));
+            sender.sendMessage(Localisation.rawPrefixComponent(new ColouredString("sorry, this command is currently killswitched", NamedTextColor.RED)));
             return true;
         }
         if (sender instanceof Player player && MizuEffectRegistry.getEffect(MizuEffectType.SUPPRESSED).playerHasEffect(player)) {
             if (label.equalsIgnoreCase("die")) {
                 // feels the aura
-                sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString("death is not an escape...", NamedTextColor.RED)));
+                sender.sendMessage(Localisation.rawPrefixComponent(new ColouredString("death is not an escape...", NamedTextColor.RED)));
                 return true;
             }
-            sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString("you are currently suppressed!", NamedTextColor.RED)));
+            sender.sendMessage(Localisation.rawPrefixComponent(new ColouredString("you are currently suppressed!", NamedTextColor.RED)));
             return true;
         }
         PluginLogger.getPluginLogger().info("executing mizu command: " + command.getName());
@@ -53,7 +51,7 @@ public abstract class MizuCommand implements TabExecutor {
             }
             return execResult;
         } catch (Exception e) {
-            sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString("an unexpected error occurred executing this command!", NamedTextColor.RED)));
+            sender.sendMessage(Localisation.rawPrefixComponent(new ColouredString("an unexpected error occurred executing this command!", NamedTextColor.RED)));
             Utils.error(e, "uncaught exception during command execution!");
         }
         return true;

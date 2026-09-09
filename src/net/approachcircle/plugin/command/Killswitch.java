@@ -18,7 +18,7 @@ public class Killswitch extends MizuCommand {
         String state = args[0]; // on/off
         String commandName = args[1];
         if (commandName.equalsIgnoreCase("killswitch")) {
-            sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString("you cannot killswitch the killswitch bro...", NamedTextColor.RED)));
+            sender.sendMessage(Localisation.rawPrefixComponent(new ColouredString("you cannot killswitch the killswitch bro...", NamedTextColor.RED)));
             return true;
         }
         // /killswitch off will set the command to true in the config (command is enabled), and vice versa
@@ -34,7 +34,7 @@ public class Killswitch extends MizuCommand {
         }
         sb.append(" for command ").append(commandName);
         cs.string = sb.toString();
-        sender.sendMessage(Localisation.unlocalisedPrefixComponent(cs));
+        sender.sendMessage(Localisation.rawPrefixComponent(cs));
         Mizu.getInstance().saveConfig();
         return true;
     }

@@ -33,7 +33,7 @@ public abstract class MizuEffect {
         player.playSound(player.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_CURSE, 1f, 1f);
         player.sendTitlePart(TitlePart.TITLE, Component.text(""));
         player.sendTitlePart(TitlePart.SUBTITLE, Component.text(type.name()).color(color));
-        player.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString(String.format("you have been %s, this means that %s", type.name().toLowerCase(), effectAppliedResult), NamedTextColor.RED)));
+        player.sendMessage(Localisation.rawPrefixComponent(new ColouredString(String.format("you have been %s, this means that %s", type.name().toLowerCase(), effectAppliedResult), NamedTextColor.RED)));
     }
 
     public final boolean playerHasEffect(Player player) {
@@ -49,7 +49,7 @@ public abstract class MizuEffect {
                 player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
                 player.sendTitlePart(TitlePart.TITLE, Component.text(""));
                 player.sendTitlePart(TitlePart.SUBTITLE, Component.text(opposite.toUpperCase()).color(NamedTextColor.GREEN));
-                player.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString(String.format("you are no longer %s", type.name().toLowerCase()), NamedTextColor.GREEN)));
+                player.sendMessage(Localisation.rawPrefixComponent(new ColouredString(String.format("you are no longer %s", type.name().toLowerCase()), NamedTextColor.GREEN)));
             }
         }
     }
