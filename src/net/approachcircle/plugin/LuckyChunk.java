@@ -401,7 +401,7 @@ public class LuckyChunk {
     public static void sendTeleportMessage(Player player) {
         TextComponent text = Localisation.prefixComponent(new KeyArgPair("click_to_teleport"), Localisation.getClientLocaleOrExplicit(player));
         text = text.hoverEvent(HoverEvent.showText(Component.text(String.format("%d %d %d", Math.round(x), Math.round(y) + height, Math.round(z)))));
-        text = text.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/lctp"));
+        text = text.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, ClickEvent.Payload.string("/lctp")));
         player.sendMessage(text);
     }
 
