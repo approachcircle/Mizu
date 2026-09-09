@@ -1,6 +1,5 @@
 package net.approachcircle.plugin;
 
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -27,6 +26,9 @@ public class WarpManager {
     };
     // warp_name x y z world owner yaw
     // ^^^^ ensure that logic is updated fully if this format changes
+
+    //TODO: i think this can be cleaned up at some point a little bit
+    //TODO: might be nice to abstract each warp into a Warp object to be passed around instead of raw strings and stuff
     
     private WarpManager() {
         warpFile = new File(Mizu.getInstance().getDataFolder().getAbsolutePath() + "\\" + warpFileName);
@@ -45,6 +47,8 @@ public class WarpManager {
         }
         return instance;
     }
+
+    // this is a bit of a shit show
 
     public boolean addNewWarp(String name, Player player) {
         return addNewWarp(name, player, player.getName());
@@ -110,6 +114,7 @@ public class WarpManager {
                     }
                     if (tokens[5].equals(player.getName()) || sender.isOp()) {
                         it.remove();
+                        break; // short circuit
                     } else {
                         Localisation.sendMessage(player, new KeyArgPair("warp_not_yours", tokens[5]));
                         return false;
@@ -117,15 +122,12 @@ public class WarpManager {
                 } else {
                     // must be console if we're here
                     it.remove();
+                    break; // short circuit
                 }
             }
         }
         if (lines.isEmpty()) {
-            try (FileWriter writer = new FileWriter(warpFile)) {
-                writer.append("");
-                return true;
-            } catch (IOException e) {
-                Utils.error(e, "failed to clear warp file");
+            if (!clearWarps()) {
                 return false;
             }
         }
@@ -215,5 +217,15 @@ public class WarpManager {
             return null;
         }
         return warpLines;
+    }
+
+    public boolean clearWarps() {
+        try (FileWriter writer = new FileWriter(warpFile)) {
+            writer.append("");
+            return true;
+        } catch (IOException e) {
+            Utils.error(e, "failed to clear warp file");
+            return false;
+        }
     }
 }

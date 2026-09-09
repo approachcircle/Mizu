@@ -11,7 +11,6 @@ import org.bukkit.inventory.ItemStack;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.Logger;
 
 public class VaultManager {
     private static VaultManager instance;
@@ -49,7 +48,7 @@ public class VaultManager {
                 // initialise as empty list of ItemStacks
                 config.set("contents", new ArrayList<ItemStack>());
             } catch (IOException e) {
-                sender.sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString("failed to create vault file", NamedTextColor.RED)));
+                sender.sendMessage(Localisation.rawPrefixComponent(new ColouredString("failed to create vault file", NamedTextColor.RED)));
                 Utils.error(e, "failed to create vault file for " + Bukkit.getOfflinePlayer(uuid).getName());
                 return null;
             }
@@ -69,6 +68,12 @@ public class VaultManager {
             vault.addItem(item);
         }
         return vault;
+    }
+
+    public void clearVault(UUID owner) {
+        Inventory vault = getVault(null, owner);
+        vault.clear();
+        saveVault(owner, vault);
     }
 
     private List<ItemStack> parseVault(File vault) {

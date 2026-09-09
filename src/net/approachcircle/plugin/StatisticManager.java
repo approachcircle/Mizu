@@ -131,4 +131,14 @@ public class StatisticManager {
                 player
         ));
     }
+
+    public boolean clearStatistics() {
+        try (FileWriter writer = new FileWriter(statFile)) {
+            writer.write("[]");
+        } catch (IOException e) {
+            Utils.error(e, "failed to initialise statistics file");
+            return false;
+        }
+        return true;
+    }
 }

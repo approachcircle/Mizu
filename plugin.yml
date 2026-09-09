@@ -105,6 +105,12 @@ commands:
     description: gives or removes proprietary Mizu effects from players
     usage: /mizu-effect <give|clear> <effect|all> <player|all>
     permission: mizu.mizu-effect
+  migrate:
+    description: moves all players to the sender's current location and resets their inventory, advancements, warps etc
+    # usage is missing the optional argument "confirm" because we don't want to give any information to the user on how
+    # to execute the command until they've read the warning about what the command actually does.
+    usage: /migrate
+    permission: mizu.migrate
 
 permissions:
   mizu.die:
@@ -181,4 +187,7 @@ permissions:
     default: op
   mizu.mizu-effect:
     description: allows a user to apply and remove proprietary effects from players
+    default: op
+  mizu.migrate:
+    description: allows a user to migrate all players
     default: op

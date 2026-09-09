@@ -466,5 +466,9 @@
     {
         "tpa_requester_cancelled": "o pedido de teleport para si foi cancelado (o jogador pediu a outra pessoa)",
         "color": "red"
+    },
+    {
+        "new_home": "esta é a tua nova casa...",
+        "color": "green"
     }
 ]

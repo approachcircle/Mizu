@@ -5,6 +5,7 @@ import io.papermc.paper.event.player.PrePlayerAttackEntityEvent;
 import net.approachcircle.plugin.command.Casino;
 import net.approachcircle.plugin.command.Die;
 import net.approachcircle.plugin.command.Maintenance;
+import net.approachcircle.plugin.command.Migrate;
 import net.approachcircle.plugin.effect.MizuEffectRegistry;
 import net.approachcircle.plugin.effect.MizuEffectType;
 import net.approachcircle.plugin.government.Party;
@@ -26,6 +27,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.*;
 
+import java.io.IOException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -44,7 +46,7 @@ public class MizuListener implements Listener {
         // effectively consume every chat message and broadcast it ourselves...
         event.setCancelled(true);
         if (MizuEffectRegistry.getEffect(MizuEffectType.SILENCED).playerHasEffect(event.getPlayer())) {
-            event.getPlayer().sendMessage(Localisation.unlocalisedPrefixComponent(new ColouredString("you are currently silenced!", NamedTextColor.RED)));
+            event.getPlayer().sendMessage(Localisation.rawPrefixComponent(new ColouredString("you are currently silenced!", NamedTextColor.RED)));
             return;
         }
         Component formattedMessage = Component.text("<");
@@ -181,6 +183,22 @@ public class MizuListener implements Listener {
         }
         if (LuckyChunk.isChunkDue()) {
             LuckyChunk.scheduleNewChunk();
+        }
+        boolean playerHasBeenMigrated;
+        try {
+            playerHasBeenMigrated = NotYetMigratedFile.getInstance().hasBeenMigrated(player);
+        } catch (IOException e) {
+            Utils.error(e, String.format("an error occurred checking if %s has been migrated", player.getName()));
+            return;
+        }
+        if (!playerHasBeenMigrated) {
+            Migrate.migratePlayer(player);
+            Migrate.sendMigrationNotification(player);
+            try {
+                NotYetMigratedFile.getInstance().setMigrated(player);
+            } catch (IOException e) {
+                Utils.error(e, String.format("an error occurred marking %s as having been migrated", player.getName()));
+            }
         }
     }
 
