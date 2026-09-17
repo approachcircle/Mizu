@@ -121,6 +121,7 @@ public class MizuListener implements Listener {
     public void onPlayerDeath(PlayerDeathEvent event) {
         Location deathLocation = event.getPlayer().getLocation();
         Player player = event.getPlayer();
+        EntityDamageEvent lastDamageCause = player.getLastDamageCause();
         if (Die.suicided.contains(player.getUniqueId())) { // suicide
             // set actual death message as null, and just broadcast a fake localised one to the correct players
             event.deathMessage(null);
@@ -132,7 +133,7 @@ public class MizuListener implements Listener {
             Localisation.broadcast(new KeyArgPair("player_gambled_life", player.getName()), false);
             deathLocation.getWorld().playSound(deathLocation, Sound.ENTITY_GUARDIAN_DEATH_LAND, 10.0f, 0.5f);
             Casino.gambledLife.remove(player.getUniqueId());
-        } else if (player.getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.VOID) { // void
+        } else if (lastDamageCause != null && lastDamageCause.getCause() == EntityDamageEvent.DamageCause.VOID) { // void
             // deathLocation.getWorld().playSound(deathLocation, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 10.0f, 1.0f);
             player.getWorld().spawnEntity(player.getLocation(), EntityType.LIGHTNING_BOLT);
             event.deathMessage(null);
@@ -193,6 +194,7 @@ public class MizuListener implements Listener {
             return;
         }
         if (!playerHasBeenMigrated) {
+            PluginLogger.getPluginLogger().info(String.format("%s is in the 'to be migrated' file, migrating now...", player.getName()));
             Migrate.migratePlayer(player);
             Migrate.sendMigrationNotification(player);
             try {
@@ -200,6 +202,7 @@ public class MizuListener implements Listener {
             } catch (IOException e) {
                 Utils.error(e, String.format("an error occurred marking %s as having been migrated", player.getName()));
             }
+            PluginLogger.getPluginLogger().info(String.format("%s has been migrated", player.getName()));
         }
     }
 
@@ -222,10 +225,12 @@ public class MizuListener implements Listener {
             return;
         if (event.getAction() == Action.LEFT_CLICK_BLOCK && player.getInventory().getItemInMainHand().getType() == Material.CLOCK) {
             Block targetBlock = event.getClickedBlock();
-            MagicWand.affectBlock(targetBlock);
+            if (targetBlock != null)
+                MagicWand.affectBlock(targetBlock);
         } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK && player.getInventory().getItemInMainHand().getType() == Material.CLOCK) {
             Block targetBlock = event.getClickedBlock();
-            MagicWand.resetBlock(targetBlock);
+            if (targetBlock != null)
+                MagicWand.resetBlock(targetBlock);
         }
     }
 
@@ -233,6 +238,10 @@ public class MizuListener implements Listener {
     public void onDimensionChange(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
         Bukkit.broadcast(Component.text(String.format("%s: %s -> %s", player.getName(), event.getFrom().getName(), player.getWorld().getName()), NamedTextColor.GRAY));
+
+        // i think this can't actually be null cause this function becomes @NotNull in the newest version
+        // of the API, so i'm gonna say this is a bit of fucking larp
+        // noinspection DataFlowIssue
         if (!player.getWorld().getGameRuleValue(GameRules.KEEP_INVENTORY)) {
             Localisation.sendMessage(player, new KeyArgPair("keep_inventory_off_in_dimension"));
         }
