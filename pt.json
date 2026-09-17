@@ -4,7 +4,7 @@
         "color": "red"
     },
     {
-        "warp_no_owner_no_delete": "esta warp não pretence a ninguem, então por segurança não a podes deletar",
+        "warp_no_owner_no_modify": "esta warp não pretence a ninguem, então por segurança não a podes modificar",
         "color": "red"
     },
     {

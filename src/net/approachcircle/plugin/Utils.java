@@ -1,8 +1,9 @@
 package net.approachcircle.plugin;
 
+import io.sentry.Sentry;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import org.bukkit.permissions.ServerOperator;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -43,19 +44,24 @@ public class Utils {
     }
 
     public static void error(@Nullable Exception e, @Nullable String message) {
+        boolean noOperatorsOnline = Bukkit.getOnlinePlayers().stream().noneMatch(ServerOperator::isOp);
         if (e != null) {
             e.printStackTrace(System.err);
+            if (noOperatorsOnline) {
+                // if no operators are online to relay the exception to, then capture it with sentry so that we get
+                // an email
+                Sentry.captureException(e);
+                // this could be a funny easter egg if shit ever breaks while i'm offline
+                Bukkit.broadcast(Localisation.rawPrefixComponent(new ColouredString("can somebody ping oscar and tell him that his plugin just shit the bed so he can fix it (lazy ahh prolly sleepin)", NamedTextColor.RED)));
+            }
         }
         if (message != null) {
             PluginLogger.getPluginLogger().severe(message);
         }
-        StackTraceElement stack;
-        stack = Thread.currentThread().getStackTrace()[2];
-        String source = stack.getClassName() + "." + stack.getMethodName();
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (player.isOp()) {
-                player.sendMessage(Localisation.rawPrefixComponent(new ColouredString(String.format("something very bad has happened in '%s'. check the console for details", source), NamedTextColor.RED)));
-            }
+        if (!noOperatorsOnline) {
+            Bukkit.getOnlinePlayers().stream().filter(ServerOperator::isOp).forEach(p -> {
+                p.sendMessage(Localisation.rawPrefixComponent(new ColouredString("something very bad has happened. check the console for details", NamedTextColor.RED)));
+            });
         }
     }
 

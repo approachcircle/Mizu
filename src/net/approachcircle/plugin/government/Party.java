@@ -1,6 +1,8 @@
 package net.approachcircle.plugin.government;
 
 
+import org.bukkit.scoreboard.Team;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -8,21 +10,11 @@ import java.util.UUID;
 public class Party {
     public String name;
     public String color;
-    public UUID leader;
-    public List<UUID> members =  new ArrayList<>();
+    private UUID leader;
+    private List<UUID> members = new ArrayList<>();
+    private Team underlyingTeam;
 
-    public Party() {}
+    private Party() {}
 
-    public Party(String name, String color, UUID leader) {
-        this.name = name;
-        this.color = color;
-        this.leader = leader;
-    }
 
-    public Party(String name, String color, UUID leader, List<UUID> members) {
-        this.name = name;
-        this.color = color;
-        this.leader = leader;
-        this.members = members;
-    }
 }

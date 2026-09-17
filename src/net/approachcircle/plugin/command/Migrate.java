@@ -1,6 +1,8 @@
 package net.approachcircle.plugin.command;
 
 import net.approachcircle.plugin.*;
+import net.approachcircle.plugin.data.Storage;
+import net.approachcircle.plugin.data.WarpStorage;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -131,11 +133,13 @@ public class Migrate extends MizuCommand {
     }
 
     private void clearWarps() {
-        if (!WarpManager.getInstance().clearWarps()) {
-            PluginLogger.getPluginLogger().warning("warps will have to be cleared manually");
-        } else {
-            PluginLogger.getPluginLogger().info("warps cleared!");
+        try {
+            Storage.of(WarpStorage.class).clear();
+        } catch (IOException e) {
+            Utils.error(e, "failed to clear warps");
+            return;
         }
+        PluginLogger.getPluginLogger().info("warps cleared!");
     }
 
     private void clearStatistics() {

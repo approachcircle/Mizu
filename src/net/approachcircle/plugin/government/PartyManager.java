@@ -65,7 +65,7 @@ public class PartyManager {
         if (parties == null) {
             return false;
         }
-        parties.add(new Party(name, color, leader, List.of(leader)));
+        // parties.add(new Party(name, color, leader, List.of(leader)));
         ObjectMapper mapper = new ObjectMapper();
         try {
             mapper.writeValue(partiesFile, parties);
@@ -83,13 +83,13 @@ public class PartyManager {
         if (parties == null) {
             return null;
         }
-        for (Party party : parties) {
-            for (UUID member : party.members) {
-                if (member.equals(player)) {
-                    return party;
-                }
-            }
-        }
+//        for (Party party : parties) {
+//            for (UUID member : party.members) {
+//                if (member.equals(player)) {
+//                    return party;
+//                }
+//            }
+//        }
         return null;
     }
 }

@@ -34,8 +34,6 @@ public class Mizu extends JavaPlugin {
         logger.info("plugin enabled");
         pluginManager.registerEvents(new MizuListener(), this);
         logger.info("events registered!");
-        registerCommands();
-        logger.info("commands registered!");
         MizuEffectRegistry.registerEffects();
         logger.info("effects registered!");
         reporter.startReportingMSPT();
@@ -57,6 +55,8 @@ public class Mizu extends JavaPlugin {
         } else {
             logger.warning("lucky chunk is NOT notifying on chunk found");
         }
+        registerCommands();
+        logger.info("commands registered!");
     }
 
     @Override
@@ -107,7 +107,7 @@ public class Mizu extends JavaPlugin {
 
             getCommand("mizu-reload-config").setExecutor(new ReloadConfig());
             getCommand("fuck-you").setExecutor(new FuckYou());
-            getCommand("warp").setExecutor(new Warp());
+            getCommand("warp").setExecutor(new WarpCommand());
             getCommand("stats").setExecutor(new Stats());
             getCommand("vault").setExecutor(new Vault());
             getCommand("killswitch").setExecutor(new Killswitch());

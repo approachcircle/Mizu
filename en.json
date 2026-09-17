@@ -4,7 +4,7 @@
         "color": "red"
     },
     {
-        "warp_no_owner_no_delete": "this warp doesn't belong to anyone so to be safe, you can't delete it",
+        "warp_no_owner_no_modify": "this warp doesn't belong to anyone so to be safe, you can't modify it",
         "color": "red"
     },
     {
