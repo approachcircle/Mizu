@@ -63,7 +63,7 @@ public abstract class Storage<T> {
 
     public abstract void add(T object) throws IOException;
 
-    public abstract void remove(Predicate<T> predicate) throws IOException;
+    public abstract boolean remove(Predicate<T> predicate) throws IOException;
 
     public abstract void clear() throws IOException;
 

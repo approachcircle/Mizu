@@ -26,10 +26,11 @@ public class JSONStorage<T> extends Storage<T> {
     }
 
     @Override
-    public void remove(Predicate<T> predicate) throws IOException {
+    public boolean remove(Predicate<T> predicate) throws IOException {
         List<T> objects = list();
-        objects.removeIf(predicate);
+        boolean removalOccurred = objects.removeIf(predicate);
         write(mapper.writeValueAsString(objects), false);
+        return removalOccurred;
     }
 
     @Override

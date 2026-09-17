@@ -2,6 +2,7 @@ package net.approachcircle.plugin.command;
 
 import net.approachcircle.plugin.*;
 import net.approachcircle.plugin.data.Storage;
+import net.approachcircle.plugin.data.ToBeMigratedFile;
 import net.approachcircle.plugin.data.WarpStorage;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -17,7 +18,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -51,7 +51,10 @@ public class Migrate extends MizuCommand {
                 return true;
             }
             player.sendMessage(Localisation.rawPrefixComponent(new ColouredString("migration in progress!", NamedTextColor.YELLOW)));
-            if (!setupNotYetMigratedFile()) return true;
+            if (!markOfflinePlayersToBeMigrated()) {
+                player.sendMessage(Localisation.rawPrefixComponent(new ColouredString("migration cancelled!", NamedTextColor.RED)));
+                return true;
+            }
             clearWarps();
             clearStatistics();
             Bukkit.getWorlds().getFirst().setSpawnLocation(player.getLocation());
@@ -115,20 +118,18 @@ public class Migrate extends MizuCommand {
         }
     }
 
-    private boolean setupNotYetMigratedFile() {
-        List<OfflinePlayer> offlinePlayers = new ArrayList<>();
+    private boolean markOfflinePlayersToBeMigrated() {
         for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
             if (!offlinePlayer.isOnline()) {
-                offlinePlayers.add(offlinePlayer);
+                try {
+                    Storage.of(ToBeMigratedFile.class).add(offlinePlayer.getUniqueId().toString());
+                } catch (IOException e) {
+                    Utils.error(e, String.format("failed to write %s to the 'to be migrated' file", offlinePlayer.getName()));
+                    // if one fails then we can short circuit and stop the migration
+                    return false;
+                }
             }
         }
-        try {
-            NotYetMigratedFile.getInstance().writePlayers(offlinePlayers.toArray(OfflinePlayer[]::new));
-        } catch (IOException e) {
-            Utils.error(e, "failed to write offline players to the 'not yet migrated' file");
-            return false;
-        }
-        PluginLogger.getPluginLogger().info("added offline players to the 'not yet migrated' file!");
         return true;
     }
 

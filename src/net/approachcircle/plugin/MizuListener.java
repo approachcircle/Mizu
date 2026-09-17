@@ -6,6 +6,8 @@ import net.approachcircle.plugin.command.Casino;
 import net.approachcircle.plugin.command.Die;
 import net.approachcircle.plugin.command.Maintenance;
 import net.approachcircle.plugin.command.Migrate;
+import net.approachcircle.plugin.data.Storage;
+import net.approachcircle.plugin.data.ToBeMigratedFile;
 import net.approachcircle.plugin.effect.MizuEffectRegistry;
 import net.approachcircle.plugin.effect.MizuEffectType;
 import net.approachcircle.plugin.government.Party;
@@ -40,36 +42,8 @@ public class MizuListener implements Listener {
 
     private final Logger logger = PluginLogger.getPluginLogger();
 
-    @EventHandler
-    public void onMessageSent(AsyncChatEvent event) {
-        String message = PlainTextComponentSerializer.plainText().serialize(event.message());
-        // effectively consume every chat message and broadcast it ourselves...
-        event.setCancelled(true);
-        if (MizuEffectRegistry.getEffect(MizuEffectType.SILENCED).playerHasEffect(event.getPlayer())) {
-            event.getPlayer().sendMessage(Localisation.rawPrefixComponent(new ColouredString("you are currently silenced!", NamedTextColor.RED)));
-            return;
-        }
-        Component formattedMessage = Component.text("<");
-        Party playerParty = PartyManager.getInstance().getPartyForPlayer(event.getPlayer().getUniqueId());
-        if (playerParty != null) {
-            formattedMessage = formattedMessage.append(Component.text(event.getPlayer().getName(), NamedTextColor.NAMES.value(playerParty.color)));
-        } else {
-            formattedMessage = formattedMessage.append(Component.text(event.getPlayer().getName()));
-        }
-        formattedMessage = formattedMessage.append(Component.text("> ")).append(Component.text(message));
-        Bukkit.broadcast(formattedMessage);
-        // stop here if translation is disabled
-        // up until here everything behaves "normally" to the user
-        // might be worth returning from within the translation client class instead of here but it'll be fine for now
-        if (!Mizu.getInstance().getConfig().getBoolean("translation")) {
-            return;
-        }
-        // pre-check to see if the server is doing okay first
-        // fix later
-//        if (!TranslationClient.serverIsHealthy()) {
-//            return;
-//        }
-        String messageLanguage = TranslationClient.detect(message);
+    private void performTranslation(String deserializedMessage, AsyncChatEvent event) {
+        String messageLanguage = TranslationClient.detect(deserializedMessage);
         if (messageLanguage == null) {
             Localisation.sendMessage(event.getPlayer(), "translation_failed");
             logger.severe(String.format("translation failed for %s", event.getPlayer().getName()));
@@ -81,7 +55,7 @@ public class MizuListener implements Listener {
             String playerLocale = Localisation.getClientLocaleOrExplicit(player);
             // this player does not speak the language that the message was sent in
             if (!playerLocale.equalsIgnoreCase(messageLanguage)) {
-                String translatedMessage = TranslationClient.translate(message, messageLanguage, playerLocale);
+                String translatedMessage = TranslationClient.translate(deserializedMessage, messageLanguage, playerLocale);
                 String translatedChatMessage = String.format("<%s> %s", event.getPlayer().getName(), translatedMessage);
                 if (playerLocale.equalsIgnoreCase("pt")) {
                     translatedMessages.put(playerLocale, translatedChatMessage + " (portuguese translation)");
@@ -107,6 +81,33 @@ public class MizuListener implements Listener {
             // the english translation will be sent anyway + you should know what you're writing
             event.getPlayer().sendMessage(Component.text(translatedMessages.get("pt"), NamedTextColor.GRAY, TextDecoration.ITALIC));
         }
+    }
+
+    @EventHandler
+    public void onMessageSent(AsyncChatEvent event) {
+        String message = PlainTextComponentSerializer.plainText().serialize(event.message());
+        // effectively consume every chat message and broadcast it ourselves...
+        event.setCancelled(true);
+        if (MizuEffectRegistry.getEffect(MizuEffectType.SILENCED).playerHasEffect(event.getPlayer())) {
+            event.getPlayer().sendMessage(Localisation.rawPrefixComponent(new ColouredString("you are currently silenced!", NamedTextColor.RED)));
+            return;
+        }
+        Component formattedMessage = Component.text("<");
+        Party playerParty = PartyManager.getInstance().getPartyForPlayer(event.getPlayer().getUniqueId());
+        if (playerParty != null) {
+            formattedMessage = formattedMessage.append(Component.text(event.getPlayer().getName(), NamedTextColor.NAMES.value(playerParty.color)));
+        } else {
+            formattedMessage = formattedMessage.append(Component.text(event.getPlayer().getName()));
+        }
+        formattedMessage = formattedMessage.append(Component.text("> ")).append(Component.text(message));
+        Bukkit.broadcast(formattedMessage);
+        // stop here if translation is disabled
+        // up until here everything behaves "normally" to the user
+        // might be worth returning from within the translation client class instead of here, but it'll be fine for now
+        if (!Mizu.getInstance().getConfig().getBoolean("translation")) {
+            return;
+        }
+        performTranslation(message, event);
     }
 
     @EventHandler
@@ -186,7 +187,7 @@ public class MizuListener implements Listener {
         }
         boolean playerHasBeenMigrated;
         try {
-            playerHasBeenMigrated = NotYetMigratedFile.getInstance().hasBeenMigrated(player);
+            playerHasBeenMigrated = Storage.of(ToBeMigratedFile.class).hasBeenMigrated(player);
         } catch (IOException e) {
             Utils.error(e, String.format("an error occurred checking if %s has been migrated", player.getName()));
             return;
@@ -195,7 +196,7 @@ public class MizuListener implements Listener {
             Migrate.migratePlayer(player);
             Migrate.sendMigrationNotification(player);
             try {
-                NotYetMigratedFile.getInstance().setMigrated(player);
+                Storage.of(ToBeMigratedFile.class).setMigrated(player);
             } catch (IOException e) {
                 Utils.error(e, String.format("an error occurred marking %s as having been migrated", player.getName()));
             }
