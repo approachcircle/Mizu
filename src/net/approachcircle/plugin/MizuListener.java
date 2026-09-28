@@ -2,10 +2,7 @@ package net.approachcircle.plugin;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
 import io.papermc.paper.event.player.PrePlayerAttackEntityEvent;
-import net.approachcircle.plugin.command.Casino;
-import net.approachcircle.plugin.command.Die;
-import net.approachcircle.plugin.command.Maintenance;
-import net.approachcircle.plugin.command.Migrate;
+import net.approachcircle.plugin.command.*;
 import net.approachcircle.plugin.data.Storage;
 import net.approachcircle.plugin.data.ToBeMigratedFile;
 import net.approachcircle.plugin.effect.MizuEffectRegistry;
@@ -173,6 +170,7 @@ public class MizuListener implements Listener {
             }
         }
         Localisation.sendMessage(player, new KeyArgPair("welcome_message", player.getName()));
+        player.sendMessage(Localisation.rawPrefixComponent(new ColouredString(String.format("you're playing on '%s'!", Identify.getInformalServerName()), NamedTextColor.LIGHT_PURPLE)));
         Localisation.sendMessage(player, new KeyArgPair("server_time_message", dtf.format(LocalTime.now())));
         Localisation.sendMessage(player, new KeyArgPair("other_players_online", Bukkit.getOnlinePlayers().size() - 1));
         boolean lcState = Mizu.getInstance().getConfig().getBoolean("lucky-chunk");
