@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.permissions.ServerOperator;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Utils {
@@ -44,7 +45,11 @@ public class Utils {
     }
 
     public static void error(@Nullable Exception e, @Nullable String message) {
-        boolean noOperatorsOnline = Bukkit.getOnlinePlayers().stream().noneMatch(ServerOperator::isOp);
+        boolean noOperatorsOnline = Bukkit.getOnlinePlayers().stream().noneMatch(ServerOperator::isOp) || Bukkit.getOnlinePlayers().stream().noneMatch(p -> {
+            // first time i'm writing logic dependent on me specifically rather than any operators, but it makes sense
+            // here since it pertains to programming errors in the plugin so...
+            return p.getName().equals("approachcircle");
+        });
         if (e != null) {
             e.printStackTrace(System.err);
             if (noOperatorsOnline) {
@@ -71,5 +76,15 @@ public class Utils {
 
     public static void error(Exception e) {
         error(e, null);
+    }
+
+    public static Set<String> getCommandsInConfig() {
+        // this function is deprecated because some plugins may use a different format that doesn't comply with the
+        // format that this function is expecting but WE don't do that, and they haven't listed an alternative which
+        // ISN'T deprecated because you're expected to parse the file yourself as a regular YML file but we reallyyyyy
+        // don't care
+        // shhh
+        //noinspection deprecation
+        return Mizu.getInstance().getDescription().getCommands().keySet();
     }
 }

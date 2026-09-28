@@ -29,7 +29,7 @@ public abstract class MizuCommand implements TabExecutor {
         // fetch the killswitch status if it exists, if not, default to true.
         // true = command is on, not killswitch is on
         // false = commands is off, not killswitch is off
-        if (!Mizu.getInstance().getConfig().getBoolean(command.getName(), true)) {
+        if (Killswitch.commandIsKillswitched(command)) {
             sender.sendMessage(Localisation.rawPrefixComponent(new ColouredString("sorry, this command is currently killswitched", NamedTextColor.RED)));
             return true;
         }
