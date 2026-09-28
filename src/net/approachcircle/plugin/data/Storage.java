@@ -2,6 +2,7 @@ package net.approachcircle.plugin.data;
 
 import net.approachcircle.plugin.Mizu;
 import net.approachcircle.plugin.Utils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -21,7 +22,7 @@ public abstract class Storage<T> {
     protected IOException initialisationFailedException;
     private static final Map<Class<?>, Storage<?>> storageMap = new HashMap<>();
 
-    protected Storage(String filename, String initialFileContents) {
+    protected Storage(@NotNull String filename, @NotNull String initialFileContents) {
         this.filename = filename;
         this.initialFileContents = initialFileContents;
         this.healthy = tryInitialise();
@@ -32,9 +33,7 @@ public abstract class Storage<T> {
             underlyingFile = new File(Mizu.getInstance().getDataFolder().getAbsolutePath() + "\\" + filename);
             if (!underlyingFile.exists()) {
                 underlyingFile.createNewFile();
-                if (initialFileContents != null) {
-                    Files.writeString(underlyingFile.toPath(), initialFileContents);
-                }
+                Files.writeString(underlyingFile.toPath(), initialFileContents);
             }
             return true;
         } catch (IOException e) {

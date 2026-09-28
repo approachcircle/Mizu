@@ -10,4 +10,9 @@ public class ColouredString {
         this.string = string;
         this.color = color;
     }
+
+    public ColouredString(String string) {
+        this.string = string;
+        this.color = NamedTextColor.WHITE;
+    }
 }
