@@ -172,6 +172,7 @@ public class TranslationClient {
                 (item) -> languagesToTranslate.contains(item.language)
         ).toArray(DetectionResponse[]::new);
         if (supportedDetections.length == 0) {
+            PluginLogger.getPluginLogger().warning("message does not match any of our supported detections");
             return null;
         }
         if (supportedDetections.length == 1) {

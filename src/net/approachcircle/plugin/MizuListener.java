@@ -42,6 +42,9 @@ public class MizuListener implements Listener {
     private void performTranslation(String deserializedMessage, AsyncChatEvent event) {
         String messageLanguage = TranslationClient.detect(deserializedMessage);
         if (messageLanguage == null) {
+            // ehhhh i feel like this is getting a bit annoying maybe, does the user really need to be told that
+            // translation failed? i feel like it would be nicer to replace it with a message just saying "could not
+            // translate" or something IN PLACE of the actual translated message
             Localisation.sendMessage(event.getPlayer(), "translation_failed");
             logger.severe(String.format("translation failed for %s", event.getPlayer().getName()));
             return;
