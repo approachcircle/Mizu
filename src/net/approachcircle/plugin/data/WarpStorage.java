@@ -2,7 +2,6 @@ package net.approachcircle.plugin.data;
 
 
 import net.approachcircle.plugin.Utils;
-import org.apache.commons.lang3.SerializationException;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -46,13 +45,13 @@ public class WarpStorage extends FlatFileStorage<Warp> {
             warp.z = Double.parseDouble(tokens[3]);
         } catch (NumberFormatException e) {
             // if the warp's location is unintelligible, then that's pretty world ending
-            throw new SerializationException("an error occurred parsing coordinates for this warp: '" + warp.warpName + "'");
+            throw new DeserializationException("an error occurred parsing coordinates for this warp: '" + warp.warpName + "'");
         }
         World world = Bukkit.getWorld(tokens[4]);
         if (world == null) {
             // we also do kinda need the world, because while we could just hope/guess that the warp is in the overworld,
             // that could also end pretty badly if it was supposed to be in the end or the nether
-            throw new SerializationException("an error occurred parsing the world for this warp: '" + warp.warpName + "'");
+            throw new DeserializationException("an error occurred parsing the world for this warp: '" + warp.warpName + "'");
         }
         warp.world = world;
         try {
