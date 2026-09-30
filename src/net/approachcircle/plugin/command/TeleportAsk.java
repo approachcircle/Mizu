@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 public class TeleportAsk extends MizuCommand {
     // requester : target
     private static final HashMap<UUID, UUID> teleportRequestMap = new HashMap<>();
-    private static BukkitTask currentTask;
+    private static final HashMap<UUID, BukkitTask> requestExpiryMap = new HashMap<>();
     private static final Logger logger = PluginLogger.getPluginLogger();
     private static final Integer timeToLive = 20;
 
@@ -99,7 +99,8 @@ public class TeleportAsk extends MizuCommand {
                         logger.info(String.format("%s denied a teleport request from %s", commandSender.getName(), requester.getName()));
                     }
                     teleportRequestMap.remove(id);
-                    currentTask.cancel();
+                    requestExpiryMap.get(id).cancel();
+                    requestExpiryMap.remove(id);
                     break;
                 }
             }
@@ -117,7 +118,7 @@ public class TeleportAsk extends MizuCommand {
         Localisation.sendMessage(requester, new KeyArgPair("sending_teleport_request", target.getName()));
         Localisation.sendMessage(requester, new KeyArgPair("teleport_expiry", timeToLive));
         teleportRequestMap.put(requester.getUniqueId(), target.getUniqueId());
-        currentTask = beginTimer(requester, target);
+        requestExpiryMap.put(requester.getUniqueId(), beginTimer(requester, target));
         Localisation.sendMessage(target, new KeyArgPair("teleport_request", requester.getName()));
         Localisation.sendMessage(target, new KeyArgPair("tpy_to_accept"));
         Localisation.sendMessage(target, new KeyArgPair("tpn_to_deny"));
@@ -127,7 +128,9 @@ public class TeleportAsk extends MizuCommand {
     }
 
     private static BukkitTask beginTimer(Player requester, Player target) {
-        return Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(Mizu.getInstance(), () -> {
+        // this should not be asynchronous because it isn't blocking (for that long at least), and Localisation touches
+        // Bukkit APIs when finding client locales
+        return Bukkit.getServer().getScheduler().runTaskLater(Mizu.getInstance(), () -> {
             Localisation.sendMessage(requester, new KeyArgPair("teleport_request_to_player_expired", target.getName()));
             Localisation.sendMessage(target, new KeyArgPair("teleport_request_from_player_expired", requester.getName()));
             teleportRequestMap.remove(requester.getUniqueId());
