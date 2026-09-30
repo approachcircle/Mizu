@@ -91,6 +91,7 @@ public abstract class MizuCommand implements TabExecutor {
         return numbers;
     }
 
+    @Contract(mutates = "param2")
     protected final List<String> copyMatchesAndSort(String arg, List<String> options) {
         List<String> completions = copyMatches(arg, options);
         sort(completions);

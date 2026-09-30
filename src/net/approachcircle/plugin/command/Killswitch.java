@@ -9,6 +9,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -55,9 +56,10 @@ public class Killswitch extends MizuCommand {
     @Override
     protected List<String> getTabCompletions(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (args.length == 1) {
-            return List.of("<state>");
+            // already sorted + there's only two options, so we can use an immutable List.of here
+            return copyMatches(args[0], List.of("off", "on"));
         } else if (args.length == 2) {
-            return List.of("<command>");
+            return copyMatchesAndSort(args[1], new ArrayList<>(Utils.getCommandsInConfig()));
         }
         return List.of();
     }
