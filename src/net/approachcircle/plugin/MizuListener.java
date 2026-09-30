@@ -7,8 +7,8 @@ import net.approachcircle.plugin.data.Storage;
 import net.approachcircle.plugin.data.ToBeMigratedFile;
 import net.approachcircle.plugin.effect.MizuEffectRegistry;
 import net.approachcircle.plugin.effect.MizuEffectType;
-import net.approachcircle.plugin.government.Party;
-import net.approachcircle.plugin.government.PartyManager;
+import net.approachcircle.plugin.data.Party;
+// import net.approachcircle.plugin.government.PartyManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -92,14 +92,10 @@ public class MizuListener implements Listener {
             event.getPlayer().sendMessage(Localisation.rawPrefixComponent(new ColouredString("you are currently silenced!", NamedTextColor.RED)));
             return;
         }
-        Component formattedMessage = Component.text("<");
-        Party playerParty = PartyManager.getInstance().getPartyForPlayer(event.getPlayer().getUniqueId());
-        if (playerParty != null) {
-            formattedMessage = formattedMessage.append(Component.text(event.getPlayer().getName(), NamedTextColor.NAMES.value(playerParty.color)));
-        } else {
-            formattedMessage = formattedMessage.append(Component.text(event.getPlayer().getName()));
-        }
-        formattedMessage = formattedMessage.append(Component.text("> ")).append(Component.text(message));
+        Component formattedMessage = Component.text("<")
+                .append(Component.text(event.getPlayer().getName()))
+                .append(Component.text("> "))
+                .append(Component.text(message));
         Bukkit.broadcast(formattedMessage);
         // stop here if translation is disabled
         // up until here everything behaves "normally" to the user
