@@ -32,13 +32,7 @@ public abstract class FlatFileStorage<T> extends Storage<T> {
     @Override
     public boolean remove(Predicate<T> predicate) throws IOException {
         List<String> lines = rawLines();
-        for (String line : lines) {
-            System.out.println(line);
-        }
         boolean removalOccurred = lines.removeIf(line -> predicate.test(deserialize(line)));
-        for (String line : lines) {
-            System.out.println(line);
-        }
         writeLines(lines);
         return removalOccurred;
     }
