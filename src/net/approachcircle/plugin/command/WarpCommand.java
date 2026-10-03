@@ -135,6 +135,10 @@ public class WarpCommand extends MizuCommand {
             return WarpOperationResult.NOOP;
         }
         try {
+            if (warpStorage.list().stream().anyMatch(w -> w.warpName.equalsIgnoreCase(name))) {
+                Localisation.sendMessage(player, new KeyArgPair("warp_name_taken", name));
+                return WarpOperationResult.NOOP;
+            }
             warpStorage.add(Warp.build(name, player));
         } catch (IOException e) {
             Utils.error(e, "failed to add a warp");
