@@ -40,6 +40,6 @@ public class JSONStorage<T> extends Storage<T> {
 
     @Override
     public List<T> list() throws IOException {
-        return mapper.readValue(underlyingFile, new TypeReference<>(){});
+        return mapper.readValue(read(), new TypeReference<>(){});
     }
 }
