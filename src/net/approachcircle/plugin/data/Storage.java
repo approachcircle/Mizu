@@ -21,11 +21,13 @@ public abstract class Storage<T> {
     protected boolean healthy;
     protected IOException initialisationFailedException;
     private static final Map<Class<?>, Storage<?>> storageMap = new HashMap<>();
+    private final FileCache fileCache;
 
     protected Storage(@NotNull String filename, @NotNull String initialFileContents) {
         this.filename = filename;
         this.initialFileContents = initialFileContents;
         this.healthy = tryInitialise();
+        fileCache = new FileCache(this::readRaw);
     }
 
     private boolean tryInitialise() {
@@ -78,6 +80,7 @@ public abstract class Storage<T> {
     private void writeRaw(Object data, boolean append) throws IOException {
         try (FileWriter writer = new FileWriter(underlyingFile, append)) {
             writer.write(data.toString());
+            fileCache.invalidate();
         }
     }
 
@@ -85,7 +88,8 @@ public abstract class Storage<T> {
         if (!healthy && !(healthy = tryInitialise())) {
             throw initialisationFailedException;
         }
-        return readRaw();
+        // will give us either the cached contents of this file, or a fresh copy if it isn't valid
+        return fileCache.get();
     }
 
     private String readRaw() throws IOException {
