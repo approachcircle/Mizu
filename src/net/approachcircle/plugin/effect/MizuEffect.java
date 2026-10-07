@@ -24,16 +24,22 @@ public abstract class MizuEffect {
         this.color = color;
     }
 
-    public final void applyEffect(Player player) {
+    public final void applyEffect(Player player, boolean silent) {
         if (playerHasEffect(player)) return;
         if (!MizuEffectRegistry.playerEffectMap.containsKey(player.getUniqueId())) {
             MizuEffectRegistry.playerEffectMap.put(player.getUniqueId(), new ArrayList<>());
         }
         MizuEffectRegistry.playerEffectMap.get(player.getUniqueId()).add(this);
+        if (silent) return;
+        // any code from here on out is purely cosmetic
         player.playSound(player.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_CURSE, 1f, 1f);
         player.sendTitlePart(TitlePart.TITLE, Component.text(""));
         player.sendTitlePart(TitlePart.SUBTITLE, Component.text(type.name()).color(color));
         player.sendMessage(Localisation.rawPrefixComponent(new ColouredString(String.format("you have been %s, this means that %s", type.name().toLowerCase(), effectAppliedResult), NamedTextColor.RED)));
+    }
+
+    public final void applyEffect(Player player) {
+        applyEffect(player, false);
     }
 
     public final boolean playerHasEffect(Player player) {
