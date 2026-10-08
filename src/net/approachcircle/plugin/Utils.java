@@ -57,7 +57,7 @@ public class Utils {
                 // an email
                 Sentry.captureException(e);
                 // this could be a funny easter egg if shit ever breaks while i'm offline
-                Bukkit.broadcast(Localisation.rawPrefixComponent(new ColouredString("can somebody ping oscar and tell him that his plugin just shit the bed so he can fix it (lazy ahh prolly sleepin)", NamedTextColor.RED)));
+                Bukkit.broadcast(Localisation.rawPrefixComponent(new ColouredString("can somebody ping oscar and tell him that his shit ass plugin just had a stroke so he can fix me later (lazy ahh prolly sleepin)", NamedTextColor.RED)));
             }
         }
         if (message != null) {
