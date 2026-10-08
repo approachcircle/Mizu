@@ -10,12 +10,11 @@ public class FileCache {
     private String contents = null;
     private boolean isValid = false;
     private final IOSupplier<String> contentsSupplier;
-    private final int cacheExpirySeconds = 7;
 
-    public FileCache(@NotNull IOSupplier<String> contentsSupplier) {
+    public FileCache(@NotNull IOSupplier<String> contentsSupplier, int timeToLive) {
         this.contentsSupplier = contentsSupplier;
         // invalidate cache automatically every amount of seconds specified by the constant
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(Mizu.getInstance(), this::invalidate, 0, cacheExpirySeconds * 20);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(Mizu.getInstance(), this::invalidate, 0, timeToLive * 20L);
     }
 
     public void invalidate() {

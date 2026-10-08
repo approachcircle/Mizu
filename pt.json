@@ -470,5 +470,9 @@
     {
         "new_home": "esta é a tua nova casa...",
         "color": "green"
+    },
+    {
+        "warp_does_not_exist": "um warp com o nome de '%s' não existe",
+        "color": "red"
     }
 ]

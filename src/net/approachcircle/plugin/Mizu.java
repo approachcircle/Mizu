@@ -114,6 +114,7 @@ public class Mizu extends JavaPlugin {
             getCommand("mizu-effect").setExecutor(new MizuEffectCommand());
             getCommand("migrate").setExecutor(new Migrate());
             getCommand("identify").setExecutor(new Identify());
+            getCommand("party").setExecutor(new PartyManagement());
         } catch (NullPointerException e) {
             logger.severe("we're missing an entry for a command in the plugin.yml file! not good!");
             // rethrow so that the server automatically disables the plugin

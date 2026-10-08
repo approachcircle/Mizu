@@ -504,5 +504,9 @@
     {
         "new_home": "this is your new home...",
         "color": "green"
+    },
+    {
+        "warp_does_not_exist": "a warp with the name '%s' doesn't exist",
+        "color": "red"
     }
 ]
