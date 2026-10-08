@@ -495,7 +495,7 @@
     },
     {
         "translation_failed": "could not translate this message",
-        "color": "red"
+        "color": "gray"
     },
     {
         "tpa_requester_cancelled": "the teleport request to you was cancelled (the player requested somebody else)",

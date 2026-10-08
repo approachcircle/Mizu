@@ -461,7 +461,7 @@
     },
     {
         "translation_failed": "não foi possível traduzir esta mensagem",
-        "color": "red"
+        "color": "gray"
     },
     {
         "tpa_requester_cancelled": "o pedido de teleport para si foi cancelado (o jogador pediu a outra pessoa)",
