@@ -6,10 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
-import java.util.List;
 import java.util.UUID;
 
 public class WarpStorage extends FlatFileStorage<Warp> {
@@ -81,11 +78,5 @@ public class WarpStorage extends FlatFileStorage<Warp> {
     public Location getLocation(Warp warp) {
         // we don't store pitch cause we don't really care
         return new Location(warp.world, warp.x, warp.y, warp.z, warp.yaw, 0);
-    }
-
-    public @Nullable Warp getWarp(String name) throws IOException {
-        List<Warp> warps;
-        warps = list();
-        return warps.stream().filter(warp -> warp.warpName.equals(name)).findFirst().orElse(null);
     }
 }

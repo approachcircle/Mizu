@@ -3,6 +3,7 @@ package net.approachcircle.plugin.data;
 import net.approachcircle.plugin.Mizu;
 import net.approachcircle.plugin.Utils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -27,7 +28,7 @@ public abstract class Storage<T> {
         this.filename = filename;
         this.initialFileContents = initialFileContents;
         this.healthy = tryInitialise();
-        fileCache = new FileCache(this::readRaw);
+        fileCache = new FileCache(this::readRaw, 7);
     }
 
     private boolean tryInitialise() {
@@ -69,6 +70,18 @@ public abstract class Storage<T> {
     public abstract void clear() throws IOException;
 
     public abstract List<T> list() throws IOException;
+
+    public List<T> filter(Predicate<T> predicate) throws IOException {
+        List<T> objects;
+        objects = list();
+        return objects.stream().filter(predicate).toList();
+    }
+
+    public @Nullable T getOrElseNull(Predicate<T> predicate) throws IOException {
+        List<T> objects;
+        objects = list();
+        return objects.stream().filter(predicate).findFirst().orElse(null);
+    }
 
     public final void write(Object data, boolean append) throws IOException {
         if (!healthy && !(healthy = tryInitialise())) {

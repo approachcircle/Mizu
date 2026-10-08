@@ -101,8 +101,12 @@ public class WarpCommand extends MizuCommand {
                 if (sender instanceof Player player) {
                     Location warpTarget;
                     try {
-                        // TODO: null safety
-                        warpTarget = warpStorage.getWarp(args[0]).getLocation();
+                        Warp warp = warpStorage.getOrElseNull((w) -> w.warpName.equalsIgnoreCase(args[0]));
+                        if (warp == null) {
+                            Localisation.sendMessage(player, "warp_does_not_exist");
+                            return false;
+                        }
+                        warpTarget = warp.getLocation();
                     } catch (IOException e) {
                         Localisation.sendMessage(sender, new KeyArgPair("warp_failed"));
                         return true;
@@ -149,7 +153,11 @@ public class WarpCommand extends MizuCommand {
 
     private WarpOperationResult tryRemoveWarp(CommandSender sender, String name) {
         try {
-            Warp warp = warpStorage.getWarp(name);
+            Warp warp = warpStorage.getOrElseNull((w) -> w.warpName.equalsIgnoreCase(name));
+            if (warp == null) {
+                Localisation.sendMessage(sender, "warp_does_not_exist");
+                return WarpOperationResult.NOOP;
+            }
             if (warp.canBeModifiedBy(sender)) {
                 warpStorage.remove((w) -> w.warpName.equalsIgnoreCase(name));
             }
@@ -162,7 +170,11 @@ public class WarpCommand extends MizuCommand {
 
     private WarpOperationResult tryRenameWarp(CommandSender sender, String oldName, String newName) {
         try {
-            Warp warp = warpStorage.getWarp(oldName);
+            Warp warp = warpStorage.getOrElseNull((w) -> w.warpName.equalsIgnoreCase(oldName));
+            if (warp == null) {
+                Localisation.sendMessage(sender, "warp_does_not_exist");
+                return WarpOperationResult.NOOP;
+            }
             if (warp.canBeModifiedBy(sender)) {
                 if (tryRemoveWarp(sender, oldName) == WarpOperationResult.REMOVE_FAILED) {
                     return WarpOperationResult.RENAME_FAILED;
