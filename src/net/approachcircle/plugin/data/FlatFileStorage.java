@@ -33,7 +33,18 @@ public abstract class FlatFileStorage<T> extends Storage<T> {
     public boolean remove(Predicate<T> predicate) throws IOException {
         List<String> lines = rawLines();
         boolean removalOccurred = lines.removeIf(line -> predicate.test(deserialize(line)));
-        writeLines(lines);
+        // not a huge fan of this particularly
+        // the only reason we do this is that if we do something like:
+        // add -> remove
+        // and the resulting remove operation leaves no entries left, then any children storages extending this will
+        // throw an exception trying to deserialize the empty file because there is a leftover newline character
+        // which appears to be an entry, so deserializing the newline character throws an exception while attempting to
+        // parse its tokens
+        if (lines.isEmpty()) {
+            clear();
+        } else {
+            writeLines(lines);
+        }
         return removalOccurred;
     }
 
