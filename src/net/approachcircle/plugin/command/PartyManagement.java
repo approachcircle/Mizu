@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 public class PartyManagement extends MizuCommand {
     private PartyStorage partyStorage = Storage.of(PartyStorage.class);
@@ -47,7 +48,7 @@ public class PartyManagement extends MizuCommand {
                     NamedTextColor color;
                     try {
                         color = NamedTextColor.NAMES.valueOrThrow(args[2]);
-                    } catch (IllegalArgumentException e) {
+                    } catch (NoSuchElementException e) {
                         sender.sendMessage(Localisation.rawPrefixComponent(new ColouredString(String.format("invalid colour: '%s'", args[2]), NamedTextColor.RED)));
                         return false;
                     }
