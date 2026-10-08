@@ -91,7 +91,7 @@ commands:
     permission: mizu.vault
   party:
     description: commands related to your political party
-    usage: /party
+    usage: /party <create|disband> <partyName> {colour}
     permission: mizu.party
   killswitch:
     description: enables or disables a killswitch for a command
@@ -182,7 +182,7 @@ permissions:
     default: true
   mizu.party:
     description: allows a user to manage their party
-    default: true
+    default: op
   mizu.killswitch:
     description: allows a user to toggle a command killswitch
     default: op
