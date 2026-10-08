@@ -111,9 +111,9 @@ commands:
     # to execute the command until they've read the warning about what the command actually does.
     usage: /migrate
     permission: mizu.migrate
-  identify:
+  ident:
     description: queries the server name and players that have previously played
-    usage: /identify
+    usage: /ident
     permission: mizu.identify
 
 permissions:
@@ -195,6 +195,6 @@ permissions:
   mizu.migrate:
     description: allows a user to migrate all players
     default: op
-  mizu.identify:
+  mizu.ident:
     description: allows a user to query the server name and all players that have played before
     default: true
