@@ -229,7 +229,9 @@ public class LuckyChunk {
                             break;
                         }
                     }
-                    WebhookClient.send(messageBuffer);
+                    if (Mizu.getInstance().getConfig().getBoolean("notify-chunk")) {
+                        WebhookClient.send(messageBuffer);
+                    }
                     if (chunkFoundTask != -1) {
                         Bukkit.getScheduler().cancelTask(chunkFoundTask);
                     }

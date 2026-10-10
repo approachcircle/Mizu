@@ -12,9 +12,6 @@ public class WebhookClient {
     private static final Logger logger = PluginLogger.getPluginLogger();
 
     public static void send(Object message) {
-        if (!Mizu.getInstance().getConfig().getBoolean("notify-chunk")) {
-            return;
-        }
         String webhookURL = System.getenv("MIZU_WEBHOOK");
         if (webhookURL == null) {
             PluginLogger.getPluginLogger().warning("the MIZU_WEBHOOK environment variable is not set!");
