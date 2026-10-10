@@ -38,7 +38,6 @@ public class WebhookClient {
             return;
         }
         connection.setDoOutput(true);
-        connection.setDoInput(true);
         connection.addRequestProperty("Content-Type", "application/json");
         byte[] buffer = ("{\"content\": \"" + message.toString() + "\"}").getBytes(StandardCharsets.UTF_8);
         logger.info(new String(buffer, StandardCharsets.UTF_8));
