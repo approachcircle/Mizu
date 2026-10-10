@@ -75,6 +75,7 @@ public class Migrate extends MizuCommand {
         });
         player.getInventory().clear();
         clearAdvancements(player);
+        VaultManager.getInstance().clearVault(player.getUniqueId());
         player.teleport(Bukkit.getWorlds().getFirst().getSpawnLocation());
         // forgot that there are actual Minecraft statistics, so let's also reset those.
         // this is disgustingly expensive but i can't think of a better way, and who said migrations were supposed

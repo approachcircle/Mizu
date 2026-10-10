@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +38,7 @@ public class VaultManager {
         return instance;
     }
 
-    public Inventory getVault(Player sender, UUID uuid) {
+    public Inventory getVault(@Nullable Player sender, UUID uuid) {
         // the inventory being created belongs to the sender as they're the VIEWER, not because it's actually their vault
         Inventory vault = Bukkit.createInventory(sender, vaultSize, Component.text(viewName));
         File vaultFile = new File(vaultFolder, uuid + ".yml");
@@ -48,7 +49,9 @@ public class VaultManager {
                 // initialise as empty list of ItemStacks
                 config.set("contents", new ArrayList<ItemStack>());
             } catch (IOException e) {
-                sender.sendMessage(Localisation.rawPrefixComponent(new ColouredString("failed to create vault file", NamedTextColor.RED)));
+                if (sender != null) {
+                    sender.sendMessage(Localisation.rawPrefixComponent(new ColouredString("failed to create vault file", NamedTextColor.RED)));
+                }
                 Utils.error(e, "failed to create vault file for " + Bukkit.getOfflinePlayer(uuid).getName());
                 return null;
             }
