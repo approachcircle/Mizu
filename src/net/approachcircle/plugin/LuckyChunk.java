@@ -217,18 +217,19 @@ public class LuckyChunk {
                 Location from = new Location(chunkSpawnWorld, finalX - chunkFoundRadius, y, finalZ - chunkFoundRadius);
                 Location to = new Location(chunkSpawnWorld, finalX + chunkFoundRadius, y + (height * 2), finalZ + chunkFoundRadius);
                 // ensure they are in the same world as the chunk otherwise someone may be able to find the chunk from the nether
-                // (thank you rodrigo)
+                // (thank you, Rodrigo)
                 if ((from.x() < loc.x() && to.x() > loc.x()) && (from.y() < loc.y() && to.y() > loc.y()) && (from.z() < loc.z() && to.z() > loc.z()) && player.getWorld() == chunkSpawnWorld) {
                     Localisation.broadcast(new KeyArgPair("player_found_chunk", player.getName()));
-                    Localisation.broadcast(new KeyArgPair("lucky_chunk_block_identification", material.name().toLowerCase().replace("_", " ")));
-                    String messageBuffer = String.format("%s found the chunk, it's %s", player.getName(), material.name().toLowerCase().replace("_", " "));
+                    String humanisedMaterialName = material.name().toLowerCase().replace("_", " ");
+                    Localisation.broadcast(new KeyArgPair("lucky_chunk_block_identification", humanisedMaterialName));
+                    String messageBuffer = String.format("%s found the lucky chunk, it's %s", player.getName(), humanisedMaterialName);
                     for (String valuable : valuables) {
                         if (material.name().toLowerCase().contains(valuable)) {
                             messageBuffer += " @here";
                             break;
                         }
                     }
-                    NotificationClient.send(messageBuffer);
+                    WebhookClient.send(messageBuffer);
                     if (chunkFoundTask != -1) {
                         Bukkit.getScheduler().cancelTask(chunkFoundTask);
                     }
@@ -261,8 +262,6 @@ public class LuckyChunk {
         }
         resetState();
         if (scheduleNew) {
-            //TODO: fix shit not work, new chunk not scheduling!"!¬!!!!!!!!!!!!!!!!!!!!!!!!!!
-            //TODO: is working now??????????
             scheduleNewChunk();
         }
     }

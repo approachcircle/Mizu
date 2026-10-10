@@ -1,7 +1,7 @@
 package net.approachcircle.plugin.command;
 
 import io.sentry.Sentry;
-import net.approachcircle.plugin.NotificationClient;
+import net.approachcircle.plugin.WebhookClient;
 import net.approachcircle.plugin.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -17,7 +17,7 @@ public class Test extends MizuCommand {
                 Sentry.captureException(e);
             }
         } else if (label.equalsIgnoreCase("test-notifications")) {
-            NotificationClient.send(String.format("test notification from minecraft server '%s'", System.getenv("COMPUTERNAME")));
+            WebhookClient.send(String.format("test notification from minecraft server '%s'", System.getenv("COMPUTERNAME")));
         } else if (label.equalsIgnoreCase("test-error-func")) {
             try {
                 throw new Exception("test exception");

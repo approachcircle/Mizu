@@ -12,8 +12,6 @@ import java.util.logging.Logger;
 public class Mizu extends JavaPlugin {
     private final Logger logger = getLogger();
     private final PluginManager pluginManager = getServer().getPluginManager();
-    // TODO: NOT THAT SENSITIVE BUT HIDE STILL
-    private final String sentryDsn = "https://80903f313fc7478284aadb5982eb248e@o4504855501602816.ingest.sentry.io/4504855620747264";
     private static Mizu instance = null;
     private final DatadogReporter reporter = DatadogReporter.getInstance();
 
@@ -27,10 +25,15 @@ public class Mizu extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-        Sentry.init(options -> {
-            options.setDsn(sentryDsn);
-            options.setSampleRate(1.0);
-        });
+        String sentryDSN = System.getenv("SENTRY_DSN");
+        if (sentryDSN != null) {
+            Sentry.init(options -> {
+                options.setDsn(sentryDSN);
+                options.setSampleRate(1.0);
+            });
+        } else {
+            PluginLogger.getPluginLogger().warning("the SENTRY_DSN environment variable is not set, so sentry will be disabled!");
+        }
         logger.info("plugin enabled");
         pluginManager.registerEvents(new MizuListener(), this);
         logger.info("events registered!");

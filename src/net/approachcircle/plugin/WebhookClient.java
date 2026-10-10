@@ -8,61 +8,54 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 
-public class NotificationClient {
+public class WebhookClient {
     private static final Logger logger = PluginLogger.getPluginLogger();
 
     public static void send(Object message) {
         if (!Mizu.getInstance().getConfig().getBoolean("notify-chunk")) {
             return;
         }
+        String webhookURL = System.getenv("MIZU_WEBHOOK");
+        if (webhookURL == null) {
+            PluginLogger.getPluginLogger().warning("the MIZU_WEBHOOK environment variable is not set!");
+            return;
+        }
         URL url;
         try {
-            // TODO: SENSITIVE
-            // TODO: HIDE AND CHANGE BEFORE OPEN SOURCE
-            url = new URL("https://discord.com/api/webhooks/1288578553021202442/_BU3bOaREmctGsZUVMXEkzXwWmYRLUiGy7br2l5BsCYT9oogvjlJOiFs83T65U58yTRd");
+            url = new URL(webhookURL);
         } catch (MalformedURLException e) {
-            Utils.error(e, "notification server URL is malformed.");
+            Utils.error(e, "the webhook URL is malformed.");
             return;
         }
         HttpURLConnection connection;
         try {
             connection = (HttpURLConnection) url.openConnection();
         } catch (IOException e) {
-            Utils.error(e, "failed to open connection to notification server");
+            Utils.error(e, "failed to open connection to the webhook");
             return;
         }
         try {
             connection.setRequestMethod("POST");
         } catch (ProtocolException e) {
-            Utils.error(e, "notification server protocol is malformed.");
+            Utils.error(e, "the webhook protocol is malformed.");
             return;
         }
         connection.setDoOutput(true);
         connection.setDoInput(true);
         connection.addRequestProperty("Content-Type", "application/json");
-        logger.info("send message called");
         byte[] buffer = ("{\"content\": \"" + message.toString() + "\"}").getBytes(StandardCharsets.UTF_8);
         logger.info(new String(buffer, StandardCharsets.UTF_8));
         connection.setFixedLengthStreamingMode(buffer.length);
         try {
             connection.connect();
         } catch (IOException e) {
-            Utils.error(e, "failed to establish connection to notification server");
+            Utils.error(e, "failed to establish connection to the webhook");
             return;
         }
         try (OutputStream stream = connection.getOutputStream()) {
             stream.write(buffer);
         } catch (IOException e) {
-            Utils.error(e, "failed to write to notification server");
-        }
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"))) {
-            StringBuilder response = new StringBuilder();
-            String responseLine;
-            while ((responseLine = br.readLine()) != null) {
-                response.append(responseLine.trim());
-            }
-        } catch (IOException e) {
-            Utils.error(e, "failed to read from notification server");
+            Utils.error(e, "failed to write to the webhook");
         }
         connection.disconnect();
     }
