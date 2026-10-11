@@ -78,7 +78,9 @@ public class MizuListener implements Listener {
             event.getPlayer().sendMessage(Component.text(translatedMessages.get("pt"), NamedTextColor.GRAY, TextDecoration.ITALIC));
         } else if (!messageLanguage.equalsIgnoreCase("en") && !messageLanguage.equalsIgnoreCase("pt")) {
             // if the message is anything else, show the portuguese translation
-            // the english translation will be sent anyway + you should know what you're writing
+            // the english translation will be sent anyway + you should know what you're writing.
+            // result of the hashmap.get() operation is null sometimes? doesn't seem to cause any blaring issues but
+            // worth investigating.
             event.getPlayer().sendMessage(Component.text(translatedMessages.get("pt"), NamedTextColor.GRAY, TextDecoration.ITALIC));
         }
     }

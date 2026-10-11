@@ -1,6 +1,7 @@
 package net.approachcircle.plugin.data;
 
 
+import net.approachcircle.plugin.PluginLogger;
 import net.approachcircle.plugin.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -55,13 +56,17 @@ public class WarpStorage extends FlatFileStorage<Warp> {
             warp.owner = UUID.fromString(tokens[5]);
         } catch (IllegalArgumentException ex) {
             // if we fail parsing the UUID here, we're probably looking at a player name from the old format
-            // so we'll try that
-            OfflinePlayer owner = Bukkit.getOfflinePlayer(tokens[5]);
-            if (owner.hasPlayedBefore()) {
+            // so we'll try that.
+            // we're gonna check only the cache for this player because we do NOT have the time to wait for a blocking
+            // web request to try and resolve this player, ESPECIALLY if they have changed their name.
+            // just want to make a point that saving anything belonging to anyone under their name instead of UUID is a
+            // terrible idea... never again.
+            OfflinePlayer owner = Bukkit.getOfflinePlayerIfCached(tokens[5]);
+            if (owner != null && owner.hasPlayedBefore()) {
                 warp.owner = owner.getUniqueId();
             } else {
-                // uh ohhhh it must be malformed, not a valid UUID and the player with this name has never played before.
-                // not world ending so we won't throw, but this warp no longer has a valid owner......
+                // either the player with this name is not cached, or they don't exist (maybe malformed/corrupted), in
+                // any case we don't have a valid owner for this warp any more...
                 warp.owner = null;
             }
         }
