@@ -103,7 +103,7 @@ public class WarpCommand extends MizuCommand {
                     try {
                         Warp warp = warpStorage.getOrElseNull((w) -> w.warpName.equalsIgnoreCase(args[0]));
                         if (warp == null) {
-                            Localisation.sendMessage(player, "warp_does_not_exist");
+                            Localisation.sendMessage(player, new KeyArgPair("warp_does_not_exist", args[0]));
                             return false;
                         }
                         warpTarget = warp.getLocation();
