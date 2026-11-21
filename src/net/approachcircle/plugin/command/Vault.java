@@ -34,7 +34,10 @@ public class Vault extends MizuCommand {
                     return true;
                 }
                 target = offlinePlayer.getUniqueId();
-
+            }
+            if (VaultManager.getInstance().vaultsOpen.containsValue(target)) {
+                player.sendMessage(Localisation.rawPrefixComponent(new ColouredString("this vault is currently being viewed by someone else!", NamedTextColor.RED)));
+                return true;
             }
             Inventory vault = VaultManager.getInstance().getVault(player, target);
             if (vault != null) {
