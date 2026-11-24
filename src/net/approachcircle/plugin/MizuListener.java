@@ -7,8 +7,6 @@ import net.approachcircle.plugin.data.Storage;
 import net.approachcircle.plugin.data.ToBeMigratedFile;
 import net.approachcircle.plugin.effect.MizuEffectRegistry;
 import net.approachcircle.plugin.effect.MizuEffectType;
-import net.approachcircle.plugin.data.Party;
-// import net.approachcircle.plugin.government.PartyManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -163,11 +161,11 @@ public class MizuListener implements Listener {
             }
 
         }
-        if (Maintenance.getState()) {
+        if (Panic.getState()) {
             if (player.isOp()) {
                 Localisation.sendMessage(player, new KeyArgPair("maintenance_mode_warning"));
             } else {
-                Maintenance.turnAwayPlayer(player, true);
+                Panic.turnAwayPlayer(player, true);
             }
         }
         Localisation.sendMessage(player, new KeyArgPair("welcome_message", player.getName()));
@@ -175,6 +173,8 @@ public class MizuListener implements Listener {
         Localisation.sendMessage(player, new KeyArgPair("server_time_message", dtf.format(LocalTime.now())));
         Localisation.sendMessage(player, new KeyArgPair("other_players_online", Bukkit.getOnlinePlayers().size() - 1));
         boolean lcState = Mizu.getInstance().getConfig().getBoolean("lucky-chunk");
+        // for future servers, it might make more sense to only send the "lucky chunk enabled" message if it is enabled
+        // rather than sending a message if it is not, considering that may become the default moving forward
         String enabledKey = lcState ? "lucky_chunk_enabled" : "lucky_chunk_not_enabled";
         player.sendMessage(Localisation.prefixComponent(new KeyArgPair(enabledKey), Localisation.getClientLocaleOrExplicit(player)));
         if (LuckyChunk.isChunkSpawned()) {

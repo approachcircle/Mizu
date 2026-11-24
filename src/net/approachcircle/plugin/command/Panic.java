@@ -14,15 +14,15 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.logging.Logger;
 
-public class Maintenance extends MizuCommand {
+public class Panic extends MizuCommand {
     private static final Plugin plugin = Mizu.getInstance();
     private static final Logger logger = plugin.getLogger();
-    private static Boolean maintenanceMode = false;
+    private static Boolean panicked = false;
 
     @Override
     public boolean run(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
-        Localisation.sendMessage(sender, new KeyArgPair("maintenance_status_update", maintenanceMode, !maintenanceMode));
-        maintenanceMode = !maintenanceMode;
+        Localisation.sendMessage(sender, new KeyArgPair("maintenance_status_update", panicked, !panicked));
+        panicked = !panicked;
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (!player.isOp()) {
                 turnAwayPlayer(player, false);
@@ -53,6 +53,6 @@ public class Maintenance extends MizuCommand {
     }
 
     public static Boolean getState() {
-        return maintenanceMode;
+        return panicked;
     }
 }

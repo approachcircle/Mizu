@@ -116,11 +116,11 @@
         "color": "green"
     },
     {
-        "maintenance_status_update": "modo de manutenção: %s -> %s",
+        "maintenance_status_update": "modo de pânico: %s -> %s",
         "color": "green"
     },
     {
-        "server_currently_in_maintenance": "o servidor está em modo de manutenção",
+        "server_currently_in_maintenance": "o servidor está em modo de pânico",
         "color": "red"
     },
     {
@@ -160,7 +160,7 @@
         "color": "red"
     },
     {
-        "maintenance_mode_warning": "aviso: o servidor está em modo de manutenção",
+        "maintenance_mode_warning": "aviso: o servidor está em modo de pânico",
         "color": "red"
     },
     {

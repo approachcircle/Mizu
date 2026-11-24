@@ -94,7 +94,7 @@ public class Mizu extends JavaPlugin {
 
             getCommand("mock").setExecutor(new Mock());
             getCommand("spawnon").setExecutor(new SpawnOn());
-            getCommand("maintenance").setExecutor(new Maintenance());
+            getCommand("panic").setExecutor(new Panic());
             getCommand("firework").setExecutor(new Firework());
 
             getCommand("test-sentry").setExecutor(new Test());

@@ -33,8 +33,8 @@ commands:
     description: spawns an entity on another player
     usage: /spawnon <player> <entity>
     permission: mizu.spawnon
-  maintenance:
-    description: puts the server into maintenance mode that kicks every player who is not an operator, and only allows operators to join back
+  panic:
+    description: puts the server into panic mode, where only operators can join and every other player is automatically kicked
     usage: /maintenance
     permission: mizu.maintenance
   firework:
@@ -123,8 +123,8 @@ permissions:
   mizu.firework:
     description: allows a user to receive a set amount of fireworks after a set cooldown
     default: true
-  mizu.maintenance:
-    description: allows a user to toggle maintenance mode for the server
+  mizu.panic:
+    description: allows a user to toggle panic mode for the server
     default: op
   mizu.tpa:
     description: allows a user to request to teleport to another user

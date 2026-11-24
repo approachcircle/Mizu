@@ -122,15 +122,15 @@
     },
     {
         "translation_notes": "maintenance mode is just like something that can be toggled to kick every player that isn't an operator in case somethings very wrong",
-        "maintenance_status_update": "maintenance mode: %s -> %s",
+        "maintenance_status_update": "panic mode: %s -> %s",
         "color": "green"
     },
     {
-        "server_currently_in_maintenance": "the server is currently in maintenance mode.",
+        "server_currently_in_maintenance": "the server is currently in panic mode.",
         "color": "red"
     },
     {
-        "server_unavailable_for_players": "the server is currently unavailable for players to join.",
+        "server_unavailable_for_players": "this means the server is currently unavailable for players to join due to something VERY BAD happening probably.",
         "color": "yellow"
     },
     {
@@ -170,7 +170,7 @@
         "color": "red"
     },
     {
-        "maintenance_mode_warning": "warning: the server is currently in maintenance mode",
+        "maintenance_mode_warning": "warning: the server is currently in panic mode",
         "color": "red"
     },
     {
