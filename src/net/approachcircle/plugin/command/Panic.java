@@ -33,7 +33,7 @@ public class Panic extends MizuCommand {
 
     public static void turnAwayPlayer(Player player, Boolean triedToJoin) {
         player.kick(
-                Component.text("==--Mizu--==", NamedTextColor.DARK_GREEN)
+                Component.text("==--Mizu--==", NamedTextColor.DARK_AQUA)
                 .appendNewline()
                 .append(Localisation.component(new KeyArgPair("server_currently_in_maintenance"), Localisation.getClientLocaleOrExplicit(player)))
                 .appendNewline()
