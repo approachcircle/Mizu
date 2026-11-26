@@ -1,6 +1,7 @@
 package net.approachcircle.plugin.command;
 
 import net.approachcircle.plugin.ColouredString;
+import net.approachcircle.plugin.KeyArgPair;
 import net.approachcircle.plugin.Localisation;
 import net.approachcircle.plugin.effect.MizuEffect;
 import net.approachcircle.plugin.effect.MizuEffectRegistry;
@@ -42,7 +43,7 @@ public class MizuEffectCommand extends MizuCommand {
         } else {
             Player player = Bukkit.getPlayer(args[2]);
             if (player == null) {
-                Localisation.sendMessage(sender, "player_not_found");
+                Localisation.sendMessage(sender, new KeyArgPair("player_not_found", args[2]));
                 return false;
             }
             players.add(player);
