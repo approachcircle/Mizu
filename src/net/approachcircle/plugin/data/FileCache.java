@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 
 public class FileCache {
-    private String contents = null;
+    private volatile String contents = null;
     private boolean isValid = false;
     private final IOSupplier<String> contentsSupplier;
 
@@ -19,6 +19,7 @@ public class FileCache {
 
     public void invalidate() {
         isValid = false;
+        contents = null;
     }
 
     public String get() throws IOException {
