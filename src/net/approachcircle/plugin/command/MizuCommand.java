@@ -24,6 +24,10 @@ public abstract class MizuCommand implements TabExecutor {
         return getTabCompletions(sender, command, label, args);
     }
 
+    // TODO: i think we need some kinda subcommand enum or other such implementation so that we don't have to manually
+    // TODO: keep the subcommands in sync between the switch cases with their logic and also with command completion
+    // TODO: stuff.
+
     @Override
     public final boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
         // fetch the killswitch status if it exists, if not, default to true.
