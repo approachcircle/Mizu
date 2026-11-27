@@ -18,7 +18,7 @@ import java.util.*;
 public class Localisation {
     private static List<HashMap<String, String>> english;
     private static List<HashMap<String, String>> portuguese;
-    private static final TextComponent mizuPrefix = Component.text("Mizu", NamedTextColor.DARK_AQUA)
+    public static final TextComponent mizuPrefix = Component.text("Mizu", NamedTextColor.DARK_AQUA)
             .append(Component.text("> ", NamedTextColor.WHITE));
     private static final String localeSettingsFilename = "locale-definitions.txt";
     private static File localeSettingsFile;
