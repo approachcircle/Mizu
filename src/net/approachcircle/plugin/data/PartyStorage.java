@@ -39,6 +39,8 @@ public class PartyStorage extends FlatFileStorage<Party> {
         // multiline comment. actual brain-dead IDE
         //noinspection ExtractMethodRecommender
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+        // very bad things will happen if we fuck with the underlying teams linked to parties manually...
+        // if the team is deleted, this exception will be thrown, same with if the team name gets changed...
         Team underlyingTeam = scoreboard.getTeam(party.name);
         if (underlyingTeam == null)
         {
