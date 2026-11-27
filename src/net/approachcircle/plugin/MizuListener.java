@@ -3,11 +3,14 @@ package net.approachcircle.plugin;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import io.papermc.paper.event.player.PrePlayerAttackEntityEvent;
 import net.approachcircle.plugin.command.*;
+import net.approachcircle.plugin.data.Party;
+import net.approachcircle.plugin.data.PartyStorage;
 import net.approachcircle.plugin.data.Storage;
 import net.approachcircle.plugin.data.ToBeMigratedFile;
 import net.approachcircle.plugin.effect.MizuEffectRegistry;
 import net.approachcircle.plugin.effect.MizuEffectType;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -43,7 +46,12 @@ public class MizuListener implements Listener {
             // ehhhh i feel like this is getting a bit annoying maybe, does the user really need to be told that
             // translation failed? i feel like it would be nicer to replace it with a message just saying "could not
             // translate" or something IN PLACE of the actual translated message
-            Localisation.sendMessage(event.getPlayer(), "translation_failed");
+            if (!Localisation.getClientLocaleOrExplicit(event.getPlayer()).equalsIgnoreCase("en")) {
+                // okay well the best thing we can do is send the translation failed message to players with their
+                // client locale NOT set to english, because they probably need to know if their message was actually
+                // translated the most
+                Localisation.sendMessage(event.getPlayer(), "translation_failed");
+            }
             logger.severe(String.format("translation failed for %s", event.getPlayer().getName()));
             return;
         }
@@ -92,8 +100,20 @@ public class MizuListener implements Listener {
             event.getPlayer().sendMessage(Localisation.rawPrefixComponent(new ColouredString("you are currently silenced!", NamedTextColor.RED)));
             return;
         }
-        Component formattedMessage = Component.text("<")
-                .append(Component.text(event.getPlayer().getName()))
+        Party playerParty = null;
+        try {
+            playerParty = Storage.of(PartyStorage.class).getOrElseNull(party -> party.members.contains(event.getPlayer().getUniqueId()));
+        } catch (IOException e) {
+            event.getPlayer().sendMessage(Localisation.rawPrefixComponent(new ColouredString("failed to grab your party to colour your name in chat", NamedTextColor.RED)));
+        }
+        Component formattedMessage = Component.text("<");
+        TextComponent playerName = Component.text(event.getPlayer().getName());
+        if (playerParty != null) {
+            // colour the player's name in chat messages cause its so cool and kawaii
+            playerName = playerName.color(playerParty.color);
+        }
+        // append has a pure contract, so it doesn't mutate the component in place :D
+        formattedMessage = formattedMessage.append(playerName)
                 .append(Component.text("> "))
                 .append(Component.text(message));
         Bukkit.broadcast(formattedMessage);
