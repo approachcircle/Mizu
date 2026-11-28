@@ -50,16 +50,7 @@ code written to the best of my ability. If you find code that seems to be a bit
 questionable, there is probably a comment explaining why i have made the choices i have
 for that scenario.
 
-## What on earth is this build system???
-Yeah... Unfortunately when i made this plugin years ago, i was too scared to even think
-about or touch a build system like Maven or Gradle, so the best way to build the plugin into
-a .JAR is by running the Build Artifacts task in IntelliJ. For other IDEs... I'm honestly
-not so sure. Basically the end goal you want is a fat .JAR with all classes and libraries
-packaged together, since i am using raw .JAR files as libraries. I promise i will add
-a proper build system at some point, because honestly it is kind of painful managing it
-this way also.
-
-### WHERE'S THE BUILD TARGET DIRECTORY???
+## WHERE'S THE BUILD TARGET DIRECTORY???
 Ah, yeah... forgot about that. The build directory is pointing at a folder called
 dev_server which is not in this repo as it is part of the .gitignore since it is a fully
 flourished Minecraft server which i run locally on my machine to test builds of the plugin.
