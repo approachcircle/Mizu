@@ -49,7 +49,7 @@ public abstract class Storage<T> {
     // i'm so fucking scared
     @SuppressWarnings("unchecked")
     public static <S extends Storage<?>> S of(Class<S> clazz) {
-        return (S) storageMap.computeIfAbsent(clazz, k -> {
+        return (S) storageMap.computeIfAbsent(clazz, _ -> {
             try {
                 Constructor<S> constructor = clazz.getDeclaredConstructor();
                 constructor.setAccessible(true);

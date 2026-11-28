@@ -1,6 +1,5 @@
 package net.approachcircle.plugin;
 
-import net.kyori.adventure.text.format.NamedTextColor;
 
 public class KeyArgPair {
     public String key;

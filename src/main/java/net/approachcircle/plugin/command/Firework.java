@@ -18,7 +18,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 public class Firework extends MizuCommand {
-    private static final List<UUID> ineligible = new ArrayList<UUID>();
+    private static final List<UUID> ineligible = new ArrayList<>();
     private static final Plugin plugin = Mizu.getInstance();
     private static final Logger logger = plugin.getLogger();
     private static final int cooldownMinutes = 5;

@@ -7,7 +7,7 @@ import org.bukkit.Bukkit;
 import java.io.Closeable;
 
 public class DatadogReporter implements Closeable {
-    private StatsDClient client;
+    private final StatsDClient client;
     private int tpsTask;
     private int msptTask;
     private boolean suppressed = false;

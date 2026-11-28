@@ -9,7 +9,6 @@ import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.logging.Logger;
 
 public class TranslationClient {
@@ -64,7 +63,7 @@ public class TranslationClient {
             return null;
         }
         StringBuilder response;
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
             response = new StringBuilder();
             String responseLine;
             while ((responseLine = br.readLine()) != null) {
@@ -107,7 +106,7 @@ public class TranslationClient {
             return false;
         }
         StringBuilder response;
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
             response = new StringBuilder();
             String responseLine;
             while ((responseLine = br.readLine()) != null) {

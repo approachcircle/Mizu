@@ -1,7 +1,6 @@
 package net.approachcircle.plugin.data;
 
 
-import net.approachcircle.plugin.PluginLogger;
 import net.approachcircle.plugin.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

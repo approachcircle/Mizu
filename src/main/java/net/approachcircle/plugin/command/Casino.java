@@ -37,6 +37,8 @@ public class Casino extends MizuCommand {
             "cat"
     ); // could be entity types, don't mind it here though
 
+    // TODO: null safety and general cleanup yeugh
+
     @Override
     public boolean run(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (sender instanceof Player player) {
@@ -207,9 +209,7 @@ public class Casino extends MizuCommand {
                     player.setHealth(result);
                 }
             }
-            default -> {
-                Utils.error(String.format("enum constant not present, type = %s, constant = %s", GambleType.class, type.name()));
-            }
+            default -> Utils.error(String.format("enum constant not present, type = %s, constant = %s", GambleType.class, type.name()));
         }
     }
 

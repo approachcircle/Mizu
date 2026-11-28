@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.logging.Logger;
 
@@ -65,13 +66,12 @@ public class LuckyChunk {
             "slime",
             "wither"
     );
-    // need to add a valuables blacklist to stop detecting "iron bars" etc
-    private static final List<Material> chunkDenySpawnList = List.of(
-            Material.CHEST,
-            Material.ITEM_FRAME,
-            Material.GLOW_ITEM_FRAME,
-            Material.FURNACE
-    );
+
+    // ideally want to bring back the functionality of denying the chunk from spawning
+    // in a location that contains chests, furnaces, or any sort of storage type.
+    // since this would be a very expensive operation, it'll need to be done asynchronously, and
+    // can be done WHILE we're waiting for the next chunk to spawn, so it can take as long as it wants.
+    // it would also be a dream to drop WorldEdit as a hard dependency entirely but yea...
     private static List<String> blacklist;
 
     private static final BossBar bar = BossBar.bossBar(Component.text("Lucky Chunk"), 1.0f, BossBar.Color.GREEN, BossBar.Overlay.PROGRESS);
@@ -131,7 +131,7 @@ public class LuckyChunk {
             logger.warning("lucky chunk is unavailable without worldedit");
             return;
         }
-        double spawnX = chunkSpawnWorld.getSpawnLocation().getX();
+        double spawnX = Objects.requireNonNull(chunkSpawnWorld).getSpawnLocation().getX();
         double spawnZ = chunkSpawnWorld.getSpawnLocation().getZ();
         Random rng = new Random();
         // 50/50 to choose if we should flip either axis
@@ -309,7 +309,7 @@ public class LuckyChunk {
             if (nextSpawnProgress <= 20 * 5) {
                 if (!notifiedListen) {
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        if (player.getWorld().getName().equalsIgnoreCase(chunkSpawnWorld.getName())) {
+                        if (player.getWorld().getName().equalsIgnoreCase(Objects.requireNonNull(chunkSpawnWorld).getName())) {
                             // players must be in the same world as the chunk otherwise they aren't going to be
                             // listening for much
                             Localisation.sendMessage(player, new KeyArgPair("listen_closely"));

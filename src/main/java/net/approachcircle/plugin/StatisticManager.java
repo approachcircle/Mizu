@@ -2,7 +2,6 @@ package net.approachcircle.plugin;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -126,6 +125,7 @@ public class StatisticManager {
             }
         }
         Localisation.sendMessage(sender, new KeyArgPair("stats_for_everyone",
+                // TODO: null safety
                 mostUsedCommand.getKey(),
                 mostUsedCommand.getValue(),
                 player

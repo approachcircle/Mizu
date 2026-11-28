@@ -41,22 +41,14 @@ public class WarpCommand extends MizuCommand {
                 // any reasons why a warp can't be added or modified are sent to the user separately so that we
                 // can construct a clean update execution path
                 switch (tryAddWarp(sender, args[1])) {
-                    case ADD_FAILED -> {
-                        Localisation.sendMessage(sender, new KeyArgPair("failed_to_add_warp", args[1]));
-                    }
-                    case ADD_SUCCESS -> {
-                        Localisation.sendMessage(sender, new KeyArgPair("added_warp", args[1]));
-                    }
+                    case ADD_FAILED -> Localisation.sendMessage(sender, new KeyArgPair("failed_to_add_warp", args[1]));
+                    case ADD_SUCCESS -> Localisation.sendMessage(sender, new KeyArgPair("added_warp", args[1]));
                 }
             }
             case "remove" -> {
                 switch (tryRemoveWarp(sender, args[1])) {
-                    case REMOVE_FAILED -> {
-                        Localisation.sendMessage(sender, new KeyArgPair("failed_to_remove_warp", args[1]));
-                    }
-                    case REMOVE_SUCCESS -> {
-                        Localisation.sendMessage(sender, new KeyArgPair("removed_warp", args[1]));
-                    }
+                    case REMOVE_FAILED -> Localisation.sendMessage(sender, new KeyArgPair("failed_to_remove_warp", args[1]));
+                    case REMOVE_SUCCESS -> Localisation.sendMessage(sender, new KeyArgPair("removed_warp", args[1]));
                 }
             }
             case "update" -> {
@@ -89,12 +81,8 @@ public class WarpCommand extends MizuCommand {
                     return false;
                 }
                 switch (tryRenameWarp(sender, args[1], args[2])) {
-                    case RENAME_FAILED -> {
-                        Localisation.sendMessage(sender, new KeyArgPair("failed_to_rename", args[1]));
-                    }
-                    case RENAME_SUCCESS -> {
-                        Localisation.sendMessage(sender, new KeyArgPair("renamed_warp", args[1], args[2]));
-                    }
+                    case RENAME_FAILED -> Localisation.sendMessage(sender, new KeyArgPair("failed_to_rename", args[1]));
+                    case RENAME_SUCCESS -> Localisation.sendMessage(sender, new KeyArgPair("renamed_warp", args[1], args[2]));
                 }
             }
             default -> {
@@ -195,9 +183,7 @@ public class WarpCommand extends MizuCommand {
         try {
             if (args.length == 1) {
                 options.addAll(Arrays.asList(reservedCommands));
-                    warpStorage.list().forEach(warp -> {
-                        options.add(warp.warpName);
-                    });
+                    warpStorage.list().forEach(warp -> options.add(warp.warpName));
                 return copyMatchesAndSort(args[0], options);
             } else if (args.length == 2 && (!args[0].equalsIgnoreCase("add"))) { // if it's not "add" then it's a modification
                 warpStorage.list().forEach(warp -> {

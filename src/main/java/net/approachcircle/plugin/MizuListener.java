@@ -258,9 +258,6 @@ public class MizuListener implements Listener {
         Player player = event.getPlayer();
         Bukkit.broadcast(Component.text(String.format("%s: %s -> %s", player.getName(), event.getFrom().getName(), player.getWorld().getName()), NamedTextColor.GRAY));
 
-        // i think this can't actually be null cause this function becomes @NotNull in the newest version
-        // of the API, so i'm gonna say this is a bit of fucking larp
-        // noinspection DataFlowIssue
         if (!player.getWorld().getGameRuleValue(GameRules.KEEP_INVENTORY)) {
             Localisation.sendMessage(player, new KeyArgPair("keep_inventory_off_in_dimension"));
         }

@@ -64,9 +64,9 @@ public class Utils {
             PluginLogger.getPluginLogger().severe(message);
         }
         if (!noOperatorsOnline) {
-            Bukkit.getOnlinePlayers().stream().filter(ServerOperator::isOp).forEach(p -> {
-                p.sendMessage(Localisation.rawPrefixComponent(new ColouredString("something very bad has happened. check the console for details", NamedTextColor.RED)));
-            });
+            Bukkit.getOnlinePlayers().stream().filter(ServerOperator::isOp).forEach(p ->
+                p.sendMessage(Localisation.rawPrefixComponent(new ColouredString("something very bad has happened. check the console for details", NamedTextColor.RED)))
+            );
         }
     }
 
