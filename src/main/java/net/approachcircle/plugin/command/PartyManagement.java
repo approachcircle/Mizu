@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.UUID;
 
 public class PartyManagement extends MizuCommand {
     private final PartyStorage partyStorage = Storage.of(PartyStorage.class);
@@ -171,6 +170,8 @@ public class PartyManagement extends MizuCommand {
                     // guaranteed to fail if the team and party names are out of sync... fuck sake. maybe we'll have to
                     // just fully disband the party and make a new one which is the exact fucking thing i was trying to
                     // fucking fix by making the fucking replace method for FUCK FUCK FUCK FUCK FUCK SAKE FUCK YOU FUCK YOU FUCK YOU FUCK YOU
+
+                    // TODO: add a command to display the team names (IDs) and their corresponding parties for management
                 }
             }
         }
